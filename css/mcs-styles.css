@@ -1,0 +1,35 @@
+.mc-submissions label {
+	display: block;
+}
+
+.mc-submissions input, .mc-submissions textarea, .mc-submissions select {
+	width: 100%;
+}
+
+.mc-submissions .picker select {
+	width: auto;
+}
+
+.mc-submissions .recurring input {
+	width: 4em;
+}
+
+.mc-submissions .recurring select {
+	width: 12em;
+}
+
+.mc-submissions .recurring label {
+	display: inline-block; 
+	margin-right: .166666em;
+}
+
+.mc-submissions .updated {
+	display: block !important; /* This is because of TwentyFifteen */
+	padding: .166666em;
+	font-size: 1.2em;
+}
+
+.mc-advanced-search .dashicons {
+	margin-right: .5em;
+	vertical-align: middle;
+}

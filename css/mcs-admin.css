@@ -1,0 +1,35 @@
+.mc-tabs .wptab {
+	padding: 0;
+	background: none;
+	border: none;
+	margin-top: -20px;
+}
+
+.mc-tabs.mcs-settings .tabs a {
+	font-size: 1em;
+	font-weight: 700;
+}
+
+#mcs_importer_mode {
+	width: 100%;
+	padding: 2em;
+	background: #f6f6f6;
+	border: 1px solid #ddd;
+	font-weight: 700;
+	font-size: 1.4em;
+}
+
+.mcs-importer-progress {
+	margin: 1em 0;
+	padding: 1em;
+	background: #f6f6f6;
+}
+
+.mcs-importer-progress span {
+	overflow: hidden;
+	background: #303030;
+	color: #fff;
+	display: block;
+	padding: 1em;
+	margin: -1em;
+}

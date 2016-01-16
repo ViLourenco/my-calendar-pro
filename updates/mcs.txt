@@ -1,0 +1,3 @@
+1.0.4
+== Upgrade Notice ==
+* 1.0.4: Event submission form via shortcode was not protected when only members allowed to submit. 

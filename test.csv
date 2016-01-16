@@ -1,0 +1,16 @@
+event_title,content,event_begin,event_time,event_image,event_repeats,event_recur,event_every,location_preset,event_category
+Test Event,""<p>This is a paragraph of <span class="funky">text</span>"", 2015-10-21, 16:00,http://dev.josephdolson.com/wp-test/wp-content/uploads/2013/03/image-alignment-580x3002.jpg,2,W,4,1,1
+Second Test," ""This test has different date format"""," ""2016-01-24"""," ""4:00 pm""", http://dev.josephdolson.com/wp-test/wp-content/uploads/2013/03/image-alignment-580x3002.jpg,,,,2,2
+Third Test," ""This test hasn't got anything strange"""," ""2016-01-13"""," ""2:00 PM""",,,,,2,Strange
+4 Event," ""Test Content""", 2015-10-22, 16:00,,,,,1,2
+5 Test," ""This test has different date format"""," ""2016-01-25"""," ""4:00 pm""",,25,W,3,1,2
+6 Test," ""This test hasn't got anything strange"""," ""2016-01-14"""," ""2:00 PM""",,,,,2,Strange
+7 Event," ""Test Content""", 2015-10-23, 16:00,,,,,1,Testing
+8 Test," ""This test has different date format"""," ""2016-01-26"""," ""4:00 pm""",,,,,2,1
+9 Test," ""This test hasn't got anything strange"""," ""2016-01-15"""," ""2:00 PM""",http://dev.josephdolson.com/wp-test/wp-content/uploads/2013/03/image-alignment-300x2002.jpg,2,M,1,2,1
+10 Event," ""Test Content""", 2015-10-24, 16:00,,,,,,2
+11 Test," ""This test has different date format"""," ""2016-01-27"""," ""4:00 pm""",,,,,,
+12 Test," ""This test hasn't got anything strange"""," ""2016-01-16"""," ""2:00 PM""",,,,,,Strange
+13 Event," ""Test Content""", 2015-11-21, 16:00,,,,,,
+14 Test," ""This test has different date format"""," ""2016-02-24"""," ""4:00 pm""",,,,,,
+15 Test," ""This test hasn't got anything strange"""," ""2016-02-13"""," ""2:00 PM""",,4,W,3,1,

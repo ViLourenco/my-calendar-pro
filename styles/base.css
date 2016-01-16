@@ -1,0 +1,96 @@
+/*
+ * This is just the basic table grid for responsive mode.
+ */
+ 
+.mc-main .mc-row:nth-of-type(1) {
+	position: absolute;
+	left: -999em;
+}
+
+.mc-main:after {
+	content: '';
+	display: table;
+	clear: both;
+}
+
+.mc-main .mc-row li {
+	display: block;
+	vertical-align: top;
+	margin: 0;
+	padding: 1em;
+}
+
+.mc-main li.no-events {
+	display: block;
+}
+
+.mc-main .mc-row, .mc-main .mc-row > li {
+	list-style: outside none none;
+	margin: 0;
+}
+
+/* Hide cells with no content */
+.mc-main li.no-events, .mc-main .day-heading, .mc-main .weekend-heading {
+	display: none;
+}
+
+/* Triggered when wider than 480px */
+@media only screen and (min-width: 480px) {
+
+	
+}
+
+/* Triggered when wider than 800px */
+@media only screen and (min-width: 800px) {
+
+	.mc-main .mc-table-body {
+		display: table;
+		width: 100%;
+	}
+
+	.mc-main .mc-row {
+		display: table-row;
+	}
+
+	.mc-main .mc-row:nth-of-type(1) {
+		position: static;
+	}    
+	
+	.mc-main .mc-row li {
+		display: table-cell;
+		width: 14.285714%;
+		border: 1px solid #f6f6f6;
+		padding: 0 !important;
+		height: 5em;
+	}
+
+	.mc-main .mc-row .day-heading, .mc-main .mc-row .weekend-heading {
+		text-align: center;
+		text-transform: uppercase;
+		padding: 8px 0 !important;
+		background: rgba(0, 0, 0, .8);
+		color: #fff !important;
+		height: auto;
+	}
+	
+	.mc-main .event-title {
+		margin: 0 !important;
+		font-size: .8em;
+	}	
+	
+	.mc-main .calendar-event .details, .mc-main .calendar-events {
+		position: absolute;
+		left: 0;
+		box-shadow: 0 0 4px;		
+	}	
+}
+
+/* Triggered when wider than 1000px */
+@media only screen and (min-width: 1000px) {
+	
+}
+
+/* Triggered when wider than 1360px */
+@media only screen and (min-width: 1360px) {
+
+}
