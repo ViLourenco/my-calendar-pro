@@ -29,6 +29,28 @@ global $mcs_version, $mc_package, $wpdb;
 $mc_package = 'submissions';
 $mcs_version = '1.4.0';
 
+
+// The URL of the site with EDD installed
+define( 'EDD_MCP_STORE_URL', 'https://www.joedolson.com' ); 
+// The title of your product in EDD and should match the download title in EDD exactly
+define( 'EDD_MCP_ITEM_NAME', 'My Calendar Pro' ); 
+
+if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
+	// load our custom updater if it doesn't already exist 
+	include( dirname( __FILE__ ) . '/updates/EDD_SL_Plugin_Updater.php' );
+}
+
+// retrieve our license key from the DB
+$license_key = trim( get_option( 'mcs_license_key' ) ); 
+// setup the updater
+$edd_updater = new EDD_SL_Plugin_Updater( EDD_MCP_STORE_URL, __FILE__, array(
+	'version' 	=> $mcs_version,					// current version number
+	'license' 	=> $license_key,			// license key (used get_option above to retrieve from DB)
+	'item_name'     => EDD_MCP_ITEM_NAME,	// name of this plugin
+	'author' 	=> 'Joe Dolson',		// author of this plugin
+	'url'           => home_url()
+) );
+
 // Define the tables used in My Calendar
 define('MY_CALENDAR_PAYMENTS_TABLE', $wpdb->prefix . 'my_calendar_payments');
 
@@ -248,22 +270,6 @@ add_action( 'wp_enqueue_scripts', 'mcs_styles' );
 function mcs_styles() {
 	if ( version_compare( get_option( 'mc_version' ), '2.4.0', '>=' ) ) {
 		wp_enqueue_style( 'my-calendar-submissions-style' );
-	}
-}
-
-add_action('init', 'mcs_check_for_upgrades');
-function mcs_check_for_upgrades() {
-	if ( is_admin() ) {
-		global $mcs_version;
-		$hash = get_option( 'mcs_license_key' );
-		if ( !$hash ) { return; }
-		if ( !class_exists( 'jd_auto_update' ) ) {
-			require_once ('updates/plugin-update-checker.php');
-		}
-		$mcs_plugin_current_version = $mcs_version;
-		$mcs_plugin_remote_path = "http://www.joedolson.com/wp-content/plugins/files/updates-v2.php?key=$hash";
-		$mcs_plugin_slug = plugin_basename( __FILE__ );
-		new jd_auto_update( $mcs_plugin_current_version, $mcs_plugin_remote_path, $mcs_plugin_slug );
 	}
 }
 

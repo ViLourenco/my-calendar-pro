@@ -35,7 +35,7 @@ function mcs_advanced_search_tabs( $tabs ) {
 
 function mcs_generate_search_page( $slug ) {
 	global $current_user;
-	get_currentuserinfo();
+	$current_user = wp_get_current_user();
 	if ( ! is_page( $slug ) ) {
 		$page = array(
 			'post_title'  => __( 'Advanced Event Search', 'my-calendar' ),

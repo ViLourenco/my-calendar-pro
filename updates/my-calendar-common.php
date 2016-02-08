@@ -11,7 +11,7 @@ function mcs_check_license( $key=false ) {
 		define('MC_SUBMIT_PLUGIN_LICENSE_URL', "https://www.joedolson.com/wp-content/plugins/files/license.php" );
 		$response = wp_remote_post( MC_SUBMIT_PLUGIN_LICENSE_URL, 
 			array (
-				'user-agent' => 'WordPress/My Calendar Submit' . $mcs_version . '; ' . get_bloginfo( 'url' ), 
+				'user-agent' => 'WordPress/My Calendar Pro' . $mcs_version . '; ' . get_bloginfo( 'url' ), 
 				'body'=>array( 'key'=>$key, 'site'=>urlencode( home_url() ) ),
 				'timeout' => 30				
 			) );
