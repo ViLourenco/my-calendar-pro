@@ -36,11 +36,11 @@ define( 'EDD_MCP_STORE_URL', 'https://www.joedolson.com' );
 define( 'EDD_MCP_ITEM_NAME', 'My Calendar Pro' ); 
 
 if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
-	// load our custom updater if it doesn't already exist 
+	// load our custom updater if it doesn't already exist
 	include( dirname( __FILE__ ) . '/updates/EDD_SL_Plugin_Updater.php' );
 }
 
-// retrieve our license key from the DB
+// retrieve our license key from the DB 
 $license_key = trim( get_option( 'mcs_license_key' ) ); 
 // setup the updater
 $edd_updater = new EDD_SL_Plugin_Updater( EDD_MCP_STORE_URL, __FILE__, array(
@@ -70,6 +70,7 @@ include(dirname(__FILE__).'/updates/my-calendar-common.php' );
 include(dirname(__FILE__).'/gateways/my-calendar-ipn.php' );
 include(dirname(__FILE__).'/my-calendar-submit.php' );
 include(dirname(__FILE__).'/my-calendar-submit-payments.php' );
+include(dirname(__FILE__).'/my-calendar-license.php' );
 include(dirname(__FILE__).'/my-calendar-submit-widgets.php' );
 include(dirname(__FILE__).'/my-calendar-submit-settings.php' );
 include(dirname(__FILE__).'/my-calendar-event-posts.php' );
@@ -79,7 +80,9 @@ include(dirname(__FILE__).'/my-calendar-responsive-mode.php' );
 include(dirname(__FILE__).'/my-calendar-import.php' );
 
 
-if ( get_option( 'mcs_license_key_valid' ) != 'true' ) {
+if ( get_option( 'mcs_license_key_valid' ) == 'true' || get_option( 'mcs_license_key_valid' ) == 'active' ) {
+	
+} else {
 	$message = sprintf(__("You must <a href='%s'>enter your license key</a> to get support and updates for My Calendar Pro.", 'my-calendar-submissions'), admin_url('admin.php?page=my-calendar-submissions'));
 	add_action('admin_notices', create_function( '', "if ( ! current_user_can( 'manage_options' ) ) { return; } else { echo \"<div class='error'><p>$message</p></div>\";}" ) );
 }

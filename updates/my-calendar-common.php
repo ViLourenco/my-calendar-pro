@@ -6,7 +6,7 @@ function mcs_check_license() {
 	// listen for our activate button to be clicked
 	if( isset( $_POST['mcs_license_key'] ) ) {
 		// run a quick security check 
-	 	if( ! check_admin_referer( 'mcs-nonce', '_wpnonce' ) ) 	
+	 	if( ! check_admin_referer( 'license', '_wpnonce' ) ) 	
 			return; // get out if we didn't click the Activate button
 		// retrieve the license from the database
 		$license = trim( $_POST[ 'mcs_license_key'] );

@@ -28,11 +28,7 @@ function mcs_update_settings( $post ) {
 		$mcs_automatic_approval = ( isset($post['mcs_automatic_approval']) )?'true':'false'; // is approval required?
 		$mcs_dont_send_submitter_email = ( isset( $post['mcs_dont_send_submitter_email'] ) ) ? 'true' : 'false'; // disable emails when approval is automatic
 		$mcs_dont_send_admin_email = ( isset( $post['mcs_dont_send_admin_email'] ) ) ? 'true' : 'false'; // disable emails when approval is automatic
-		if ( $post['mcs_license_key'] != get_option('mcs_license_key') ) {
-			$verify = mcs_verify_key();
-		} else {
-			$verify = '';
-		}
+
 		update_option( 'mcs_to',$mcs_to );
 		update_option( 'mcs_check_conflicts',$mcs_check_conflicts );
 		update_option( 'mcs_upload_images',$mcs_upload_images );
@@ -146,7 +142,6 @@ function mcs_settings() {
 	$mcs_use_sandbox = ( get_option('mcs_use_sandbox') )?get_option('mcs_use_sandbox'):$defaults['mcs_use_sandbox']; // use sandbox
 	$mcs_paypal_merchant_id = get_option('mcs_paypal_merchant_id'); // paypal merchant ID
 	$mcs_button = get_option('mcs_button');
-	$mcs_license_key = get_option('mcs_license_key');
 	$mcs_submit_id = get_option('mcs_submit_id');
 	$mcs_date_format = get_option('mcs_date_format');
 	$mcs_time_format = get_option('mcs_time_format');
@@ -191,9 +186,6 @@ function mcs_settings() {
 			</p>
 			<form method="post" action="<?php echo admin_url("admin.php?page=my-calendar-submissions"); ?>">
 			<div><input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('my-calendar-submissions'); ?>" /></div>
-			<p class='license'>
-			<label for="mcs_license_key"><?php _e('License key:','my-calendar-submissions'); ?></label> <input type="text" name="mcs_license_key" id="mcs_license_key" size="60" value="<?php echo esc_attr(trim($mcs_license_key)); ?>" />
-			</p>
 			<p>
 			<label for="mcs_submit_id"><?php _e('Event Submission Page ID','my-calendar-submissions'); ?></label> <input type="text" name="mcs_submit_id" id="mcs_submit_id" size="6" value="<?php echo esc_attr(trim($mcs_submit_id)); ?>" />
 			</p>			
@@ -516,10 +508,12 @@ function mcs_settings() {
 		foreach ( $panels as $key => $value ) {
 			$content = ( is_array( $value ) && isset( $value['content'] ) ) ? $value['content'] : $value;
 			$label = ( is_array( $value ) && isset( $value['label'] ) ) ? $value['label'] : __( 'Save Settings' );
+			$wp_nonce = wp_nonce_field( $key, '_wpnonce', true, false );
 			$top = '
 			<div class="metabox-holder wptab" aria-labelledby="tab_' . $key . '_mcs" role="tabpanel" aria-live="assertive" id="mcs_' . $key . '_tab">
-				<form method="post" action="' . admin_url( "admin.php?page=my-calendar-submissions#mcs_$key" . '_tab' ) . '" enctype="multipart/form-data">
-					<div class="ui-sortable meta-box-sortables">   
+				<form method="post" action="' . admin_url( "admin.php?page=my-calendar-submissions#mcs_$key" . '_tab' ) . '" enctype="multipart/form-data">'.
+					$wp_nonce
+					.'<div class="ui-sortable meta-box-sortables">   
 						<div class="postbox">';
 			
 			$bottom = '
