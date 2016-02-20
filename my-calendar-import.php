@@ -3,17 +3,57 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function mcs_importer_update() {
 	// save settings
-	if ( isset( $_FILES['mcs_importer'] ) ) {
-		// Read the contents of the file
+	if ( isset( $_FILES['mcs_importer'] ) || isset( $_POST['mcs_remote_import'] ) ) {
+		$nonce = $_POST['_wpnonce'];
+		if ( !wp_verify_nonce( $nonce, 'importer' ) ) return;
 		
-		$csv  = file_get_contents( $_FILES['mcs_importer']['tmp_name'] );
+		$constructed = false;
+		
+		if ( isset( $_FILES['mcs_importer'] ) && !empty( $_FILES['mcs_importer']['name'] ) ) {
+			// Read the contents of the file
+			$path        = $_FILES['mcs_importer']['name'];
+			$ext         = pathinfo( $path, PATHINFO_EXTENSION );
+			$rows        = '';
+			$notice      = '';
+			
+			if ( $ext == 'ics' ) {
+				$constructed = true;
+				$rows        = mcs_convert_ics( $_FILES['mcs_importer']['tmp_name'] );
+			}
+			if ( $rows == '' ) {
+				$csv  = file_get_contents( $_FILES['mcs_importer']['tmp_name'] );
+			} else {
+				$csv = $rows;
+			}
+		} else {
+			// remote file
+			$type     = ( $_POST['mcs_remote_type'] == 'csv' ) ? 'csv' : 'ics';
+			$url      = esc_url( $_POST['mcs_remote_import'] );
+			$response = wp_remote_get( $url, array( 'user-agent' => 'WordPress/My Calendar Importer; ' . home_url() ) );
+			$body     = wp_remote_retrieve_body( $response );	
+			
+			if ( $type == 'csv' ) {
+				$csv = $body;
+			} else {
+				// converting ics requires file input.
+				$file        = fopen( dirname( __FILE__ ). '/mcs_csv_source.ics', 'w' );			 
+				fwrite( $file, $body );
+				fclose( $file );				
+				$constructed = true;
+				$csv         = mcs_convert_ics( dirname( __FILE__ ). '/mcs_csv_source.ics' );
+				unlink( dirname( __FILE__ ). '/mcs_csv_source.ics' );
+			}
+		}
+		
 		/* Separate each file into an index of an array and store the total
 		 * number of rows that exist in the array. This assumes that
 		 * each row of the CSV file is on a new line.
 		 */
-		$csv_rows   = explode( "\n", $csv );
-		$total_rows = count( $csv_rows );
-		$number_per_row = 1;
+		$csv_rows       = explode( PHP_EOL, $csv );
+		$total_rows     = count( $csv_rows );
+		// number of rows per file
+		$number_per_row = 20;
+		
 		// Store the title row. This will be written at the top of every file.
 		$title_row  = $csv_rows[ 0 ];
 		/* Calculate the number of rows that will consist of $number_per_row, and then calculate
@@ -22,6 +62,8 @@ function mcs_importer_update() {
 		 * We use floor() so we don't round up by one.
 		 */
 		$rows          = floor( $total_rows / $number_per_row );
+		// have to have at least one file.
+		$rows          = ( $rows == 0 ) ? 1 : $rows;
 		$remaining_row = ( $rows % $number_per_row );
 		// Prepare to write out the files. This could just as easily be a for loop.
 		$file_counter = 0;
@@ -36,14 +78,14 @@ function mcs_importer_update() {
 				/* Read the value from the array and then remove from
 				 * the array so it's not read again.
 				 */
-				$csv_data .= ( isset( $csv_rows[ $i ] ) ) ? $csv_rows[ $i ] . "\n" : "\n";
+				$csv_data .= ( isset( $csv_rows[ $i ] ) ) ? $csv_rows[ $i ] . PHP_EOL : PHP_EOL;
 				unset( $csv_rows[ $i ] );
 			}
 			/* Write out the file and then close the handle since we'll be opening
 			 * a new one on the next iteration.
 			 */
 			if ( trim( $csv_data ) != '' ) {
-				$csv_data = $title_row . "\n" . $csv_data;
+				$csv_data    = $title_row . PHP_EOL . $csv_data;
 				$output_file = fopen( dirname( __FILE__ ). '/mcs_csv_' . $file_counter . '.csv', 'w' );			 
 				fwrite( $output_file, $csv_data );
 				fclose( $output_file );
@@ -59,33 +101,77 @@ function mcs_importer_update() {
 		
 		update_option( 'mcs-number-of-files', $file_counter );	
 		
-		$delimiter  = mcs_check_csv_delimiter( $_FILES['mcs_importer']['tmp_name'] );
+		if ( $constructed ) {
+			// highly improbable pattern to help cope with unknown data in content.
+			$delimiter = '|||';
+		} else {
+			$delimiter  = mcs_check_csv_delimiter( 'mcs_csv_0.csv' );
+			//$delimiter = ',';
+		}
 		update_option( 'mcs-delimiter', $delimiter );
 		
 		$titles = explode( $delimiter, $title_row );
 		$imports = $total_rows - 1;
 		$return = "
 			<h3>" . sprintf( __( 'Importing %s events.', 'my-calendar-submissions' ), "<strong>$imports</strong>" ) . "</h3>
-				<p>" . __( 'Map your data to My Calendar event fields:', 'my-calendar-submissions' ) . "</p>
-				<ul>";
+				<p><strong>" . __( 'Mapping your CSV columns to My Calendar fields:', 'my-calendar-submissions' ) . "</strong></p>
+				<ul class='mcs-import-data'>";
+		$odd = 0;
 		foreach( $titles as $title ) {
 			$title = ( $title == '' ) ? __( '(No field name)', 'my-calendar-submissions' ) : trim( $title );
 			$fields = mcs_option_fields();
-			$target = ( in_array( $title, array_keys( $fields ) ) ) ? $fields[$title] : mcs_option_list( $title );
-			$return .= "<li>" . sprintf( __( 'Map &ldquo;<strong>%s</strong>&rdquo; to %s', 'my-calendar-submissions' ), $title, $target ) . "</li>";
+			//$target = ( in_array( $title, array_keys( $fields ) ) ) ? $fields[$title] : mcs_option_list( $title );
+			$class = ( $odd == 1 ) ? 'odd' : 'even';
+			if ( in_array( $title, array_keys( $fields ) ) ) {
+				$target = $fields[$title];
+				$class .= '';
+			} else {
+				$target =  __( 'Unrecognized field - will be ignored', 'my-calendar-submissions' );
+				$class .= ' unknown';
+			}
+			$return .= "<li class='$class'>" . sprintf( __( '&ldquo;<strong>%s</strong>&rdquo; to %s', 'my-calendar-submissions' ), $title, $target ) . "</li>";
+			$odd = ( $odd == 1 ) ? 0 : 1;
 		}
 		$return .= "</ul>";
 		$return .= "<button name='mcs_import_events' class='button-primary' type='button'>" . __( 'Import Events', 'my-calendar-submissions' ) . "</button>
 		<div class='mcs-importer-progress' aria-live='assertive' aria-atomic='false'><span>Importing...<strong class='percent'></strong></span></div>";
 		
-		
-		// if not, produce list of field labels and request info where to map.
-		
-		// button: "import now"
-		
 		return $return;
 		
 	}
+}
+
+function mcs_convert_ics( $file ) {
+	include( dirname( __FILE__ ). '/classes/class.iCalReader.php' );
+	$ics    = new ical( $file );
+	$events = $ics->cal['VEVENT'];
+	$uids = array();
+	// map each element to existing My Calendar fields
+	//$rows = 'event_begin,event_time,event_end,event_endtime,content,event_label,event_title,event_group_id'.PHP_EOL;
+	$rows = 'event_begin|||event_time|||event_end|||event_endtime|||content|||event_label|||event_title|||event_group_id'.PHP_EOL;
+	foreach ( $events as $event ) {
+		$event_begin = date( 'Y-m-d', strtotime( $event['DTSTART'] ) );
+		$event_time = date( "H:i:00", strtotime( $event['DTSTART'] ) );
+		$event_end = date( 'Y-m-d', strtotime( $event['DTEND'] ) );
+		$event_endtime = date( 'H:i:00', strtotime( $event['DTEND'] ) );
+		
+		$date_diff   = strtotime( $event_end ) - strtotime( $event_begin );
+		$time_diff   = strtotime( $event_endtime ) - strtotime( $event_time );
+		$description = ( isset( $event['DESCRIPTION'] ) ) ? $event['DESCRIPTION'] : '';
+		$location    = ( isset( $event['LOCATION'] ) ) ? $event['LOCATION'] : '';
+		$summary     = ( isset( $event['SUMMARY'] ) ) ? $event['SUMMARY'] : '';
+			
+		$uid         = ( isset( $event['UID'] ) ) ? $event['UID'] : '';
+		if ( in_array( $uid, $uids ) ) {
+			$group_id = mc_group_id();
+		} else {
+			$group_id = 'default';
+			$uids[]   = $uid;
+		}
+		$rows .= "\"$event_begin\"|||\"$event_time\"|||\"$event_end\"|||\"$event_endtime\"|||\"$description\"|||\"$location\"|||\"$summary\"|||\"$group_id\"" . PHP_EOL;
+	}
+	
+	return $rows;
 }
 
 add_action( 'admin_enqueue_scripts', 'mcs_importer_enqueue_scripts' );
@@ -107,8 +193,6 @@ function mcs_importer_settings( $panels ) {
 	
 	$update = mcs_importer_update();
 	
-	//test_function();
-	
 	$importer = '
 		<h3>' . __( 'Import Events', 'my-calendar-submissions' ) . '</h3>
 		<div class="inside">'.
@@ -116,8 +200,16 @@ function mcs_importer_settings( $panels ) {
 		if ( $update == false ) {
 			$importer .= '
 				<p>
-					<label for="mcs_importer">' . __( 'Upload CSV', 'my-calendar-submissions' ) . '</label>			
+					<label for="mcs_importer">' . __( 'Upload File (.csv or .ics)', 'my-calendar-submissions' ) . '</label>			
 					<input type="file" name="mcs_importer" id="mcs_importer_mode" /> 
+				</p>
+				<p>
+					<label for="mcs_remote_import">' . __( 'Import from URL', 'my-calendar-submissions' ) . '</label><br />			
+					<input type="url" name="mcs_remote_import" id="mcs_remote_import" class="widefat" /> 
+				</p>
+				<p>			
+					<input type="radio" name="mcs_remote_type" id="mcs_remote_type_ics" value="ics" /> <label for="mcs_remote_type_ics">' . __( 'iCal format (.ics)', 'my-calendar-submissions' ) . '</label><br />
+					<input type="radio" name="mcs_remote_type" id="mcs_remote_type_csv" value="csv" checked="checked" /> <label for="mcs_remote_type_csv">' . __( 'Character separated values (.csv)', 'my-calendar-submissions' ) . '</label>
 				</p>
 				{submit}';
 		}
@@ -125,7 +217,7 @@ function mcs_importer_settings( $panels ) {
 		</div>';
 	
 	$panels['importer']['content'] = $importer;
-	$panels['importer']['label'] = __( 'Upload CSV and Import Events', 'my-calendar-submissions' );
+	$panels['importer']['label'] = __( 'Import Events', 'my-calendar-submissions' );
 	
 	return $panels;
 }
@@ -152,10 +244,15 @@ function mcs_import_files() {
 		if ( file_exists( $filename ) ) {
 			$input_file = fopen( $filename, 'r' );	
 			$content    = fread( $input_file, filesize( $filename ) );
-			$delimiter  = get_option( 'mcs-delimiter' );
+			$delimiter  = get_option( 'mcs-delimiter' );			
 			$array      = mcs_translate_csv( $content, $delimiter );
-			$event      = array();
 			foreach( $array as $event ) {
+				if ( !is_array( $event ) ) {
+					continue;
+				}
+				if ( $event['event_group_id'] == 'default' ) {
+					unset( $event['event_group_id'] );
+				}
 				$event      = array_merge( $defaults, $event );
 				if ( isset( $event['event_category'] ) && !is_numeric( $event['event_category'] ) ) {
 					// event category is not numeric, so check database to see if exists. 
@@ -221,8 +318,8 @@ function mcs_get_import_status() {
 	}
 }
 
-function mcs_check_csv_delimiter( $file, $checkLines = 3 ){
-	$file = new SplFileObject( $file );
+function mcs_check_csv_delimiter( $import, $checkLines = 3 ){
+	$file = new SplFileObject( $import, 'r', true );
 	$delimiters = array(
 	  ',',
 	  '\t',
@@ -247,6 +344,7 @@ function mcs_check_csv_delimiter( $file, $checkLines = 3 ){
 		}
 	   $i++;
 	}
+	
 	$results = array_keys( $results, max($results) );
 	
 	return $results[0];
@@ -320,7 +418,7 @@ function mcs_option_fields() {
 		);
 }
 
-function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escape = '\\', $terminator = "\n"  ) {
+function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escape = '\\', $terminator = PHP_EOL  ) {
 	$r      = array();
 	$output = array();
 	$rows   = explode( $terminator, trim( $content ) );
@@ -330,6 +428,7 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 	foreach ( $rows as $row ) {
 		if ( trim( $row ) ) {
 			$values          = explode( $delimiter, $row );
+			//$values        = str_getcsv( $row ); --> requires 5.3.0
 			$i = 0;
 			foreach ( $values as $value ) {
 				$value = str_replace( array( $enclosure, $escape ), '', $value );
@@ -339,15 +438,12 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 					} else {
 						$value = date( 'H:i:s', strtotime( $value ) );
 					}
-					$r[ $titles[$i] ][] = ( isset( $value ) ) ? trim( $value ) : '' ;					
+					$r[ $titles[$i] ][0] = ( isset( $value ) ) ? trim( $value ) : '' ;					
 				} else {
 					$r[ $titles[$i] ] = ( isset( $value ) ) ? trim( $value ) : '' ;
 				}
 				$i++;
-			}
-			if ( ! isset( $r[ 'event_end' ] ) ) {
-				$r[ 'event_end' ] = $r[ 'event_begin' ];
-			}			
+			}		
 		}
 
 		$output[] = $r;
@@ -382,27 +478,6 @@ function mcs_default_event_values() {
 	);
 	
 	return apply_filters( 'mcs_default_event_values', $defaults );
-}
-
-
-function test_function() {
-	$event = array (
-		'event_title' => 'Untitled',
-		'content' =>  'Test Content',
-		'event_begin' => array( '2015-12-10' ),
-		'event_end' => array( '2015-12-10' ),
-		'event_time' =>  array( '16:00' ),
-		'event_fifth_week' => '',
-		'event_holiday' => '',
-		'event_nonce_name' => wp_create_nonce( 'event_nonce' )
-	);
-	
-	$event = array_merge( mcs_default_event_values(), $event );
-	
-	$response = mc_check_data( 'add', $event, 0 );
-	
-	print_r( $response );
-	
 }
 
 function mcs_category_by_name( $string ) {
