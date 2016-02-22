@@ -203,14 +203,17 @@ function mcs_importer_settings( $panels ) {
 					<label for="mcs_importer">' . __( 'Upload File (.csv or .ics)', 'my-calendar-submissions' ) . '</label>			
 					<input type="file" name="mcs_importer" id="mcs_importer_mode" /> 
 				</p>
+				<fieldset class="mcs-importer">
+				<legend>' . __( 'Remote import', 'my-calendar-submissions' ) . '</legend>
 				<p>
 					<label for="mcs_remote_import">' . __( 'Import from URL', 'my-calendar-submissions' ) . '</label><br />			
 					<input type="url" name="mcs_remote_import" id="mcs_remote_import" class="widefat" /> 
 				</p>
 				<p>			
-					<input type="radio" name="mcs_remote_type" id="mcs_remote_type_ics" value="ics" /> <label for="mcs_remote_type_ics">' . __( 'iCal format (.ics)', 'my-calendar-submissions' ) . '</label><br />
+					<input type="radio" name="mcs_remote_type" id="mcs_remote_type_ics" value="ics" /> <label for="mcs_remote_type_ics">' . __( 'iCal format (.ics)', 'my-calendar-submissions' ) . '</label> 
 					<input type="radio" name="mcs_remote_type" id="mcs_remote_type_csv" value="csv" checked="checked" /> <label for="mcs_remote_type_csv">' . __( 'Character separated values (.csv)', 'my-calendar-submissions' ) . '</label>
 				</p>
+				</fieldset>
 				{submit}';
 		}
 		$importer .= '

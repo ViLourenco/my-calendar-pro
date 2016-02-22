@@ -26,20 +26,14 @@ New or updated translations are always appreciated. The translation files are in
    the page you have edited or created. You should see your calendar. Visit My Calendar -> Help for assistance
    with shortcode options or widget configuration.
 
+* My Calendar Submissions has been replaced by My Calendar PRO. All licenses have been transferred to the new plug-in.
+
 == Changelog ==
 
 = Future =
 
-* My Calendar Submissions has been replaced by My Calendar PRO. All licenses have been transferred to the new plug-in.
-
-FEATURES FOR MC PRO
 * Feature: limiting of viewing categories to specific member groups
-	/* 
-	Use: mc_category_fields, passed $cur_cat
-	Add settings fields to category saved as options showing which member groups can see that ID
-	*/
 * Feature: limit ability to enter categories by member groups
-* Import from RSS/iCal
 * Create selectable event details templates 
 * Make only portions of events private (e.g., time and location for children's events, etc.)
 * Add option to set event alarm or notification in .ics outputs
@@ -48,11 +42,13 @@ FEATURES FOR MC PRO
 * MCS issue with SiteOrigin's Page Builder?
 * Feature: list of user's submitted events to provide access for editing; build into Submissions form & as separate shortcode
 * Feature: restrict access for non-admins to only be able to edit from front-end; no access to WP Admin for calendar.
+* Feature: schedule periodic imports by URL
 
-= 1.4.1 =
+= 1.5.0 =
 
-* Bug fix: currency code in submision payments reports
-* 
+* Add event importer by iCAL or CSV
+* Bug fix: misc. PHP notices
+* Bug fix: currency code in Submission payments reports
 
 = 1.4.0 =
 
