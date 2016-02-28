@@ -156,7 +156,7 @@ function mcs_advanced_search( $sql, $query ) {
 	} else {
 		$search = array( 'category' => $category, 'author' => $author, 'host' => $host, 'ltype' => 'event_label', 'lvalue' => $lvalue, 'search' => $term, 'from' => $from, 'to' => $to );
 	}
-	
+		
 	return $search;
 }
 
@@ -372,17 +372,17 @@ function mcs_generate_search_field( $field ) {
 				</p>';
 			break;
 		case 'date':
-			$selected = ( isset( $_POST['mc_from'] ) ) ? intval( $_POST['mc_from'] ) : date( 'Y-m-d', current_time( 'timestamp' ) );					
+			$selected = ( isset( $_POST['mc_from'] ) ) ? $_POST['mc_from'] : date( 'Y-m-d', current_time( 'timestamp' ) );					
 			$return = '
 				<p class="mc_from">
 					<label for="mc_from">' . __( 'From', 'my-calendar-submissions' ) . '</label>
-					<input type="date" class="widefat mc-date" value="' . $selected . '" name="mc_from" id="mc_from" />
+					<input type="date" class="widefat mc-date" value="' . esc_attr( $selected ) . '" name="mc_from" id="mc_from" />
 				</p>';
-			$selected = ( isset( $_POST['mc_to'] ) ) ? intval( $_POST['mc_to'] ) : date( 'Y-m-d', strtotime( '+ 1 month' ) );
+			$selected = ( isset( $_POST['mc_to'] ) ) ? $_POST['mc_to'] : date( 'Y-m-d', strtotime( '+ 1 month' ) );
 			$return .= '
 				<p class="mc_to">
 					<label for="mc_to">' . __( 'To', 'my-calendar-submissions' ) . '</label>
-					<input type="date" class="widefat mc-date" value="' . $selected . '" name="mc_to" id="mc_to" />
+					<input type="date" class="widefat mc-date" value="' . esc_attr( $selected ) . '" name="mc_to" id="mc_to" />
 				</p>';
 			break;
 		default: $return = '';
@@ -503,13 +503,6 @@ class my_calendar_advanced_search extends WP_Widget {
 	}
 }
 
-		$defaults = array( 
-			'date' => false,
-			'author' => false, 
-			'host' => false,		
-			'category' => false, 
-			'location' => false
-		);
 function mcs_map_label( $key ) {
 	switch( $key ) {
 		case 'date' : $label = __( 'Dates', 'my-calendar-submissions' ); break;

@@ -44,6 +44,11 @@ New or updated translations are always appreciated. The translation files are in
 * Feature: restrict access for non-admins to only be able to edit from front-end; no access to WP Admin for calendar.
 * Feature: schedule periodic imports by URL
 
+= 1.5.1 =
+
+* Bug fix: Handling of license activation response
+* 
+
 = 1.5.0 =
 
 * Add event importer by iCAL or CSV

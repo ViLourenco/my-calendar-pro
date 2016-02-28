@@ -80,7 +80,7 @@ include(dirname(__FILE__).'/my-calendar-responsive-mode.php' );
 include(dirname(__FILE__).'/my-calendar-import.php' );
 
 
-if ( get_option( 'mcs_license_key_valid' ) == 'true' || get_option( 'mcs_license_key_valid' ) == 'active' ) {
+if ( get_option( 'mcs_license_key_valid' ) == 'true' || get_option( 'mcs_license_key_valid' ) == 'active'  || get_option( 'mcs_license_key_valid' ) == 'valid' ) {
 	
 } else {
 	$message = sprintf(__("You must <a href='%s'>enter your license key</a> to get support and updates for My Calendar Pro.", 'my-calendar-submissions'), admin_url('admin.php?page=my-calendar-submissions'));

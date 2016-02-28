@@ -51,7 +51,7 @@ function mcs_verify_key( $option='mcs_license_key', $lang='my-calendar-submissio
 	update_option( $option.'_valid', $confirmation );
 	if ( $confirmation == 'inactive' ) {
 		$message = __("$name key not valid.", 'my-calendar-submissions' );			
-	} else if ( $confirmation == 'active' ) {
+	} else if ( $confirmation == 'active' || $confirmation == 'valid' ) {
 		if ( $previously == 'true' || $previously == 'active' ) { 
 		} else {
 			$message = __( "$name key activated. Enjoy!", 'my-calendar-submissions' );
