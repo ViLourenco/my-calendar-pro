@@ -3,7 +3,7 @@ Contributors: joedolson
 Donate link: http://www.joedolson.com/my-calendar/pro/
 Tags: event submissions, user generated content, my calendar pro
 Requires at least: 3.9.2
-Tested up to: 4.2.2
+Tested up to: 4.4.2
 Stable tag: trunk
 
 Add on to My Calendar plugin: adds many great features such as a responsive mode, create events from posts, and more.
@@ -47,7 +47,7 @@ New or updated translations are always appreciated. The translation files are in
 = 1.5.1 =
 
 * Bug fix: Handling of license activation response
-* 
+* Bug fix: advanced search queries
 
 = 1.5.0 =
 

@@ -5,9 +5,9 @@ Plugin URI: http://www.joedolson.com/my-calendar/pro/
 Description: Expands the capabilities of My Calendar to add premium features.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.5.0
+Version: 1.5.1
 */
-/*  Copyright 2012-2015  Joe Dolson (email : joe@joedolson.com)
+/*  Copyright 2012-2016  Joe Dolson (email : joe@joedolson.com)
 
     This program is open source software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,10 +25,8 @@ Version: 1.5.0
 */
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-global $mcs_version, $mc_package, $wpdb;
-$mc_package = 'submissions';
-$mcs_version = '1.5.0';
-
+global $mcs_version, $wpdb;
+$mcs_version = '1.5.1';
 
 // The URL of the site with EDD installed
 define( 'EDD_MCP_STORE_URL', 'https://www.joedolson.com' ); 
@@ -78,7 +76,6 @@ include(dirname(__FILE__).'/my-calendar-post-events.php' );
 include(dirname(__FILE__).'/my-calendar-advanced-search.php' );
 include(dirname(__FILE__).'/my-calendar-responsive-mode.php' );
 include(dirname(__FILE__).'/my-calendar-import.php' );
-
 
 if ( get_option( 'mcs_license_key_valid' ) == 'true' || get_option( 'mcs_license_key_valid' ) == 'active'  || get_option( 'mcs_license_key_valid' ) == 'valid' ) {
 	
