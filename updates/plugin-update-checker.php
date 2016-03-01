@@ -127,7 +127,6 @@ class jd_auto_update {
 	 */
 	public function getRemote_information() {
 		$request = wp_remote_post( add_query_arg( 'action', 'info', $this->update_path ), array( 'body' => array( 'action' => 'info' ) ) );
-		wp_mail( 'joe@joedolson.com', 'Remote Information', print_r( $request, 1 ) );
 		if ( ! is_wp_error( $request ) || wp_remote_retrieve_response_code( $request ) === 200 ) {
 			return unserialize( $request['body'] );
 		}
