@@ -1,6 +1,9 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+/**
+ * Create event from post
+ */
 
 add_action( 'admin_menu', 'mcs_add_outer_box' );
 
@@ -172,6 +175,14 @@ function mc_meta_box_form() {
 		$dvalue = 0;
 	}
 	$event_desc = mc_show_block( 'event_desc', $has_data, $data, false );
+	if ( $event_desc ) {
+		$description = "<div class='event_description'>
+							<label for='event_desc'>" . __( 'Event Description', 'my-calendar-submissions' ) . "</label><br />
+							<textarea id='event_desc' class='event_desc' cols='80' rows='8' name='event_desc'></textarea>
+						</div>";
+	} else {
+		$description = '';
+	}
 	$event_host = mc_show_block( 'event_host', $has_data, $data, false );
 	$event_category = mc_show_block( 'event_category', $has_data, $data, false );
 	$event_link = mc_show_block( 'event_link', $has_data, $data, false );
@@ -208,10 +219,10 @@ function mc_meta_box_form() {
 	<fieldset>
 		<legend class="screen-reader-text">' . __( 'Event Details', 'my-calendar' ) . '</legend>
 		<p>
-			<label for="e_title">' . __( 'Event Title', 'my-calendar' ) . '</label><br/><input type="text" id="e_title" name="event_title" size="50" maxlength="255" value="" />
+			<label for="e_title">' . __( 'Event Title', 'my-calendar' ) . ' <span class="required">(required)</span></label><br/><input type="text" id="e_title" name="event_title" size="50" maxlength="255" value="" />
 			<input type="hidden" value="' . $dvalue . '" name="event_approved" />
 		</p>'
-		. $event_desc
+		. $description
 		. $event_host
 		. $event_category
 		. $event_link
@@ -239,10 +250,19 @@ function mc_save_event_post( $id ) {
 	$post_types = ( is_array( get_option( 'mcs_post_event_types' ) ) ) ? get_option( 'mcs_post_event_types' ) : array();
 	$is_valid_type = ( !empty( $post_types ) && in_array( get_post_type( $id ), $post_types ) ) ? true : false;
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE || wp_is_post_revision( $id ) || !$is_valid_type ) {
-		return;
+		return $id;
 	}
 	
 	if ( isset( $_POST['event_nonce_name'] ) && isset( $_POST['event_source'] ) && $_POST['event_source'] == 'post' ) {
+		if ( !isset( $_POST['event_title'] ) || empty( $_POST['event_title'] ) ) {
+			return $id;
+		}
+		$post = $_POST;
+		if ( isset( $_POST['event_desc'] ) ) {
+			$post['content'] = $_POST['event_desc'];
+		} else {
+			$post['content'] = '';
+		}
 		$attach_id = get_post_thumbnail_id( $id );
 		$featured_image = wp_get_attachment_url( $attach_id );
 		if ( isset( $_POST['post_author_override'] ) ) {
@@ -250,7 +270,7 @@ function mc_save_event_post( $id ) {
 		} else {
 			$_POST['event_author'] = get_current_user_id();
 		}
-		$check = mc_check_data( 'add', $_POST, 0 );
+		$check = mc_check_data( 'add', $post, 0 );
 		if ( $check[0] ) {
 			$response = my_calendar_save( 'add', $check );
 			$event_id = $response['event_id'];
@@ -263,6 +283,8 @@ function mc_save_event_post( $id ) {
 			update_post_meta( $id, '_mc_generated_event', $event_id );
 		}
 	}
+	
+	return $id;
 }
 
 add_action( 'admin_enqueue_scripts', 'mcs_metabox_scripts' );

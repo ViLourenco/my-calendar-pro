@@ -1,6 +1,10 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+/**
+ * Create a post when an event is created.
+ */
+
 add_action( 'mc_save_event', 'my_event_post', 20, 3 );
 function my_event_post( $action, $data, $new_event ) {
 	if ( ! get_option( 'mcs_create_post' ) == 'true' ) {
@@ -58,11 +62,14 @@ function my_event_post( $action, $data, $new_event ) {
 			set_post_thumbnail( $post_id, $attachment_id );
 		}		
 		$category = mc_get_category_detail( $data['event_category'], 'category_name' );
+		$taxonomy = 'category';
 		wp_set_post_tags( $post_id, $category );
+		wp_set_post_terms( $post_id, $category, $taxonomy );
 		add_post_meta( $post_id, '_mc_event_id', $new_event );
 		$event = mc_get_event_core( $new_event );
 		$event_id = $event->event_post;
 		add_post_meta( $event_id, '_mc_related_post', $post_id );
+		do_action( 'mcp_post_published', $post_id, $event );
 		
 		wp_publish_post( $post_id );
 	}

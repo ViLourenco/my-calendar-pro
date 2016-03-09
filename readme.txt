@@ -44,6 +44,13 @@ New or updated translations are always appreciated. The translation files are in
 * Feature: restrict access for non-admins to only be able to edit from front-end; no access to WP Admin for calendar.
 * Feature: schedule periodic imports by URL
 
+= 1.5.2 =
+
+* Feature: Set categories on posts created from events
+* Action: do_action( 'mcp_post_published', $post_id, $event );
+* Bug fix: Only add an event from post when the event title is defined.
+* Bug fix: Event description field forced overwrite of post content if event not created.
+
 = 1.5.1 =
 
 * Bug fix: Handling of license activation response
