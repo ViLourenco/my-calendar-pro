@@ -118,7 +118,6 @@ function mcs_settings() {
 	echo $response;		
 	$options = get_option('mcs_options');
 	$defaults = $options['defaults'];
-	// these variable definitions are fakes - place holders while I think about what I need to save.
 	$mcs_to = get_option('mcs_to'); // send to
 	$mcs_from = get_option('mcs_from'); // send from
 	$mcs_subject = ( get_option('mcs_subject') )?get_option('mcs_subject'):$defaults['mcs_subject']; // subject line

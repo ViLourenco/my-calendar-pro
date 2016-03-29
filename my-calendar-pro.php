@@ -145,7 +145,7 @@ function mcs_check() {
 	}
 }
 
-function mcs_default_settings() {
+function mcs_default_settings( $set = true ) {
 	global $mcs_version;
 	$options = array(
 		'fields' => array(
@@ -218,6 +218,9 @@ You may use this key to submit your events.',
 			'location'=>''
 		)
 	);
+	if ( !$set ) {
+		return $options;
+	}
 	update_option( 'mcs_criteria',1 );
 	update_option( 'mc_event_approve','true' ); // must have approvals enabled if using public submissions
 	update_option( 'mcs_options',$options );
@@ -293,4 +296,19 @@ function mcs_update_database() {
 
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 	dbDelta($payments);
+}
+
+/**
+ * Hide content details if user does not have sufficient privileges.
+ * 
+ */
+add_filter( 'mc_event_content', 'mcp_event_content', 10, 4 );
+function mcp_event_content( $details, $event, $type, $time ) {
+	if ( current_user_can( 'manage_options' ) ) {
+		$details = $details;
+	} else {	
+		$details = apply_filters( 'my_calendar_hidden_content', '', $event, $type, $time );
+	}
+	
+	return $details;
 }

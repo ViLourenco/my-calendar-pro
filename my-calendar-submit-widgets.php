@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 class mc_submissions_widget extends WP_Widget {
 
 	function __construct() {
-		parent::__construct( false,$name=__('My Calendar: Submit an Event','my-calendar-submissions') );
+		parent::__construct( false,$name=__('My Calendar: Submit an Event','my-calendar-submissions'), array( 'customize_selective_refresh' => true ) );
 	}
 	// Creates the 
 	function widget($args, $instance) {
@@ -33,6 +33,11 @@ class mc_submissions_widget extends WP_Widget {
 		$options = get_option( 'mcs_options' );
 		$fields = $options['fields'];
 		$location_fields = $options['location_fields'];
+		if ( empty( $fields ) ) {
+			$options = mcs_default_settings( false );
+			$fields = $options['fields'];
+			$location_fields = $options['location_fields'];
+		}
 		$defaults = $options['widget_defaults'];
 		$widget_title = ( !empty($instance['title']) ) ? esc_attr($instance['title']) : $defaults['title'];
 		if ( !empty($instance) ) { 

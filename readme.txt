@@ -44,6 +44,10 @@ New or updated translations are always appreciated. The translation files are in
 * Feature: restrict access for non-admins to only be able to edit from front-end; no access to WP Admin for calendar.
 * Feature: schedule periodic imports by URL
 
+// For Blog new Events feature:
+1) I'll add an option to copy the My Calendar event's Short Description field into the Post's Excerpt field
+2) I'll add the ability to parse My Calendar template tags in the Custom content field & save a default template for that field, so that you can customize how the post will look at a more sophisticated level. 
+
 = 1.5.2 =
 
 * Feature: Set categories on posts created from events
