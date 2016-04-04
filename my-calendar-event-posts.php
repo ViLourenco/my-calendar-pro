@@ -18,6 +18,12 @@ function my_event_post( $action, $data, $new_event ) {
 		default: $content = $data['event_desc']; break;
 	}
 	
+	if ( $options['content'] == 'custom' ) {
+		$event = mc_get_first_event( $new_event );
+		$details = mc_create_tags( $event );	
+		$content = jd_draw_template( $details, apply_filters( 'mcs_new_post_template', $content, $event ) );
+	}
+	
 	switch( $options['title'] ) {
 		case 'custom': $title = sprintf( $options['custom_title'], $data['event_title'] ); break;
 		default: $title = $data['event_title'];		
@@ -27,6 +33,19 @@ function my_event_post( $action, $data, $new_event ) {
 		case 'host': $auth = $data['event_host']; break;
 		default: $auth = $data['event_author'];			
 	}
+	
+	switch( $options['excerpt'] ) {
+		case 'event_short': $excerpt = $data['event_short']; break;
+		case 'auto': $excerpt = wp_trim_words( $data['event_desc'] ); break;
+		case 'custom': $excerpt = ( isset( $_POST['mcs_custom_content'] ) ) ? $_POST['mcs_custom_content'] : ''; break;
+		default: $excerpt = $data['event_short'];			
+	}
+	
+	if ( $options['excerpt'] == 'custom' ) {
+		$event = mc_get_first_event( $new_event );
+		$details = mc_create_tags( $event );	
+		$excerpt = jd_draw_template( $details, apply_filters( 'mcs_new_post_template', $excerpt, $event ) );
+	}	
 	
 	$status = ( isset( $options['status'] ) ) ? $options['status'] : 'publish';
 	
@@ -45,17 +64,17 @@ function my_event_post( $action, $data, $new_event ) {
 	$type = ( isset( $options['post_type'] ) ) ? $options['post_type'] : 'post';
 	
 	if ( $action == 'add' && !( isset( $_POST['event_source'] ) && $_POST['event_source'] == 'post' ) ) {
-		$post_status = 'publish';
-		$type = 'post';
 		$my_post = array(
 			'post_title' => $title,
 			'post_content' => $content,
+			'post_excerpt' => $excerpt,
 			'post_status' => $status,
 			'post_author' => $auth,
 			'post_name' => sanitize_title( $title ),
 			'post_date' => date( 'Y-m-d H:i:s', $date ),
 			'post_type' => $type
 		);
+				
 		$post_id = wp_insert_post( $my_post );
 		$attachment_id = ( isset( $_POST['event_image_id'] ) && is_numeric( $_POST['event_image_id'] ) ) ? $_POST['event_image_id'] : false;
 		if ( $attachment_id ) {
@@ -66,7 +85,7 @@ function my_event_post( $action, $data, $new_event ) {
 		wp_set_post_tags( $post_id, $category );
 		wp_set_post_terms( $post_id, $category, $taxonomy );
 		add_post_meta( $post_id, '_mc_event_id', $new_event );
-		$event = mc_get_event_core( $new_event );
+		$event = mc_get_first_event( $new_event );
 		$event_id = $event->event_post;
 		add_post_meta( $event_id, '_mc_related_post', $post_id );
 		do_action( 'mcp_post_published', $post_id, $event );
@@ -90,6 +109,8 @@ function mcs_event_posts_update( $value, $post ) {
 		$options['title'] = $_POST['mcs_title'];
 		$options['custom_title'] = $_POST['mcs_custom_title'];
 		$options['author'] = $_POST['mcs_author'];
+		$options['excerpt'] = $_POST['mcs_excerpt'];
+		$options['template'] = $_POST['mcs_template'];
 		$options['status'] = $_POST['mcs_status'];
 		$options['timestamp'] = $_POST['mcs_timestamp'];
 		$options['custom_time'] = $_POST['mcs_custom_time'];
@@ -113,6 +134,8 @@ add_filter( 'mcs_settings_panels', 'mcs_event_posts_settings' );
 function mcs_event_posts_settings( $panels ) {
 	$mcs_create_post = get_option( 'mcs_create_post' );
 	$options = get_option( 'mcs_event_post' );
+	$excerpt = ( isset( $options['excerpt'] ) ) ? $options['excerpt'] : '';
+	$mcs_template = ( isset( $options['template'] ) ) ? $options['template'] : '';
 	$mcs_custom_title = ( isset( $options['custom_title'] ) ) ? $options['custom_title'] : 'New Event: %s';
 	$mcs_custom_time = ( isset( $options['custom_time'] ) ) ? $options['custom_time'] : 3600;
 	$diff = human_time_diff( current_time( 'timestamp' ), current_time( 'timestamp' ) + $mcs_custom_time );
@@ -143,6 +166,14 @@ function mcs_event_posts_settings( $panels ) {
 				</select>
 			</p>
 			<p>
+				<label for='mcs_excerpt'>" . __( 'Blog Post Excerpt', 'my-calendar-submissions' ) . "</label> 
+				<select name='mcs_excerpt' id='mcs_excerpt'>
+					<option value='default'>" . __( 'Event Short Description', 'my-calendar-submissions' ) . "</option>
+					<option value='auto'" . selected( $excerpt, 'auto', false ) . ">" . __( 'Auto-excerpt Event Description', 'my-calendar-submissions' ) . "</option>
+					<option value='custom'" . selected( $excerpt, 'custom', false ) . ">" . __( 'Custom Content added at event creation', 'my-calendar-submissions' ) . "</option>
+				</select>
+			</p>			
+			<p>
 				<label for='mcs_title'>" . __( 'Blog Post Title', 'my-calendar-submissions' ) . "</label> 
 				<select name='mcs_title' id='mcs_title'>
 					<option value='default'>" . __( 'Event Title', 'my-calendar-submissions' ) . "</option>
@@ -153,6 +184,10 @@ function mcs_event_posts_settings( $panels ) {
 				<label for='mcs_custom_title'>" . __( 'Custom Title Format', 'my-calendar-submissions' ) . "</label>
 				<input type='text' name='mcs_custom_title' id='mcs_custom_title' value='" . esc_attr( $mcs_custom_title ) . "' />
 			</p>
+			<p>
+				<label for='mcs_template'>" . __( 'Custom Post Excerpt or Content Template', 'my-calendar-submissions' ) . "</label>
+				<textarea name='mcs_template' id='mcs_template'  aria-describedby='mcs_template_note' rows='6' cols='60'>" . esc_attr( $mcs_template ) . "</textarea> <span id='mcs_template_note'>" . sprintf( __( 'Accepts <a href="%s">template tags</a>', 'my-calendar-submissions' ), admin_url( 'admin.php?page=my-calendar-help#templates' ) ) . "</span>
+			</p>			
 			<p>
 				<label for='mcs_author'>" . __( 'Blog Post Author', 'my-calendar-submissions' ) . "</label> 
 				<select name='mcs_author' id='mcs_author'>
@@ -195,6 +230,7 @@ function mcs_event_posts_settings( $panels ) {
 		$controls = "
 		<div>
 			<input type='hidden' name='mcs_content' value='" . esc_attr( $options['content'] ) . "' />
+			<input type='hidden' name='mcs_excerpt' value='" . esc_attr( $options['excerpt'] ) . "' />
 			<input type='hidden' name='mcs_title' value='" . esc_attr( $options['title'] ) . "' />
 			<input type='hidden' name='mcs_custom_title' value='" . esc_attr( $mcs_custom_title ) . "' />
 			<input type='hidden' name='mcs_author' value='" . esc_attr( $options['author'] ) . "' />
@@ -218,28 +254,33 @@ function mcs_event_posts_settings( $panels ) {
 }
 
 add_filter( 'mc_event_details', 'mcs_custom_content', 10, 4 );
-add_action( 'mc_update_event_post', 'mcs_custom_content_save', 10, 4 );
-
 function mcs_custom_content( $form, $has_data, $event, $context ) {
 	if ( get_option( 'mcs_create_post' ) == 'true' ) {
 		$options = get_option( 'mcs_event_post' );
 		$custom_content = $options['content'];
-		if ( $custom_content == 'custom' ) {
+		$custom_excerpt = $options['excerpt'];
+		$template = ( isset( $options['template'] ) ) ? $options['template'] : '';
+		if ( $custom_content == 'custom' xor $custom_excerpt == 'custom' ) {
 			if ( !( is_object( $event ) && $has_data ) ) {
-				$form .= "<p><label for='mcs_custom_content'>" . __( 'Custom Content for Post', 'my-calendar-submissions' ) . "</label><br /><textarea name='mcs_custom_content' id='mcs_custom_content' rows='8' cols='60' class='widefat' /></textarea></p>";
-			} else {
-				$related = get_post_meta( $event->event_post, '_mc_related_post', true );
-				$url = ( $related ) ? get_edit_post_link( $related ) : false;
-				if ( $url ) {
-					$form .= "<p><a href='$url'>" . __( 'Edit blog post associated with this event', 'my-calendar-submissions' ) . "</a></p>";
-				}
-			}
+				$label = ( $custom_content == 'custom' ) ? __( 'Custom Content for Post', 'my-calendar-submissions' ) : __( 'Custom Excerpt for Post', 'my-calendar-submissions' );
+				$form .= "<p><label for='mcs_custom_content'>" . $label . "</label><br /><textarea name='mcs_custom_content' id='mcs_custom_content' rows='8' cols='60' class='widefat' />" . esc_attr( $template ) . "</textarea></p>";
+			} 
+		} else if ( $custom_content == 'custom' && $custom_excerpt == 'custom' ) {
+			$form .= "<div class='update error'><p>" . __( '<strong>Settings error:</strong> You can either create the post excerpt with custom content or the post content, but not both.', 'my-calendar-submissions' ) . "</p></div>";
 		}
+		if ( is_object( $event ) && $has_data ) {
+			$related = get_post_meta( $event->event_post, '_mc_related_post', true );
+			$url = ( $related ) ? get_edit_post_link( $related ) : false;
+			if ( $url ) {
+				$form .= "<p><a href='$url'>" . __( 'Edit blog post associated with this event', 'my-calendar-submissions' ) . "</a></p>";
+			}
+		}		
 	}
 	
 	return $form;
 }
 
+add_action( 'mc_update_event_post', 'mcs_custom_content_save', 10, 4 );
 function mcs_custom_content_save( $post_id, $post, $data, $event_id ) {
 	if ( get_option( 'mcs_create_post' ) == 'true' ) {
 		$options = get_option( 'mcs_event_post' );
