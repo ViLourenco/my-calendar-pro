@@ -872,8 +872,14 @@ function mcs_notify_admin( $name, $email, $event_id, $action ) {
 		$message = jd_draw_template( $array, get_option( 'mcs_response' ) );
 		if ( get_option( 'mcs_html_email' ) == 'true' ) {
 			add_filter( 'wp_mail_content_type',create_function( '', 'return "text/html";' ) );
-		}	
-		$mail = wp_mail( get_option('mcs_to'), $subject, $message, "From: \"$name\" <$email>" );
+		}
+		$mcs_to = get_option( 'mcs_to' );
+		if ( strpos( $mcs_to, ',' ) !== false ) {
+			// remove any extra spaces
+			$mcs_to = array_map( 'trim', explode( ',', $mcs_to ) );
+			$mcs_to = implode( ',', $mcs_to );
+		}
+		$mail = wp_mail( $mcs_to, $subject, $message, "From: \"$name\" <$email>" );
 		if ( get_option( 'mcs_html_email' ) == 'true' ) {
 			remove_filter( 'wp_mail_content_type',create_function( '', 'return "text/html";' ) );
 		}
@@ -1058,6 +1064,7 @@ function mcs_shortcode_generator( $output, $post ) {
 		}
 		$output = "submit_event$string";
 	}
+	
 	return $output;
 }
 
@@ -1094,7 +1101,8 @@ function mcs_generate_fields() {
 		if ( $field == 'event_gps' ) { $disabled = 'disabled="disabled" placeholder="Custom Label Not available"'; } else { $disabled = ''; }
 		$output .= "<tr><td><input type='checkbox' value='on' name='location_fields[$field][active]' id='$field' /> <label for='$field'>$field_title</label></td><td><label class='screen-reader-text' for='label_$field'>".sprintf( __('%s label','my-calendar-submissions'), $field_title )."</label> <input $disabled type='text' name='location_fields[$field][label]' id='label_$field' /></td></tr>";
 	}
-	$output .= "</tbody></table>";	
+	$output .= "</tbody></table>";
+	
 	return $output;
 }
 
@@ -1121,5 +1129,6 @@ function mcs_generator() {
 		<input type="submit" class="button-primary" name="generator" value="'.__('Generate Shortcode', 'my-calendar').'" />
 		</p>
 	</form>';
+	
 	return $output;
 }

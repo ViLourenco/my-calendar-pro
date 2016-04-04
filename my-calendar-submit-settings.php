@@ -15,7 +15,7 @@ function mcs_update_settings( $post ) {
 		$mcs_time_format = $post['mcs_time_format'];
 		$mcs_response = $post['mcs_response'];	// admin email after submission
 		$mcs_confirmation = $post['mcs_confirmation'];	// submitter email after submission
-		$mcs_to = is_email( $post['mcs_to'] ); // send to
+		$mcs_to = $post['mcs_to']; // send to
 		$mcs_from = is_email( $post['mcs_from'] ); // send from
 		$mcs_subject = $post['mcs_subject']; // subject line
 		$mcs_edit_subject = $post['mcs_edit_subject']; // subject line
@@ -47,8 +47,9 @@ function mcs_update_settings( $post ) {
 		update_option( 'mcs_html_email', $mcs_html_email );
 		update_option( 'mcs_dont_send_submitter_email', $mcs_dont_send_submitter_email );
 		update_option( 'mcs_dont_send_admin_email', $mcs_dont_send_admin_email );
-		do_action( 'mcs_settings_update', $_POST );		
-		return "<div class=\"updated\"><p><strong>".__('My Calendar Event Submission Settings saved','my-calendar-submissions').".$verify</strong></p></div>";
+		do_action( 'mcs_settings_update', $_POST );
+		
+		return "<div class=\"updated\"><p><strong>" . __('My Calendar Event Submission Settings saved','my-calendar-submissions') . "</strong></p></div>";
 	}
 	if ( isset($post['mc-payment-settings']) ) {
 		$nonce = $_POST['_wpnonce'];
@@ -226,10 +227,10 @@ function mcs_settings() {
 			<legend><?php _e('Sent to administrators','my-calendar-submissions'); ?></legend>
 			<ul>
 			<li>
-			<label for="mcs_to"><?php _e('Send notifications to:','my-calendar-submissions'); ?></label> <input type="text" name="mcs_to" id="mcs_to" size="60" value="<?php echo ( $mcs_to == '' )?get_bloginfo('admin_email'):esc_attr($mcs_to); ?>" />
+			<label for="mcs_to"><?php _e('Send notifications to:','my-calendar-submissions'); ?></label> <input type="text" name="mcs_to" id="mcs_to" size="60" value="<?php echo ( $mcs_to == '' ) ? get_bloginfo('admin_email') : esc_attr($mcs_to); ?>" />
 			</li>
 			<li>
-			<label for="mcs_from"><?php _e('Send notifications from:','my-calendar-submissions'); ?></label> <input type="text" name="mcs_from" id="mcs_from" size="60" value="<?php echo ( $mcs_from == '' )?get_bloginfo('admin_email'):esc_attr($mcs_from); ?>" />
+			<label for="mcs_from"><?php _e('Send notifications from:','my-calendar-submissions'); ?></label> <input type="text" name="mcs_from" id="mcs_from" size="60" value="<?php echo ( $mcs_from == '' ) ? get_bloginfo('admin_email') : esc_attr($mcs_from); ?>" />
 			</li>
 			<li>
 			<label for="mcs_subject"><?php _e('Notification Subject','my-calendar-submissions'); ?></label> <input type="text" name="mcs_subject" id="mcs_subject" size="60" value="<?php echo stripslashes(esc_attr($mcs_subject)); ?>" />
