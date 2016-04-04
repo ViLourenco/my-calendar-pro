@@ -301,14 +301,38 @@ function mcs_update_database() {
 /**
  * Hide content details if user does not have sufficient privileges.
  * 
- */
-add_filter( 'mc_event_content', 'mcp_event_content', 10, 4 );
+ */ 
+add_filter( 'mc_inner_content', 'mcp_event_content', 10, 4 );
 function mcp_event_content( $details, $event, $type, $time ) {
-	if ( current_user_can( 'manage_options' ) ) {
+	$post = $event->event_post;
+	$hide_details = get_post_meta( $post, '_hide_event_details', true );
+	if ( 'true' == $hide_details && ( current_user_can( 'mc_manage_events' ) || current_user_can( 'mc_view_hidden_events' ) ) || 'true' != $hide_details ) {
 		$details = $details;
-	} else {	
-		$details = apply_filters( 'my_calendar_hidden_content', '', $event, $type, $time );
+	} else {
+		$details = apply_filters( 'my_calendar_hidden_content', __( 'You do not have permission to view the details for this event.', 'my-calendar-submissions' ), $event, $type, $time );
 	}
 	
 	return $details;
+}
+
+add_action( 'mc_update_event_post', 'mcp_hide_event_data_save', 10, 4 );
+function mcp_hide_event_data_save( $post_id, $post, $data, $event_id ) {
+	$content = isset( $_POST['mcp_hide_event_details'] ) ? 'true' : '';	
+	update_post_meta( $post_id, '_hide_event_details', $content );
+}
+
+
+add_filter( 'mc_show_block', 'mcp_hide_event', 10, 3 );
+function mcp_hide_event( $form, $event, $field ) {
+	if ( version_compare( get_option( 'mc_version' ), '2.4.18', '>=' ) ) { // this will only be available after 2.4.18 is released
+		if ( 'event_category' == $field ) {
+			if ( !( is_object( $event ) ) ) {
+				$checked = '';
+			} else {
+				$checked = ( get_post_meta( $event->event_post, '_hide_event_details', true ) == 'true' ) ? 'checked="checked"' : '';
+			}
+			$form = "<p><input type='checkbox' name='mcp_hide_event_details' id='mcp_hide_event_details' value='true' $checked /> <label for='mcp_hide_event_details'>" . __( 'Keep Event Details Private', 'my-calendar-submissions' ) . "</label></p>" . $form;
+		}
+	}
+	return $form;
 }
