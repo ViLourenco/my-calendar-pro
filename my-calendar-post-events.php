@@ -23,7 +23,7 @@ function mcs_add_inner_box() {
 		$event_id = get_post_meta( $post->ID, '_mc_generated_event', true );
 		if ( $event_id ) {
 			$url = admin_url( 'admin.php?page=my-calendar&mode=edit&event_id='.$event_id );
-			$event = mc_get_event_core( $event_id );
+			$event = mc_get_first_event( $event_id );
 			$content = "<p><strong>" . $event->event_title . '</strong><br />' . $event->event_begin . ' @ ' . $event->event_time . "</p>";
 			if ( $event->event_label != '' ) {
 				$content .= "<p>" . sprintf( __( '<strong>Location:</strong> %s', 'my-calendar-submissions' ), $event->event_label ) . "</p>";
@@ -275,7 +275,7 @@ function mc_save_event_post( $id ) {
 			$response = my_calendar_save( 'add', $check );
 			$event_id = $response['event_id'];
 			$response = $response['message'];
-			$event = mc_get_event_core( $event_id );
+			$event = mc_get_first_event( $event_id );
 			$post_id = $event->event_post;
 			set_post_thumbnail( $post_id, $attach_id );
 			mc_update_data( $event_id, 'event_image', $featured_image, '%s' );
