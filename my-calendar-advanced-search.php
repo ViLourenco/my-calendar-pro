@@ -430,7 +430,7 @@ function mcs_advanced_search_after( $content, $search ) {
 add_action( 'widgets_init', create_function( '', 'return register_widget("my_calendar_advanced_search");' ) );
 class my_calendar_advanced_search extends WP_Widget {
 	function __construct() {
-		parent::__construct( false, $name = __( 'My Calendar: Advanced Event Search', 'my-calendar' ) );
+		parent::__construct( false, $name = __( 'My Calendar: Advanced Event Search', 'my-calendar' ), array( 'customize_selective_refresh' => true ) );
 	}
 
 	function widget( $args, $instance ) {
