@@ -50,10 +50,11 @@ New or updated translations are always appreciated. The translation files are in
 * Bug fix: undeleted variable
 * Bug fixes to effective handling of license verification
 * Bug fix: obtain full first instance of an event instead of just event core when processing templates.
+* Bug fix: Better feedback after license activation.
 * Add support for selective refresh in customizer in WordPress 4.5
 * Add feature: Option to create post excerpt at time of event creation for Event to Post feature.
 * Add feature: Provide custom template with My Calendar template tag support in custom post content & excerpt fields.
-* Add feature: selectively hide event content based on user permissions.
+* Add feature: selectively hide event content based on user permissions. (Requires > My Calendar 2.4.18)
 
 = 1.5.2 =
 
