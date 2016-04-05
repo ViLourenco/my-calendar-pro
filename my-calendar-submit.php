@@ -360,7 +360,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 
 		if ( is_user_logged_in() ) { global $current_user; get_currentuserinfo(); $name = $current_user->display_name; $email = $current_user->user_email; }
 		$disallow_user_changes = apply_filters( 'mcs_disallow_user_changes', false );
-		$required = apply_filters( 'mcs_require_name_and_email', '' );
+		$required = apply_filters( 'mcs_require_name_and_email', 'required="required"' );
 		if ( $disallow_user_changes && is_user_logged_in() ) {
 			$return .= "<input name='mcs_name' value='$name' type='hidden' /><input name='mcs_email' value='$email' type='hidden' />";
 		} else {
