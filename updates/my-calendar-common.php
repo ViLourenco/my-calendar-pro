@@ -35,8 +35,8 @@ function mcs_check_license() {
 	}	
 }
 
-function mcs_verify_key( $option='mcs_license_key', $lang='my-calendar-submissions', $name='My Calendar Pro') {
-	$key = isset( $_POST[$option] ) ? $_POST[$option] : false;
+function mcs_verify_key() {
+	$key = isset( $_POST['mcs_license_key'] ) ? $_POST['mcs_license_key'] : false;
 	if ( !$key ) {
 		return;
 	}
@@ -45,22 +45,24 @@ function mcs_verify_key( $option='mcs_license_key', $lang='my-calendar-submissio
 	} else {
 		$confirmation = 'deleted';
 	}
-	update_option( $option, $key );
+	update_option( 'mcs_license_key', $key );
 	
-	$previously = get_option( $option.'_valid' );
-	update_option( $option.'_valid', $confirmation );
+	$previously = get_option( 'mcs_license_key_valid' );
+	update_option( 'mcs_license_key_valid', $confirmation );
 	if ( $confirmation == 'inactive' ) {
-		$message = __("$name key not valid.", 'my-calendar-submissions' );			
+		$message = __('Your My Calendar Pro license key was not activated.','my-calendar-submissions');
 	} else if ( $confirmation == 'active' || $confirmation == 'valid' ) {
-		if ( $previously == 'true' || $previously == 'active' ) { 
-		} else {
-			$message = __( "$name key activated. Enjoy!", 'my-calendar-submissions' );
-		}
+		$message = __( 'Your My Calendar Pro license key has been activated! Enjoy!', 'my-calendar-submissions' );
 	} else if ( $confirmation == 'deleted' ) {
-		$message = __("You have deleted your $name license key.", 'my-calendar-submissions' );
+		$message = __('You have deleted your My Calendar Pro license key.','my-calendar-submissions');
+	} else if ( $confirmation == 'invalid' ) {
+		if ( $mcs_license_key != '' ) {
+			$message = sprintf( __( 'Your My Calendar Pro license key is either expired or invalid. If expired, you can <a href="%s">renew now</a>.', 'my-calendar-submissions' ), "https://www.joedolson.com/checkout/?edd_license_key=$mcs_license_key&download_id=5734" ); 
+		} else {
+			$message = sprintf( __( 'Your My Calendar Pro license key is either expired or invalid. <a href="%s">Log in to your account to check</a>.', 'my-calendar-submissions' ), "https://www.joedolson.com/account/" ); 						
+		}
 	} else {
-		$message = __("$name received an unexpected message from the license server. Try again soon!", 'my-calendar-submissions' );
-		delete_option( $option );
+		$message = __( 'My Calendar Pro received an unexpected message from the license server. Please try again!','my-calendar-submissions');
 	}
 	$message = ( $message != '' )?" $message ":$message; // just add a space
 	

@@ -31,7 +31,7 @@ function mcs_license_key( $panels ) {
 	$mcs_license_key       = get_option( 'mcs_license_key' );
 	$mcs_license_key_valid = ( get_option( 'mcs_license_key_valid' ) != '' ) ? " (" . get_option( 'mcs_license_key_valid' ) . ")" : '';
 	
-	$panels['license'] = '
+	$panels['license']['content'] = '
 		<h3>' . __( 'Activate Your License Key', 'my-calendar-submissions' ) . '</h3>
 		<div class="inside">
 			<p class="license">
@@ -39,6 +39,11 @@ function mcs_license_key( $panels ) {
 			</p>
 			{submit}
 		</div>';
+	
+	$label = ( $mcs_license_key_valid == ' (valid)' ) ? __( 'Update License Key', 'my-calendar-submissions' ) : __( 'Activate License', 'my-calendar-submissions' );
+	
+	$panels['license']['label'] = $label;
+
 	
 	return $panels;
 }
