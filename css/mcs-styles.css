@@ -23,6 +23,10 @@
 	margin-right: .166666em;
 }
 
+.mc-submissions .toggle_location_fields {
+	margin-bottom: 1em;
+}
+
 .mc-submissions .updated {
 	display: block !important; /* This is because of TwentyFifteen */
 	padding: .166666em;
@@ -32,4 +36,8 @@
 .mc-advanced-search .dashicons {
 	margin-right: .5em;
 	vertical-align: middle;
+}
+
+.picker__button--today, .picker__button--clear {
+	color: #333;
 }
