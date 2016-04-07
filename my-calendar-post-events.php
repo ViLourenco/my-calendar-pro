@@ -186,6 +186,7 @@ function mc_meta_box_form() {
 	$event_host = mc_show_block( 'event_host', $has_data, $data, false );
 	$event_category = mc_show_block( 'event_category', $has_data, $data, false );
 	$event_link = mc_show_block( 'event_link', $has_data, $data, false );
+	$event_recurs = mc_show_block( 'event_recurs', $has_data, $data, false );
 	$mc_datetime = apply_filters( 'mc_datetime_inputs', '', $has_data, $data, 'admin' );
 	if ( mc_show_edit_block( 'event_location_dropdown' ) ) {
 		$locs = $wpdb->get_results( "SELECT location_id,location_label FROM " . my_calendar_locations_table() . " ORDER BY location_label ASC" );
@@ -212,9 +213,6 @@ function mc_meta_box_form() {
 		<input type="hidden" name="event_action" value="add" />
 		<input type="hidden" name="event_source" value="post" />
 		<input type="hidden" name="event_nonce_name" value="' . wp_create_nonce( 'event_nonce' ) . '" />
-		<input type="hidden" name="event_repeats" value="1" />
-		<input type="hidden" name="event_recur" value="S" />
-		<input type="hidden" name="event_every" value="1" />
 	</div>
 	<fieldset>
 		<legend class="screen-reader-text">' . __( 'Event Details', 'my-calendar' ) . '</legend>
@@ -228,16 +226,14 @@ function mc_meta_box_form() {
 		. $event_link
 		.'
 	</fieldset>
-
 	<fieldset>
 		<legend class="screen-reader-text">' . __( 'Event Date and Time', 'my-calendar' ). '</legend>
 		<div id="e_schedule">'.
 			$mc_datetime
 		.'</div>
-	</fieldset>
-
-
-	<fieldset>
+	</fieldset>'
+	    . $event_recurs . 
+	'<fieldset>
 	<legend class="screen-reader-text">' . __( 'Event Location', 'my-calendar' ) . '</legend>'
 		. $location
 	.'</fieldset>';
