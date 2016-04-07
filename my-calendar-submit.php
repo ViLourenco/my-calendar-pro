@@ -115,9 +115,9 @@ function mcs_submit_form( $atts, $content=null ) {
 			'fields' => 'end_time,description,event_link,event_recurring,event_image',
 			'categories' => 1,
 			'locations' => 'either',
-			'category' => 1,
-			'location' => 1,
-			'location_fields'=>'street,street2,phone,city,state,zip,region,country,url,gps'
+			'category' => 1, // default category value
+			'location' => 0, // default location value
+			'location_fields'=>'street,street2,phone,city,state,zip,country,url'
 		), $atts, 'submit_event' ) );
 	$fields = explode( ',', $fields );
 	$fld = array();
@@ -172,8 +172,8 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		date_i18n( 'D', strtotime( 'Saturday' ) )
 	) );
 	
-	//wp_register_script( 'mcs-updater', plugins_url( '/js/jquery.mcs-updater.js', __FILE__ ), array( 'jquery' ) );
-	//wp_enqueue_script( 'mcs-updater' );
+	wp_register_script( 'mcs-submit-form', plugins_url( '/js/jquery.mcs-submit.js', __FILE__ ), array( 'jquery' ) );
+	wp_enqueue_script( 'mcs-submit-form' );
 
 	$format = get_option('mcs_date_format');
 	switch ($format) {
@@ -406,7 +406,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		if ( isset( $fields['event_recurring'] ) ) {
 		$return .=	"
 			<p class='recurring'>
-			<label for='event_repeats'>".__('Repeats','my-calendar-submissions')."</label> <input type='text' name='event_repeats' id='event_repeats' class='input' size='1' value='$repeats' /> 
+			<label for='event_repeats'>".__('Repeats','my-calendar-submissions')."</label> <input type='number' name='event_repeats' id='event_repeats' class='input' size='1' min='0' max='999' value='$repeats' /> 
 			<label for='event_every'>".__('every','my-calendar')."</label> <input type='number' name='event_every' id='event_every' class='input' size='1' min='1' max='9' maxlength='1' value='$every' /> 
 			<label for='event_recur' class='screen-reader-text'>". __('Units','my-calendar-submissions')."</label> <select name='event_recur' class='input' id='event_recur'>"
 				.mc_recur_options($recur)."
@@ -512,7 +512,10 @@ function mcs_submit_location( $location, $locations, $location_fields, $selected
 		break;		
 		case 'either':
 		$return .= "<p><label for='mcs_event_location'>".__('Location','my-calendar-submissions')."</label> <select name='location_preset' id='mcs_event_location'><option value='none'> -- </option>".mc_location_select( $location )."</select></p>";
+		$return .= "<button type='button' class='toggle_location_fields' aria-expanded='false'>" . __( 'Add New Location', 'my-calendar-submissions' ) . "<span class='dashicons dashicons-plus' aria-hidden='true'></span></button>
+		<div class='mcs_location_fields'>";
 		$return .= mcs_location_form($location_fields, $selected_location);
+		$return .= "</div>";
 		break;
 		case 'enter':
 		$return .= mcs_location_form($location_fields, $selected_location);
