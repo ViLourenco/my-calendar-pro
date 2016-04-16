@@ -161,7 +161,7 @@ function mcs_settings() {
     <div class="wrap jd-my-calendar" id="mc_settings">
 	<?php my_calendar_check_db();?>
 	<h2><?php _e('My Calendar Pro','my-calendar-submissions'); ?></h2>
-	<div class="mc-tabs mcs-settings settings postbox-container jcd-wide">
+	<div class="mc-tabs mcs-tabs">
 		<ul class="tabs" role="tablist">
 			<li role="tab" id="tab_mcs" aria-controls="mcs_tab"><a href="#mcs_tab"><?php _e( 'Submissions', 'my-calendar' ); ?></a></li>
 			<li role="tab" id="tab_mcs_payments" aria-controls="mcs_payments_tab"><a href="#mcs_payments_tab"><?php _e( 'Payments', 'my-calendar' ); ?></a></li>
@@ -174,6 +174,7 @@ function mcs_settings() {
 				}
 			?>
 		</ul>
+	<div class="mcs-settings settings postbox-container jcd-wide">
 		
 	<div class="metabox-holder wptab" aria-labelledby="tab_mcs" role="tabpanel" aria-live="assertive" id="mcs_tab">
 		
@@ -541,6 +542,7 @@ function mcs_settings() {
 			'<p>'.__( 'The file <code>mc-responsive.css</code> in your theme directory will replace the My Calendar PRO responsive stylesheet.', 'my-calendar-submissions' ).'</p>' );
 	?>
 	<?php mc_show_sidebar('',$add,$remove); ?>
+</div>
 </div>
 <?php
 	// creates settings page for my calendar appointments
