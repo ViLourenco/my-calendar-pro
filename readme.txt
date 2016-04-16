@@ -54,6 +54,7 @@ New or updated translations are always appreciated. The translation files are in
 * Bug fix: Better feedback after license activation.
 * Bug fix: changed default location value to false (no default)
 * Bug fix: event repeats input type on front-end form should be 'number'
+* Bug fix: Improve import CSV if user on PHP 5.3+ using str_getcsv
 * Add support for selective refresh in customizer in WordPress 4.5
 * Add feature: Option to create post excerpt at time of event creation for Event to Post feature.
 * Add feature: Provide custom template with My Calendar template tag support in custom post content & excerpt fields.
@@ -61,6 +62,7 @@ New or updated translations are always appreciated. The translation files are in
 * Add feature: support for recurring events in 'create event from post' feature.
 * Update: modify default location fields to simplify default form; eliminate GPS & Region
 * Update: Improved UI for location submission from front-end
+* Translation: Add Dutch translation
 
 = 1.5.2 =
 

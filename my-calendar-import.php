@@ -281,7 +281,7 @@ function mcs_import_files() {
 					}
 				}
 			}
-			usleep( 300000 );
+			usleep( 30000 );
 			// update count of parsed files; close & delete input file
 			update_option( 'mcs-parsed-files', $parsed_files );
 			echo 'Parsed: ' . get_option( 'mcs-parsed-files' );
@@ -429,9 +429,12 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 	unset( $rows[0] );
 	
 	foreach ( $rows as $row ) {
-		if ( trim( $row ) ) {
-			$values          = explode( $delimiter, $row );
-			//$values        = str_getcsv( $row ); --> requires 5.3.0
+		if ( trim( $row ) ) {	
+			if ( function_exists( 'str_getcsv' ) ) {
+				$values = str_getcsv( $row ); // --> requires 5.3.0	
+			} else {
+				$values = explode( $delimiter, $row ); // won't accept cases where the delimiter is in values
+			}
 			$i = 0;
 			foreach ( $values as $value ) {
 				$value = str_replace( array( $enclosure, $escape ), '', $value );
@@ -451,7 +454,7 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 
 		$output[] = $r;
 	}
-
+	
 	return $output;	
 }
 
