@@ -30,7 +30,7 @@
 					action:    'mcs_get_import_status'
 				}, function( response ) {
 
-				//	console.log( 'Status: ' + response );
+					console.log( response );
 					
 					if ( '-1' === response ) {
 						
@@ -49,23 +49,7 @@
 				});
 
 			}, 1000 );
-					
-			$.post( ajaxurl, {
-				
-				action: 'mcs_import_files'
-				
-			}, function( response ) {
 
-				console.log( response );
-				/* You can control the response from the server. In this case,
-				 * I'm sending a '0' whenever all of the files have been imported.
-				 */
-				if ( '0' === response ) {
-					$( '.mcs-importer-progress' ).addClass( 'complete' ).text( 'Import Complete' );
-					// Update the progress to 100%, display an 'import complete' message
-				}
-
-			});
 		});
 
 	});

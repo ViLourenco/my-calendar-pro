@@ -8,6 +8,7 @@ function mcs_importer_update() {
 		if ( !wp_verify_nonce( $nonce, 'importer' ) ) return;
 		
 		$constructed = false;
+		$delimiter    = ',';
 		
 		if ( isset( $_FILES['mcs_importer'] ) && !empty( $_FILES['mcs_importer']['name'] ) ) {
 			// Read the contents of the file
@@ -21,7 +22,10 @@ function mcs_importer_update() {
 				$rows        = mcs_convert_ics( $_FILES['mcs_importer']['tmp_name'] );
 			}
 			if ( $rows == '' ) {
-				$csv  = file_get_contents( $_FILES['mcs_importer']['tmp_name'] );
+				$file = fopen( $_FILES['mcs_importer']['tmp_name'], 'r' );
+				while ( ( $row = fgetcsv( $file, 0, $delimiter ) ) !== false ) {
+					$csv[]  = $row;
+				}
 			} else {
 				$csv = $rows;
 			}
@@ -45,17 +49,22 @@ function mcs_importer_update() {
 			}
 		}
 		
-		/* Separate each file into an index of an array and store the total
+		/* 
+		 * Separate each file into an index of an array and store the total
 		 * number of rows that exist in the array. This assumes that
 		 * each row of the CSV file is on a new line.
 		 */
-		$csv_rows       = explode( PHP_EOL, $csv );
+		$csv_rows       = ( !is_array( $csv ) ) ? explode( PHP_EOL, $csv ) : $csv;
 		$total_rows     = count( $csv_rows );
 		// number of rows per file
 		$number_per_row = 20;
 		
 		// Store the title row. This will be written at the top of every file.
 		$title_row  = $csv_rows[ 0 ];
+		
+		if ( is_array( $title_row ) ) {
+			$title_row = implode( $delimiter, $title_row );
+		}
 		/* Calculate the number of rows that will consist of $number_per_row, and then calculate
 		 * the number of rows for the final file.
 		 *
@@ -67,9 +76,9 @@ function mcs_importer_update() {
 		$remaining_row = ( $rows % $number_per_row );
 		// Prepare to write out the files. This could just as easily be a for loop.
 		$file_counter = 0;
+		
 		while( 0 < $rows ) {
 			$csv_data = '';
-			
 			/* Create the output file that will contain a title row and a set of ten rows.
 			 * The filename is generated based on which file we're importing.
 			 */
@@ -78,7 +87,16 @@ function mcs_importer_update() {
 				/* Read the value from the array and then remove from
 				 * the array so it's not read again.
 				 */
-				$csv_data .= ( isset( $csv_rows[ $i ] ) ) ? $csv_rows[ $i ] . PHP_EOL : PHP_EOL;
+				if ( isset( $csv_rows[ $i ] ) && is_array( $csv_rows[ $i ] ) ) {
+					$data = implode( $delimiter, array_map( 'mcs_wrap_field', $csv_rows[ $i ] ) );
+				} else if ( isset( $csv_rows[ $i ] ) && ! is_array( $csv_rows[ $i ] ) ) {
+					$data = $csv_rows[ $i ];
+				} else {
+					$data = false;
+				}
+				
+				// extra PHP EOL will break data
+				$csv_data .= ( $data ) ? str_replace( PHP_EOL, '', $data ) . PHP_EOL : PHP_EOL;
 				unset( $csv_rows[ $i ] );
 			}
 			/* Write out the file and then close the handle since we'll be opening
@@ -86,7 +104,7 @@ function mcs_importer_update() {
 			 */
 			if ( trim( $csv_data ) != '' ) {
 				$csv_data    = $title_row . PHP_EOL . $csv_data;
-				$output_file = fopen( dirname( __FILE__ ). '/mcs_csv_' . $file_counter . '.csv', 'w' );			 
+				$output_file = fopen( dirname( __FILE__ ). '/mcs_csv_' . $file_counter . '.csv', 'w' );
 				fwrite( $output_file, $csv_data );
 				fclose( $output_file );
 				/* Increase the file counter by one and decrement the rows,
@@ -100,13 +118,13 @@ function mcs_importer_update() {
 		}
 		
 		update_option( 'mcs-number-of-files', $file_counter );	
-		
+		update_option( 'mcs-parsed-files', 0 );
+
 		if ( $constructed ) {
 			// highly improbable pattern to help cope with unknown data in content.
 			$delimiter = '|||';
 		} else {
-			$delimiter  = mcs_check_csv_delimiter( 'mcs_csv_0.csv' );
-			//$delimiter = ',';
+			$delimiter = ',';
 		}
 		update_option( 'mcs-delimiter', $delimiter );
 		
@@ -132,6 +150,7 @@ function mcs_importer_update() {
 			$return .= "<li class='$class'>" . sprintf( __( '&ldquo;<strong>%s</strong>&rdquo; to %s', 'my-calendar-submissions' ), $title, $target ) . "</li>";
 			$odd = ( $odd == 1 ) ? 0 : 1;
 		}
+		unset( $title );		
 		$return .= "</ul>";
 		$return .= "<button name='mcs_import_events' class='button-primary' type='button'>" . __( 'Import Events', 'my-calendar-submissions' ) . "</button>
 		<div class='mcs-importer-progress' aria-live='assertive' aria-atomic='false'><span>Importing...<strong class='percent'></strong></span></div>";
@@ -139,6 +158,10 @@ function mcs_importer_update() {
 		return $return;
 		
 	}
+}
+
+function mcs_wrap_field( $content ) {
+	return '"' . wptexturize( $content ) . '"';
 }
 
 function mcs_convert_ics( $file ) {
@@ -157,7 +180,7 @@ function mcs_convert_ics( $file ) {
 		
 		$date_diff   = strtotime( $event_end ) - strtotime( $event_begin );
 		$time_diff   = strtotime( $event_endtime ) - strtotime( $event_time );
-		$description = ( isset( $event['DESCRIPTION'] ) ) ? $event['DESCRIPTION'] : '';
+		$description = ( isset( $event['DESCRIPTION'] ) ) ? str_replace( PHP_EOL, '', wpautop( $event['DESCRIPTION'] ) ) : '';
 		$location    = ( isset( $event['LOCATION'] ) ) ? $event['LOCATION'] : '';
 		$summary     = ( isset( $event['SUMMARY'] ) ) ? $event['SUMMARY'] : '';
 			
@@ -170,6 +193,7 @@ function mcs_convert_ics( $file ) {
 		}
 		$rows .= "\"$event_begin\"|||\"$event_time\"|||\"$event_end\"|||\"$event_endtime\"|||\"$description\"|||\"$location\"|||\"$summary\"|||\"$group_id\"" . PHP_EOL;
 	}
+	unset( $event );
 	
 	return $rows;
 }
@@ -191,6 +215,7 @@ function mcs_importer_tabs( $tabs ) {
 add_filter( 'mcs_settings_panels', 'mcs_importer_settings' );
 function mcs_importer_settings( $panels ) {
 	
+	// delete any old data from incomplete imports	
 	$update = mcs_importer_update();
 	
 	$importer = '
@@ -198,6 +223,9 @@ function mcs_importer_settings( $panels ) {
 		<div class="inside">'.
 		$update;
 		if ( $update == false ) {
+			if ( isset( $_GET['test_import'] ) ) {
+				mcs_import_files();
+			}
 			$importer .= '
 				<p>
 					<label for="mcs_importer">' . __( 'Upload File (.csv or .ics)', 'my-calendar-submissions' ) . '</label>			
@@ -229,34 +257,35 @@ function mcs_importer_settings( $panels ) {
  * Setup the hook for the Ajax request.
  */
 add_action( 'wp_ajax_mcs_import_files', 'mcs_import_files' );
-function mcs_import_files() {
-  /*
-   * 1. Read the most recent file that has not been read
-   * 2. Insert the information from the file into the database
-   * 3. Delete (or unlink()) the file that was just created
-   * 4. Update the option of how many files have been processed.
-   */
-   $defaults = mcs_default_event_values();
+function mcs_import_files( $i = 0 ) {
+   add_option( "mcs_parsing_now_$i", 'true' );
+   $content         = array();
+   $defaults        = mcs_default_event_values();
    $number_of_files = get_option( 'mcs-number-of-files' );
-   $parsed_files    = 0;
+   $delimiter       = get_option( 'mcs-delimiter' );	
    
-   for( $i = 0; $i < $number_of_files; $i++ ) {
-		$parsed_files++;
+   if ( $i < $number_of_files ) {
 		$filename = dirname( __FILE__ ). '/mcs_csv_' . $i . '.csv';
-		
+
 		if ( file_exists( $filename ) ) {
-			$input_file = fopen( $filename, 'r' );	
-			$content    = fread( $input_file, filesize( $filename ) );
-			$delimiter  = get_option( 'mcs-delimiter' );			
+			$file = fopen( $filename, 'r' );	
+			//$content    = fread( $input_file, filesize( $filename ) );
+			//$f    = file( $filename );
+			while(( $row = fgetcsv( $file, 0, $delimiter ) ) !== false ) {
+				$content[]  = $row;
+			}
 			$array      = mcs_translate_csv( $content, $delimiter );
+			unset( $content );
+			fclose( $file );
+			
 			foreach( $array as $event ) {
-				if ( !is_array( $event ) ) {
+				if ( !is_array( $event ) || $event['event_title'] == 'event_title'  ) {
 					continue;
 				}
-				if ( $event['event_group_id'] == 'default' ) {
+				if ( isset( $event['event_group_id'] ) && $event['event_group_id'] == 'default' ) {
 					unset( $event['event_group_id'] );
 				}
-				$event      = array_merge( $defaults, $event );
+				$event = array_merge( $defaults, $event );
 				if ( isset( $event['event_category'] ) && !is_numeric( $event['event_category'] ) ) {
 					// event category is not numeric, so check database to see if exists. 
 					$cat_id = mcs_category_by_name( $event['event_category'] );
@@ -265,35 +294,22 @@ function mcs_import_files() {
 					}
 					$event['event_category'] = $cat_id;
 				}
-				$check      = mc_check_data( 'add', $event, 0 );
-				if ( $check[0] ) {
-					$response = my_calendar_save( 'add', $check );					
-					$event_id = $response['event_id'];
-					$response = $response['message'];
-					if ( isset( $event['event_image'] ) && $event['event_image'] != '' ) {
-						$e = mc_get_event_core( $event_id );
-						$post_id = $e->event_post;
-						$image = media_sideload_image( $event['event_image'], $post_id );
-						$media = get_attached_media( 'image', $post_id );
-						$attach = array_shift( $media );
-						$attach_id = $attach->ID;
-						set_post_thumbnail( $post_id, $attach_id );
-					}
-				}
+				mcs_import_event( $event );
 			}
-			usleep( 30000 );
+			unset( $event );
 			// update count of parsed files; close & delete input file
-			update_option( 'mcs-parsed-files', $parsed_files );
-			echo 'Parsed: ' . get_option( 'mcs-parsed-files' );
-			fclose( $input_file );
 			unlink( $filename );
+			//echo 'Parsed: ' . get_option( 'mcs-parsed-files' );
+			//usleep( 200000 );
 		}
+	} else {
+		// delete data about imports
+		delete_option( 'mcs-parsed-files' );
+		delete_option( 'mcs-number-of-files' );
+		delete_option( 'mcs-delimiter' );
+		
 	}
-	
-	// delete data about imports
-	delete_option( 'mcs-parsed-files' );
-	delete_option( 'mcs-number-of-files' );
-  
+	delete_option( "mcs_parsing_now_$i" );
 }
 
 // Define the hook for getting the status somewhere in your plugin
@@ -304,24 +320,55 @@ function mcs_get_import_status() {
 	* the client requesting a value from this function.
 	*
 	* $progress indicates how far we are during the import,
-	* -1 indicates that we're done and we can eventually stop
-	* the timer.
+	* -1 indicates that we're done
 	*/
 
 	if ( FALSE !== get_option( 'mcs-parsed-files' ) ) {
-   	
 		$parsed_files = floatval( get_option( 'mcs-parsed-files' ) );
 		$total_files =  floatval( get_option( 'mcs-number-of-files' ) );
-		$progress =  $parsed_files / $total_files;
-		die( $progress );
-   	
-	} else {
+		if ( $total_files != 0 ) {
+			// prevent duplicate imports
+			if ( get_option( "mcs_parsing_now_$parsed_files" ) != 'true' ) {
+				mcs_import_files( $parsed_files );
+				/**
+				 * Update data about imports 
+				 */
+				update_option( 'mcs-parsed-files', $parsed_files + 1 );
+			}	
+			$progress =  $parsed_files / $total_files;
+			/* Return progress values */
+			if ( $progress == 1 ) {
+				die( '-1' );
+			}
+			die( $progress );
+		} else {
+			die ( 0 );
+		}
 		
+	} else {
 		die( '-1' );
 	}
 }
 
-function mcs_check_csv_delimiter( $import, $checkLines = 3 ){
+function mcs_import_event( $event ) {
+	$check = mc_check_data( 'add', $event, 0 );
+	if ( $check[0] ) {
+		$response = my_calendar_save( 'add', $check );				
+		$event_id = $response['event_id'];
+		$response = $response['message'];
+		if ( isset( $event['event_image'] ) && $event['event_image'] != '' ) {
+			$e = mc_get_event_core( $event_id );
+			$post_id = $e->event_post;
+			$image = media_sideload_image( $event['event_image'], $post_id );
+			$media = get_attached_media( 'image', $post_id );
+			$attach = array_shift( $media );
+			$attach_id = $attach->ID;
+			set_post_thumbnail( $post_id, $attach_id );
+		}
+	}	
+}
+
+function mcs_check_csv_delimiter( $import, $checkLines = 1 ){
 	$file = new SplFileObject( $import, 'r', true );
 	$delimiters = array(
 	  ',',
@@ -345,6 +392,7 @@ function mcs_check_csv_delimiter( $import, $checkLines = 3 ){
 				}   
 			}
 		}
+		unset( $delimiter );
 	   $i++;
 	}
 	
@@ -361,6 +409,7 @@ function mcs_option_list( $value ) {
 				foreach( $fields as $key => $value ) {
 					$return .= "<option value='$key'>$value</option>";
 				}
+				unset( $value );
 			$return .= "</select>";
 	
 	return $return;
@@ -424,17 +473,20 @@ function mcs_option_fields() {
 function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escape = '\\', $terminator = PHP_EOL  ) {
 	$r      = array();
 	$output = array();
-	$rows   = explode( $terminator, trim( $content ) );
-	$titles = explode( $delimiter, trim( $rows[0] ) );
-	unset( $rows[0] );
-	
-	foreach ( $rows as $row ) {
-		if ( trim( $row ) ) {	
+	//$titles = explode( $delimiter, trim( $content[0] ) );
+	$titles = $content[0];
+	unset( $content[0] );
+		
+	foreach ( $content as $key => $row ) {
+		if ( $row ) {
+			// convert back into string
+			/*$row = implode( $delimiter, array_map( 'mcs_wrap_field', $csv_rows[ $i ] ) );
 			if ( function_exists( 'str_getcsv' ) ) {
-				$values = str_getcsv( $row ); // --> requires 5.3.0	
+				$values = str_getcsv( $row, $delimiter, $enclosure, $escape ); // --> requires 5.3.0	
 			} else {
 				$values = explode( $delimiter, $row ); // won't accept cases where the delimiter is in values
-			}
+			}*/
+			$values = $row;
 			$i = 0;
 			foreach ( $values as $value ) {
 				$value = str_replace( array( $enclosure, $escape ), '', $value );
@@ -444,16 +496,22 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 					} else {
 						$value = date( 'H:i:s', strtotime( $value ) );
 					}
+					// endtime must be listed after start time.
+					if ( $titles[$i] == 'event_endtime' && $value == '00:00:00' ) {
+						$value = date( 'H:i:s', strtotime( $r['event_time'][0] . ' + 1 hour' ) );
+					}
 					$r[ $titles[$i] ][0] = ( isset( $value ) ) ? trim( $value ) : '' ;					
 				} else {
 					$r[ $titles[$i] ] = ( isset( $value ) ) ? trim( $value ) : '' ;
 				}
 				$i++;
-			}		
+			}
+			unset( $value );
 		}
 
 		$output[] = $r;
 	}
+	unset( $row );
 	
 	return $output;	
 }
