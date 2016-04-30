@@ -30,20 +30,11 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
-= Future =
+= 1.5.4 =
 
-* Feature: limiting of viewing categories to specific member groups
-* Feature: limit ability to enter categories by member groups
-* Create selectable event details templates 
-* Make only portions of events private (e.g., time and location for children's events, etc.)
-* Add option to set event alarm or notification in .ics outputs
-* Provide notifications of new events by category (to specific users or to lists of users; set up as user meta option?) (use save_event hooks; set up reminder schedule; use cron; see RQ by Don Brown via email)
-* Add controls on My Calendar defined page to alter shortcode settings on that page?
-* MCS issue with SiteOrigin's Page Builder?
-* Feature: list of user's submitted events to provide access for editing; build into Submissions form & as separate shortcode
-* Feature: restrict access for non-admins to only be able to edit from front-end; no access to WP Admin for calendar.
-* Feature: schedule periodic imports by URL
-* Add event to personal calendar
+* Performance & stability improvements to event imports
+* Bug fix with handling of newline character in event descriptions
+* Event import now requires > PHP 5.3
 
 = 1.5.3 =
 
@@ -220,6 +211,20 @@ Todo for this release:
 = 1.0.0 =
 
 * Initial launch.
+
+= Future =
+
+* Feature: limiting of viewing categories to specific member groups
+* Feature: limit ability to enter categories by member groups
+* Create selectable event details templates 
+* Make only portions of events private (e.g., time and location for children's events, etc.)
+* Add option to set event alarm or notification in .ics outputs
+* Provide notifications of new events by category (to specific users or to lists of users; set up as user meta option?) (use save_event hooks; set up reminder schedule; use cron; see RQ by Don Brown via email)
+* Add controls on My Calendar defined page to alter shortcode settings on that page?
+* Feature: list of user's submitted events to provide access for editing; build into Submissions form & as separate shortcode
+* Feature: restrict access for non-admins to only be able to edit from front-end; no access to WP Admin for calendar.
+* Feature: schedule periodic imports by URL
+* Add event to personal calendar
 
 == Frequently Asked Questions ==
 
