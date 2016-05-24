@@ -1,7 +1,6 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-
 add_filter( 'mcs_custom_settings_update', 'mcs_advanced_search_update', 10, 2 );
 function mcs_advanced_search_update( $value, $post ) {
 	// save settings

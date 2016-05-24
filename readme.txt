@@ -30,6 +30,11 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.5.5 =
+
+* Bug fix: remaining instance of deprecated function get_currentuserinfo
+* Update permissions check to new function description
+
 = 1.5.4 =
 
 * Performance & stability improvements to event imports
