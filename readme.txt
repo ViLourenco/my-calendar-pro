@@ -34,6 +34,8 @@ New or updated translations are always appreciated. The translation files are in
 
 * Bug fix: remaining instance of deprecated function get_currentuserinfo
 * Update permissions check to new function description
+* Not a security update; but a permissions checking function changed in My Calendar requiring this update.
+* My Calendar 2.4.19 is a critical security update; apply that update as soon as possible.
 
 = 1.5.4 =
 
