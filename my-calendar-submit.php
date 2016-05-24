@@ -82,8 +82,7 @@ function mcs_show_receipt() {
 add_filter( 'mcs_receipt_template', 'wpautop' );
 
 function mcs_generate_submit_page( $slug ) {
-	global $current_user;
-	get_currentuserinfo();
+	$current_user = wp_get_current_user();
 	if ( ! is_page( $slug ) ) {
 		$page      = array(
 			'post_title'  => __( 'Submit Events', 'my-calendar' ),
@@ -217,7 +216,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 	if ( empty( $response[1] ) && isset( $_GET['mcs_id'] ) && is_user_logged_in() ) {
 		$mc_id = intval( $_GET['mcs_id'] );
 		$event = mc_form_data( $mc_id );
-		if ( !mc_can_edit_event( $event->event_author ) ) {
+		if ( !mc_can_edit_event( $event->event_id ) ) {
 			$event = false;
 		}
 	}
@@ -358,7 +357,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 			$return .= "</div>";
 		}
 
-		if ( is_user_logged_in() ) { global $current_user; get_currentuserinfo(); $name = $current_user->display_name; $email = $current_user->user_email; }
+		if ( is_user_logged_in() ) { $current_user = wp_get_current_user(); $name = $current_user->display_name; $email = $current_user->user_email; }
 		$disallow_user_changes = apply_filters( 'mcs_disallow_user_changes', false );
 		$required = apply_filters( 'mcs_require_name_and_email', 'required="required"' );
 		if ( $disallow_user_changes && is_user_logged_in() ) {
