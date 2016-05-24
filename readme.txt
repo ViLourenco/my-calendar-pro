@@ -4,7 +4,7 @@ Donate link: http://www.joedolson.com/my-calendar/pro/
 Tags: event submissions, user generated content, my calendar pro
 Requires at least: 4.1
 Tested up to: 4.5
-Stable tag: 1.5.3
+Stable tag: 1.5.5
 
 Add on to My Calendar plugin: adds many great features such as a responsive mode, create events from posts, and more.
 
