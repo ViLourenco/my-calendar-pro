@@ -24,9 +24,9 @@ function mcs_add_inner_box() {
 		if ( $event_id ) {
 			$url = admin_url( 'admin.php?page=my-calendar&mode=edit&event_id='.$event_id );
 			$event = mc_get_first_event( $event_id );
-			$content = "<p><strong>" . $event->event_title . '</strong><br />' . $event->event_begin . ' @ ' . $event->event_time . "</p>";
+			$content = "<p><strong>" . wp_kses_post( $event->event_title ) . '</strong><br />' . $event->event_begin . ' @ ' . $event->event_time . "</p>";
 			if ( $event->event_label != '' ) {
-				$content .= "<p>" . sprintf( __( '<strong>Location:</strong> %s', 'my-calendar-submissions' ), $event->event_label ) . "</p>";
+				$content .= "<p>" . sprintf( __( '<strong>Location:</strong> %s', 'my-calendar-submissions' ), wp_kses_post( $event->event_label ) ) . "</p>";
 			}
 			$content .= "<p>" . sprintf( __( '<a href="%s">Edit event</a>.', 'my-calendar-submissions' ), $url ) . "</p>";
 		} else {
@@ -197,7 +197,7 @@ function mc_meta_box_form() {
 				<option value="none"> --</option>';
 				foreach ( $locs as $loc ) {
 					if ( is_object( $loc ) ) {
-						$location .= "<option value=\"" . $loc->location_id . "\">" . stripslashes( $loc->location_label ) . "</option>";
+						$location .= "<option value=\"" . $loc->location_id . "\">" . wp_kses_post( stripslashes( $loc->location_label ) ) . "</option>";
 					}
 				}
 			$location .= '</select></p>';
