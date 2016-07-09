@@ -30,6 +30,11 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+= 1.5.6 =
+
+* Bug fix: Add missing class to event description textarea in post editor
+* 
+
 = 1.5.5 =
 
 * Bug fix: remaining instance of deprecated function get_currentuserinfo

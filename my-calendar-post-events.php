@@ -178,7 +178,7 @@ function mc_meta_box_form() {
 	if ( $event_desc ) {
 		$description = "<div class='event_description'>
 							<label for='event_desc'>" . __( 'Event Description', 'my-calendar-submissions' ) . "</label><br />
-							<textarea id='event_desc' class='event_desc' cols='80' rows='8' name='event_desc'></textarea>
+							<textarea id='event_desc' class='event_desc widefat' cols='80' rows='8' name='event_desc'></textarea>
 						</div>";
 	} else {
 		$description = '';
