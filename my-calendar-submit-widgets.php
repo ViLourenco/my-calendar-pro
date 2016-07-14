@@ -72,7 +72,8 @@ class mc_submissions_widget extends WP_Widget {
 					if ( is_array($fields) ) {
 						foreach ( $fields as $key=>$value ) {
 							$check = ( in_array( $value, $widget_fields ) ) ? $checked : '';
-							echo "<li><input type='checkbox' name='".$this->get_field_name('fields')."[$key]' id='".$this->get_field_id('title')."mc_$key' value='$value'$check /> <label for='".$this->get_field_id('title')."mc_$key'>" . esc_html( $value ) . "</label></li>\n";
+							$title = mcs_get_field_name( $key, $value );
+							echo "<li><input type='checkbox' name='".$this->get_field_name('fields')."[$key]' id='".$this->get_field_id('title')."mc_$key' value='$value'$check /> <label for='".$this->get_field_id('title')."mc_$key'>" . esc_html( $title ) . "</label></li>\n";
 						}
 					}
 				?>
@@ -113,7 +114,8 @@ class mc_submissions_widget extends WP_Widget {
 				if ( is_array($location_fields) ) {
 					foreach ( $location_fields as $key=>$value ) {
 						$check = ( in_array($value, $widget_location_fields) )?$checked:'';
-						echo "<li><input type='checkbox' name='".$this->get_field_name('location_fields')."[$key]' id='".$this->get_field_id('location_fields')."mc_$key' value='$value'$check /> <label for='".$this->get_field_id('location_fields')."mc_$key'>$value</label></li>\n";
+						$title = mcs_get_field_name( $key, $value );
+						echo "<li><input type='checkbox' name='".$this->get_field_name('location_fields')."[$key]' id='".$this->get_field_id('location_fields')."mc_$key' value='$value'$check /> <label for='".$this->get_field_id('location_fields')."mc_$key'>" . esc_html( $title ) . "</label></li>\n";
 					}
 				}
 			?>

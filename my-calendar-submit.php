@@ -321,9 +321,9 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		if ( mcs_payment_required() ) {
 			$return .= "<p><label for='mcs_key'>".__('Payment Key','my-calendar-submissions').' <span>'.__('(required)','my-calendar-submissions')."</span></label> <input type='text' name='mcs_key' id='mcs_key' value='$key' required='required' aria-required='true' /></p>";
 		} 	
-		$flabel = ( isset( $fields['event_title'] ) ) ? $fields['event_title']:__('Event Title','my-calendar-submissions');
-		$dlabel = ( isset( $fields['event_date'] ) ) ? $fields['event_date']:__('Date','my-calendar-submissions');		
-		$tlabel = ( isset( $fields['event_time'] ) ) ? $fields['event_time']:__('Time','my-calendar-submissions');		
+		$flabel = ( isset( $fields['event_title'] ) ) ? $fields['event_title'] : __('Event Title','my-calendar-submissions');
+		$dlabel = ( isset( $fields['event_date'] ) ) ? $fields['event_date'] : __('Date','my-calendar-submissions');		
+		$tlabel = ( isset( $fields['event_time'] ) ) ? $fields['event_time'] : __('Time','my-calendar-submissions');		
 		$return .="
 		<p>
 		<label for='mc_event_title'>$flabel <span>".__('(required)','my-calendar-submissions')."</span></label> <input type='text' name='event_title' id='mc_event_title' value='$title' required='required' aria-required='true' />
@@ -340,7 +340,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 			$return .= "<div class='mc_end_container'>";
 		}
 		if ( isset( $fields['end_date'] ) ) {
-			$flabel = ( $fields['end_date'] != 'true' )?$fields['end_date']:__('End date','my-calendar-submissions');
+			$flabel = ( $fields['end_date'] != 'true' && $fields['end_date'] != 'End date' ) ? $fields['end_date'] : __( 'End date','my-calendar-submissions' );
 			$return .=	"<p>
 			<label for='mc_event_enddate'>$flabel</label> <input type='text' class='mc-date' name='event_end[]' id='mc_event_enddate' value='$end' />
 			</p>";
@@ -348,7 +348,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 			$return .= "<input type='hidden' name='event_end[]' value='' />";
 		}
 		if ( isset($fields['end_time']) ) {
-			$flabel = ( $fields['end_time'] != 'true' )?$fields['end_time']:__('End Time','my-calendar-submissions');
+			$flabel = ( $fields['end_time'] != 'true' && $fields['end_time'] != 'End time' )?$fields['end_time']:__('End time','my-calendar-submissions');
 			$return .=	"<p>
 			<label for='mc_event_endtime'>$flabel</label> <input type='time' name='event_endtime[]' id='mc_event_endtime' class='mc-time' value='$endtime'/>
 			</p>";
@@ -363,11 +363,11 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		if ( $disallow_user_changes && is_user_logged_in() ) {
 			$return .= "<input name='mcs_name' value='$name' type='hidden' /><input name='mcs_email' value='$email' type='hidden' />";
 		} else {
-			$flabel = ( isset( $fields['mcs_name'] ) && $fields['mcs_name'] != 'true' )?$fields['mcs_name']:__('Your Name','my-calendar-submissions');
+			$flabel = ( isset( $fields['mcs_name'] ) && $fields['mcs_name'] != 'true' && $fields['mcs_name'] != 'Your Name'  )?$fields['mcs_name']:__('Your Name','my-calendar-submissions');
 			$return .=	"<p>
 				<label for='mcs_name'>$flabel</label> <input type='text' name='mcs_name' id='mcs_name' value='$name' $required />
 				</p>";
-			$flabel = ( isset( $fields['mcs_email'] ) && $fields['mcs_email'] != 'true' )?$fields['mcs_email']:__('Your Email','my-calendar-submissions');
+			$flabel = ( isset( $fields['mcs_email'] ) && $fields['mcs_email'] != 'true' && $fields['mcs_email'] != 'Your Email'  )?$fields['mcs_email']:__('Your Email','my-calendar-submissions');
 			$return .=	"<p>
 				<label for='mcs_email'>$flabel</label> <input type='email' name='mcs_email' id='mcs_email' value='$email' $required />
 				</p>";
@@ -391,7 +391,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 							}
 						}
 				$host_select .= '</select>';
-			$flabel = ( isset( $fields['event_host'] ) && $fields['event_host'] != 'true' )?$fields['event_host']:__('Event Host','my-calendar-submissions');
+			$flabel = ( isset( $fields['event_host'] ) && $fields['event_host'] != 'true' && $fields['event_host'] != 'Event Host' )?$fields['event_host']:__('Event Host','my-calendar-submissions');
 			if ( $num <= 1 ) {
 				$return .= "<input type='hidden' name='event_host' value='$single_host' />";					
 			} else {
@@ -420,30 +420,30 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		}
 		// event_open, event_group
 		if ( isset( $fields['description'] ) ) {
-			$flabel = ( $fields['description'] != 'true' )?$fields['description']:__('Description','my-calendar-submissions');
+			$flabel = ( $fields['description'] != 'true' && !( $fields['description'] == 'Description' || $fields['description'] == 'Event Description' )  )?$fields['description']:__('Description','my-calendar-submissions');
 			$return .=	"<p><label for='mc_event_description'>$flabel</label> <textarea name='content' id='mc_event_description' class='full_description'>$desc</textarea></p>";
 		}
 		
 		if ( isset($fields['short_description']) ) {
-			$flabel = ( $fields['short_description'] != 'true' )?$fields['short_description']:__('Summary','my-calendar-submissions');
+			$flabel = ( $fields['short_description'] != 'true' && !( $fields['short_description'] == 'Summary' || $fields['short_description'] == 'Short Description' ) )?$fields['short_description'] : __('Summary','my-calendar-submissions');
 			$return .=	"<p><label for='mc_event_short_description'>$flabel</label> <textarea name='event_short' id='mc_event_short_description' class='short_description'>$short</textarea></p>";
 		}
 		
 		$return .= apply_filters( 'mc_event_details', '', $has_data, $data, 'public' );
 
 		if ( isset( $fields['access'] ) && function_exists( 'mc_event_accessibility' ) ) {
-			$flabel = ( $fields['access'] != 'true' )?$fields['access']:__('Event Access','my-calendar-submissions');
+			$flabel = ( $fields['access'] != 'true' && $fields['access'] != 'Event Access'  )?$fields['access']:__('Event Access','my-calendar-submissions');
 			$return .= mc_event_accessibility( '', $data, $flabel );
 		}
 
 		if ( isset($fields['event_link']) ) {
-			$flabel = ( $fields['event_link'] != 'true' )?$fields['event_link']:__('Link','my-calendar-submissions');
+			$flabel = ( $fields['event_link'] != 'true' && !( $fields['event_link'] == 'Link' || $fields['event_link'] == 'Event Link' )  ) ? $fields['event_link'] : __('Link','my-calendar-submissions');
 			$return .=	"<p>
 				<label for='mc_event_link'>$flabel</label> <input type='url' name='event_link' id='mc_event_link' value='$link' placeholder='http://' />
 				</p>";
 		}
 		if ( isset($fields['event_image']) ) {
-			$flabel = ( $fields['event_image'] != 'true' )?$fields['event_image']:__('Image (URL)','my-calendar-submissions');	
+			$flabel = ( $fields['event_image'] != 'true' && !( $fields['event_image'] == 'Image (URL)' || $fields['event_image'] == 'Event image' ) )?$fields['event_image']:__('Image (URL)','my-calendar-submissions');
 			if ( get_option('mcs_upload_images') == 'true' && $image == '' ) { 
 				$input_type = 'file'; 
 			} else { 
@@ -455,7 +455,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		}	
 		$return .= mcs_submit_category( $selected_category, $categories );
 		if ( isset( $fields['registration'] ) ) {
-			$flabel = ( $fields['registration'] != 'true' )?$fields['registration']:__('Ticketing Information','my-calendar-submissions');	
+			$flabel = ( $fields['registration'] != 'true' && $fields['registration'] != 'Ticketing Information'  )?$fields['registration']:__('Ticketing Information','my-calendar-submissions');	
 			$return .= "<fieldset>
 			<legend>$flabel</legend>";
 			$return .= apply_filters( 'mc_event_registration', '', $has_data, $data, 'public' );
@@ -532,68 +532,68 @@ function mcs_submit_location( $location, $locations, $location_fields, $selected
 }
 
 function mcs_location_form( $fields, $loc ) {
-		$flabel = ( isset( $fields['event_label'] ) && $fields['event_label'] != 'true' )?$fields['event_label']:__('Name of Location','my-calendar-submissions');
+		$flabel = ( isset( $fields['event_label'] ) && $fields['event_label'] != 'true' ) ? $fields['event_label'] : __('Name of Location','my-calendar-submissions');
 		$return = '<p>
 			<label for="event_label">'.$flabel.'</label> <input type="text" id="event_label" name="event_label" class="input" value="'.$loc['label'].'" />
 			</p>';
 		if ( isset( $fields['street'] ) ) {
-		$flabel = ( $fields['street'] != 'true' )?$fields['street']:__('Street Address','my-calendar-submissions');
+		$flabel = ( $fields['street'] != 'true' && $fields['street'] != 'Street Address'  )?$fields['street']:__('Street Address','my-calendar-submissions');
 			$return .= '		
 			<p>
 			<label for="event_street">'.$flabel.'</label> <input type="text" id="event_street" name="event_street" class="input" value="'.$loc['street'].'" />
 			</p>';
 		}
 		if ( isset($fields['street2']) ) {
-		$flabel = ( $fields['street2'] != 'true' )?$fields['street2']:__('Street Address (2)','my-calendar-submissions');
+		$flabel = ( $fields['street2'] != 'true' && $fields['street2'] != 'Street Address (2)'  )?$fields['street2']:__('Street Address (2)','my-calendar-submissions');
 			$return .= '
 			<p>
 			<label for="event_street2">'.$flabel.'</label> <input type="text" id="event_street2" name="event_street2" class="input" value="'.$loc['street2'].'" />
 			</p>';
 		}
 		if ( isset($fields['phone']) ) {
-		$flabel = ( $fields['phone'] != 'true' )?$fields['phone']:__('Phone','my-calendar-submissions');
+		$flabel = ( $fields['phone'] != 'true' && $fields['phone'] != 'Phone'  )?$fields['phone']:__('Phone','my-calendar-submissions');
 			$return .= '
 			<p>
 			<label for="event_phone">'.$flabel.'</label> <input type="text" id="event_phone" name="event_phone" class="input" value="'.$loc['phone'].'" />
 			</p>';
 		}
 		if ( isset($fields['city']) ) {
-		$flabel = ( $fields['city'] != 'true' )?$fields['city']:__('City','my-calendar-submissions');
+		$flabel = ( $fields['city'] != 'true' && $fields['city'] != 'City' )?$fields['city']:__('City','my-calendar-submissions');
 			$return .= '
 			<p>
 			<label for="event_city">'.$flabel.'</label> <input type="text" id="event_city" name="event_city" class="input" value="'.$loc['city'].'" /> 
 			</p>';
 		}
 		if ( isset($fields['state']) ) {
-		$flabel = ( $fields['state'] != 'true' )?$fields['state']:__('State/Province','my-calendar-submissions');
+		$flabel = ( $fields['state'] != 'true' && !( $fields['state'] == 'State/Province' || $fields['state'] == 'State' ) )?$fields['state']:__('State/Province','my-calendar-submissions');
 			$return .= '
 			<p>
 			<label for="event_state">'.$flabel.'</label> <input type="text" id="event_state" name="event_state" class="input" value="'.$loc['state'].'" /> 
 			</p>';
 		}
 		if ( isset($fields['zip']) ) {
-		$flabel = ( $fields['zip'] != 'true' )?$fields['zip']:__('Postal Code','my-calendar-submissions');
+		$flabel = ( $fields['zip'] != 'true' && !( $fields['zip'] == 'Zip' || $fields['zip'] == 'Postal Code' ) )?$fields['zip']:__('Postal Code','my-calendar-submissions');
 			$return .= '
 			<p>
 			<label for="event_postcode">'.$flabel.'</label> <input type="text" id="event_postcode" name="event_postcode" class="input" size="10" value="'.$loc['postcode'].'" />
 			</p>';
 		}
 		if ( isset($fields['region']) ) {
-		$flabel = ( $fields['region'] != 'true' )?$fields['region']:__('Region','my-calendar-submissions');
+		$flabel = ( $fields['region'] != 'true' && $fields['region'] != 'Region' )?$fields['region']:__('Region','my-calendar-submissions');
 			$return .= '
 			<p>
 			<label for="event_region">'.$flabel.'</label> <input type="text" id="event_region" name="event_region" class="input" value="'.$loc['region'].'" />
 			</p>';
 		}
 		if ( isset($fields['country']) ) {
-		$flabel = ( $fields['country'] != 'true' )?$fields['country']:__('Country','my-calendar-submissions');
+		$flabel = ( $fields['country'] != 'true' && $fields['country'] != 'Country' )?$fields['country']:__('Country','my-calendar-submissions');
 			$return .= '
 			<p>	
 			<label for="event_country">'.$flabel.'</label> <input type="text" id="event_country" name="event_country" class="input" value="'.$loc['country'].'" />
 			</p>';
 		}
 		if ( isset($fields['url']) ) {
-		$flabel = ( $fields['url'] != 'true' )?$fields['url']:__('Location URL','my-calendar-submissions');
+		$flabel = ( $fields['url'] != 'true' && $fields['url'] != 'Location URL' )?$fields['url']:__('Location URL','my-calendar-submissions');
 			$return .= '
 			<p>
 			<label for="event_url">'.$flabel.'</label> <input type="text" id="event_url" name="event_url" class="input" value="'.$loc['url'].'" />

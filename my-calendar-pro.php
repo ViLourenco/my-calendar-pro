@@ -145,30 +145,46 @@ function mcs_check() {
 	}
 }
 
+
+// get default field names translated
+function mcs_get_field_name( $key, $value ) {
+	$values = array_merge( mcs_default_fields(), mcs_default_location_fields() );
+
+	return ( in_array( $key, array_keys( $values ) ) ) ? $values[$key] : $value;
+}
+
+function mcs_default_fields() {
+	return array(
+			'end_date'         =>__('End date','my-calendar-submissions'),
+			'end_time'         =>__('End time','my-calendar-submissions'),
+			'description'      =>__('Description','my-calendar-submissions'),
+			'short_description'=>__('Summary','my-calendar-submissions'),
+			'event_link'       =>__('Link','my-calendar-submissions'),
+			'event_recurring'  =>__('Event Recurrences','my-calendar-submissions'),
+			'event_image'      =>__('Image (URL)','my-calendar-submissions')
+		);
+}
+
+function mcs_default_location_fields() {
+	return array(
+			'street'  =>__( 'Street Address', 'my-calendar-submissions' ),
+			'street2' =>__( 'Street Address (2)', 'my-calendar-submissions' ),
+			'phone'   =>__( 'Phone', 'my-calendar-submissions' ),
+			'city'    =>__( 'City', 'my-calendar-submissions' ),
+			'state'   =>__( 'State/Province', 'my-calendar-submissions' ),
+			'zip'     =>__( 'Zip', 'my-calendar-submissions' ),
+			'region'  =>__( 'Region', 'my-calendar-submissions' ),
+			'country' =>__( 'Country', 'my-calendar-submissions' ),
+			'url'     =>__( 'Location URL', 'my-calendar-submissions' ),
+			'gps'     =>__( 'GPS Coordinates', 'my-calendar-submissions' ),
+		);
+}
+
 function mcs_default_settings( $set = true ) {
 	global $mcs_version;
 	$options = array(
-		'fields' => array(
-			'end_date'=>__('End date','my-calendar-submissions'),
-			'end_time'=>__('End time','my-calendar-submissions'),
-			'description'=>__('Event Description','my-calendar-submissions'),
-			'short_description'=>__('Short Description','my-calendar-submissions'),
-			'event_link'=>__('Event Link','my-calendar-submissions'),
-			'event_recurring'=>__('Event Recurrences','my-calendar-submissions'),
-			'event_image'=>__('Event image','my-calendar-submissions')
-			),
-		'location_fields' => array(
-			'street'=>__('Street Address','my-calendar-submissions'),
-			'street2'=>__('Street Address (2)','my-calendar-submissions'),
-			'phone'=>__('Phone','my-calendar-submissions'),
-			'city'=>__('City','my-calendar-submissions'),
-			'state'=>__('State','my-calendar-submissions'),
-			'zip'=>__('Zip','my-calendar-submissions'),
-			'region'=>__('Region','my-calendar-submissions'),
-			'country'=>__('Country','my-calendar-submissions'),
-			'url'=>__('Location URL','my-calendar-submissions'),
-			'gps'=>__('GPS Coordinates','my-calendar-submissions'),
-			),
+		'fields' => mcs_default_fields(),
+		'location_fields' => mcs_default_location_fields(),
 		'defaults' => array(
 			'mcs_response'=>'
 A new event has been submitted by {first_name} {last_name}. 
