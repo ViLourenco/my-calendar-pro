@@ -34,6 +34,7 @@ New or updated translations are always appreciated. The translation files are in
 
 * Bug fix: Add missing class to event description textarea in post editor
 * Bug fix: Better handling of translations for event submission field labels
+* Move event submission processing out of shortcode and into 'init' action.
 
 = 1.5.5 =
 
@@ -230,7 +231,6 @@ Todo for this release:
 * Feature: limit ability to enter categories by member groups
 * Create selectable event details templates 
 * Make only portions of events private (e.g., time and location for children's events, etc.)
-* Add option to set event alarm or notification in .ics outputs
 * Provide notifications of new events by category (to specific users or to lists of users; set up as user meta option?) (use save_event hooks; set up reminder schedule; use cron; see RQ by Don Brown via email)
 * Add controls on My Calendar defined page to alter shortcode settings on that page?
 * Feature: list of user's submitted events to provide access for editing; build into Submissions form & as separate shortcode

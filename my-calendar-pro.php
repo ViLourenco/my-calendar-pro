@@ -45,7 +45,7 @@ $edd_updater = new EDD_SL_Plugin_Updater( EDD_MCP_STORE_URL, __FILE__, array(
 	'version' 	=> $mcs_version,					// current version number
 	'license' 	=> $license_key,			// license key (used get_option above to retrieve from DB)
 	'item_name'     => EDD_MCP_ITEM_NAME,	// name of this plugin
-	'author' 	=> 'Joe Dolson',		// author of this plugin
+	'author' 	=> 'Joe Dolson',		    // author of this plugin
 	'url'           => home_url()
 ) );
 
