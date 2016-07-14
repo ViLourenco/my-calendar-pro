@@ -35,6 +35,7 @@ New or updated translations are always appreciated. The translation files are in
 * Bug fix: Add missing class to event description textarea in post editor
 * Bug fix: Better handling of translations for event submission field labels
 * Move event submission processing out of shortcode and into 'init' action.
+* Add Japanese & Spanish translations; update Dutch
 
 = 1.5.5 =
 
