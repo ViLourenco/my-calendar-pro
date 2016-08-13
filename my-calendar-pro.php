@@ -85,7 +85,7 @@ if ( get_option( 'mcs_license_key_valid' ) == 'true' || get_option( 'mcs_license
 }
 
 add_action( 'widgets_init', create_function('', 'return register_widget("mc_submissions_widget");') );
-add_action( 'init', 'mcs_register_actions' );
+add_action( 'init', 'mcs_register_actions', 9 );
 function mcs_register_actions() {
 	add_action( 'wp_loaded', 'mcs_verify_receipt' );
 	add_action( 'parse_request', 'mcs_receive_ipn' );

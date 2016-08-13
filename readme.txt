@@ -4,7 +4,7 @@ Donate link: http://www.joedolson.com/my-calendar/pro/
 Tags: event submissions, user generated content, my calendar pro
 Requires at least: 4.1
 Tested up to: 4.5
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 
 Add on to My Calendar plugin: adds many great features such as a responsive mode, create events from posts, and more.
 
@@ -29,6 +29,11 @@ New or updated translations are always appreciated. The translation files are in
 * My Calendar Submissions has been replaced by My Calendar PRO. All licenses have been transferred to the new plug-in.
 
 == Changelog ==
+
+= 1.5.7 =
+
+* Bug fix: moving event submission into 'init' broke email notifications
+* 
 
 = 1.5.6 =
 
