@@ -33,7 +33,8 @@ New or updated translations are always appreciated. The translation files are in
 = 1.5.7 =
 
 * Bug fix: moving event submission into 'init' broke email notifications
-* 
+* Bug fix: remove blogname from "from" address due to fatal error in some versions of PHPMailer
+* Feature: add honeypot to submission form
 
 = 1.5.6 =
 

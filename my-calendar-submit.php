@@ -160,7 +160,7 @@ function mcs_generate_unique_id() {
 }
 
 add_action( 'init', 'mcs_run_processor' );
-function mcs_run_processor() {
+function mcs_run_processor() {	
 	$response  = mcs_processor( $_POST );
 	$unique_id = isset( $_COOKIE['mcs_unique_id'] ) ? $_COOKIE['mcs_unique_id'] : false;
 	
@@ -351,6 +351,10 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		<input type='hidden' name='event_holiday' value='".$event_holiday."' />
 		<input type='hidden' name='event_fifth_week' value='".$event_fifth_week."' />
 		<input type='hidden' name='event_group_id' value='".mc_group_id()."' />
+		<div style='display: none;'>
+			<label for='your_name'>" . __( 'Do not complete this field.', 'my-calendar-submissions' ) . "</label>
+			<input type='text' name='your_name' id='your_name' value='' />
+		</div>
 		$edit";
 		if ( apply_filters( 'mcs_event_allday', 0 ) == true ) {
 			$return .= "<input type='hidden' name='event_allday' value='1' />";
@@ -510,6 +514,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		</form>	
 	</div>";
 	$return = apply_filters( 'mcs_after_submissions', $return, $response );
+	
 	return $return;
 }
 
@@ -748,6 +753,11 @@ function mcs_processor( $post ) {
 		$attach_id = false;
 		$nonce = $post['event_nonce_name'];
 		if ( !wp_verify_nonce( $nonce,'event_nonce' ) ) return;
+		// honeypot - only bots should complete this field;
+		$honeypot = ( isset( $_POST['your_name'] ) && $_POST['your_name'] != '' ) ? true : false;
+		if ( $honeypot ) {
+			return;
+		}
 		// if files being uploaded, upload file and convert to a string for $post
 		if( !empty( $_FILES['event_image'] ) ) {
 			require_once( ABSPATH . '/wp-admin/includes/file.php' );
@@ -990,7 +1000,8 @@ function mcs_notify_submitter( $name, $email, $event_id, $action ) {
 		if ( get_option( 'mcs_html_email' ) == 'true' ) {
 			add_filter( 'wp_mail_content_type',create_function( '', 'return "text/html";' ) );
 		}
-		$mail = wp_mail( $email, $subject, $message, "From: \"$blogname\" <$from>" );
+		
+		$mail = wp_mail( $email, $subject, $message, "From: $from" );
 		if ( get_option( 'mcs_html_email' ) == 'true' ) {
 			remove_filter( 'wp_mail_content_type',create_function( '', 'return "text/html";' ) );
 		}
