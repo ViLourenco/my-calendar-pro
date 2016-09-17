@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function mcs_receive_ipn() {
-	if ( isset($_GET['mcsipn']) && $_GET['mcsipn'] == 'true' ) {
+	if ( isset( $_GET['mcsipn']) && $_GET['mcsipn'] == 'true' ) {
 		global $wpdb; 
 		mcs_check();
 		if ( get_option( 'mcs_gateway' ) == 'authorizenet' ) {
@@ -52,10 +52,12 @@ function mcs_receive_ipn() {
 					$req .= "&$key=$value";
 				}		
 				$args = wp_parse_args( $req, array() );
+				global $mcs_version;
 				$params = array(
 					'body'		=> $args,
 					'sslverify' => false,
 					'timeout' 	=> 30,
+					'user-agent' => "WordPress/My Calendar Pro $mcs_version; " . get_bloginfo( 'url' )
 				);
 				// transaction variables to store
 				$payment_status = $_POST['payment_status'];
@@ -148,7 +150,7 @@ function mcs_receive_ipn() {
 			$mail_From = "From: $blogname Events <".get_option('mcs_from').">";
 			$mail_Subject = __("WP HTTP Failed to contact Paypal",'my-calendar-submissions');
 			$mail_Body = __("Something went wrong. Hopefully this information will help:",'my-calendar-submissions')."\n\n";
-			$mail_Body .= print_r($ipn,1);
+			$mail_Body .= print_r( $ipn,1 );
 			wp_mail( get_option('mcs_to'), $mail_Subject, $mail_Body, $mail_From);
 		}
 		if ( $redirect_url ) {
