@@ -1034,10 +1034,16 @@ function mcs_show_author( $content, $event_id ) {
 			$fname = ( isset( $author['first_name'] ) ) ? $author['first_name'] : '';
 			$lname = ( isset( $author['last_name'] ) ) ? $author['last_name'] : '';
 			$email = ( isset( $author['email'] ) && is_email( $author['email'] ) ) ? $author['email'] : '';
+			$date  = get_the_time( get_option( 'mc_date_format' ), $post_id );
 			
-			$return = ( $email != '' ) ? "<a href='mailto:$email'>$fname $lname</a>" : "$fname $lname";
-			$return = sprintf ( __( 'Event submitted by %s', 'my-calendar-submissions' ), $return );
-			$content .= "<p class='submitter'>$return</p>";
+			$return = ( $email != '' ) ? "<a href='mailto:$email'>$fname $lname</a> ($email)" : "$fname $lname";
+			$return = sprintf ( __( 'Event submitted by %s on %s', 'my-calendar-submissions' ), $return, $date );
+			$content .= "
+				<div class='ui-sortable meta-box-sortables'>
+					<div class='postbox'>
+						<p class='submitter'>$return</p>
+					</div>
+				</div>";
 		}
 		
 		
