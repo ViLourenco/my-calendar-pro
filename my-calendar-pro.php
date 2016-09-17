@@ -103,9 +103,9 @@ load_plugin_textdomain( 'my-calendar-submissions',false, dirname( plugin_basenam
 function mcs_check() {
 	global $wpdb, $mcs_version;
 	$mcdb = $wpdb;
-	$current_version = get_option('mcs_version');
+	$current_version = get_option( 'mcs_version' );
 	// If current version matches, don't bother running this.
-	if ($current_version == $mcs_version) {	return true; }
+	if ( $current_version == $mcs_version ) {	return true; }
 	// Lets see if this is first run and create a table if it is!
 	// Assume this is not a new install until we prove otherwise
 	$new_install = false;
