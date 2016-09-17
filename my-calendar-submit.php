@@ -1041,7 +1041,9 @@ function mcs_show_author( $content, $event_id ) {
 			$content .= "
 				<div class='ui-sortable meta-box-sortables'>
 					<div class='postbox'>
-						<p class='submitter'>$return</p>
+						<div class='inside'>
+							<p class='submitter'>$return</p>
+						</div>
 					</div>
 				</div>";
 		}
