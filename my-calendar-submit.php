@@ -1024,6 +1024,28 @@ function mcs_notify_submitter( $name, $email, $event_id, $action ) {
 	}	
 }
 
+add_filter( 'mc_before_event_form', 'mcs_show_author', 10, 2 );
+function mcs_show_author( $content, $event_id ) {
+	if ( $event_id ) {
+		$event   = mc_get_event_core( $event_id );
+		$post_id = $event->event_post;
+		$author  = get_post_meta( $post_id, '_submitter_details', true );
+		if ( is_array( $author ) ) {
+			$fname = ( isset( $author['first_name'] ) ) ? $author['first_name'] : '';
+			$lname = ( isset( $author['last_name'] ) ) ? $author['last_name'] : '';
+			$email = ( isset( $author['email'] ) && is_email( $author['email'] ) ) ? $author['email'] : '';
+			
+			$return = ( $email != '' ) ? "<a href='mailto:$email'>$fname $lname</a>" : "$fname $lname";
+			$return = sprintf ( __( 'Event submitted by %s', 'my-calendar-submissions' ), $return );
+			$content .= "<p class='submitter'>$return</p>";
+		}
+		
+		
+	}
+	
+	return $content;
+}
+
 /**
  * Save public submitter data in event post
  */
