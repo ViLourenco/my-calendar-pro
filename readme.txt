@@ -30,6 +30,16 @@ New or updated translations are always appreciated. The translation files are in
 
 == Changelog ==
 
+TODO: track UID in imported events
+TODO: handle tzoffsetfrom/to in iCal from Google (part of the overall vcal block, not part of an event)
+
+= 1.5.8 =
+
+* Add user-agent to PayPal integration
+* Miscellaneous improvements to usage of defaults in submissions
+* Save author data from public submissions
+* Display author data when submitted from public
+
 = 1.5.7 =
 
 * Bug fix: moving event submission into 'init' broke email notifications
