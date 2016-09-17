@@ -150,23 +150,23 @@ function mcs_advanced_search( $sql, $query ) {
 		$limit_string    = ( $location ) ? mc_limit_string( false, 'event_label', $lvalue ) : '';
 		$select_author   = ( $author ) ? mc_select_author( $author ) : '';
 		$select_host     = ( $host ) ? mc_select_host( $host ) : '';
-		$limits = $select_category . $limit_string . $select_author . $select_host;
-		$search = mc_prepare_search_query( $term );
+		$limits          = $select_category . $limit_string . $select_author . $select_host;
+		$search          = mc_prepare_search_query( $term );
 	} else {
 		$search = array( 'category' => $category, 'author' => $author, 'host' => $host, 'ltype' => 'event_label', 'lvalue' => $lvalue, 'search' => $term, 'from' => $from, 'to' => $to );
 	}
 		
-	return $search;
+	return apply_filters( 'mcs_filter_search_query', $search );
 }
 
 add_shortcode( 'advanced_search', 'mcs_advanced_search_form' );
 function mcs_advanced_search_form( $atts, $content ) {
 	$args = shortcode_atts( array(
-		'date' => true,
-		'author' => true,
-		'host' => true,		
-		'category' => true,
-		'location' => true,
+		'date' => 'true',
+		'author' => 'true',
+		'host' => 'true',		
+		'category' => 'true',
+		'location' => 'true',
 		'home' => ''
 	), $atts, 'advanced_search' );
 	
@@ -184,9 +184,9 @@ function mcs_advanced_search_form( $atts, $content ) {
 
 function mcs_search_form( $args = array(), $url = '' ) {
 	$defaults = array( 
-		'date' => false,
-		'author' => false, 
-		'host' => false,		
+		'date'     => false,
+		'author'   => false, 
+		'host'     => false,		
 		'category' => false, 
 		'location' => false
 	);
@@ -275,8 +275,10 @@ function mcs_search_form( $args = array(), $url = '' ) {
 					<input type="text" class="widefat" value="' . $mcs . '" name="mcs" id="mcs" />
 				</p>';
 	foreach( $args as $field => $active ) {
-		if ( $active ) {
-			$fields .= mcs_generate_search_field( $field );
+		if ( $active === 'false' || $active == false || $active === 0 ) {
+			$fields .= '';
+		} else {
+			$fields .= mcs_generate_search_field( $field );			
 		}
 	}
 	$fields .= "
@@ -393,7 +395,7 @@ function mcs_generate_search_field( $field ) {
 add_filter( 'mc_search_template', 'mcs_advanced_search_template', 10, 1 );
 function mcs_advanced_search_template( $template ) {
 	$options = get_option( 'mcs_advanced_search' );
-	$temp = $options['template'];
+	$temp    = $options['template'];
 	if ( $temp ) {
 		$template = $temp;
 	}
@@ -408,9 +410,9 @@ function mcs_advanced_search_before( $content, $search ) {
 	if ( is_page( $options['home'] ) ) {
 		$args = $options;
 		$url = get_permalink( $options['home'] );	
-		return "<div class='mc-advanced-search'><p><a href='#mcs'>" . __( 'Perform another search', 'my-calendar-submissions' ) . "</a><span class='dashicons 	dashicons-arrow-down-alt' aria-hidden='true'></span></p>";
+		return "<div class='mc-advanced-search'><p><a href='#mcs'>" . __( 'Perform another search', 'my-calendar-submissions' ) . "</a><span class='dashicons dashicons-arrow-down-alt' aria-hidden='true'></span></p>";
 	}
-	return "<div class='md-advanced-search'>";
+	return "<div class='mc-advanced-search'>";
 }
 
 add_filter( 'mc_search_after', 'mcs_advanced_search_after', 10, 2 );
