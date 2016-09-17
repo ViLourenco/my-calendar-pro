@@ -809,10 +809,14 @@ function mcs_processor( $post ) {
 			$event = mc_get_event_core( $event_id );
 			$post_id = $event->event_post;
 			set_post_thumbnail( $post_id, $attach_id ); 
-			if ( $message != '' ) { $response .= " $message"; }
+			if ( $message != '' ) { 
+				$response .= " $message";
+			}
+			
 			$return = array( $response, array(), true );
 		} else {
 			$return = array( $check[3], $check[1], false );
+			
 			return $return;
 		}
 		if ( $event_id ) {
@@ -892,23 +896,24 @@ function mcs_notify_admin( $name, $email, $event_id, $action ) {
 	}
 	$event = mc_get_event_core( $event_id );
 	$array = array ( 
-		'first_name'=>$fname,
-		'last_name'=>$lname,
-		'email'    =>$email, 
-		'title'    =>$event->event_title, 
-		'date'     =>$event->event_begin, 
-		'time'     =>$event->event_time,
-		'description'=>$event->event_desc,
-		'short'    =>$event->event_short,
-		'image'    =>$event->event_image,
-		'url'      =>$event->event_link,
-		'location' =>$event->event_label,
-		'street'   =>$event->event_street,
-		'city'     =>$event->event_city,
-		'phone'    =>$event->event_phone,
-		'blogname' =>get_option( 'blogname' ),
-		'edit_link'=>admin_url( "admin.php?page=my-calendar&mode=edit&event_id=$event_id" )
+		'first_name'  => $fname,
+		'last_name'   => $lname,
+		'email'       => $email, 
+		'title'       => $event->event_title, 
+		'date'        => $event->event_begin, 
+		'time'        => $event->event_time,
+		'description' => $event->event_desc,
+		'short'       => $event->event_short,
+		'image'       => $event->event_image,
+		'url'         => $event->event_link,
+		'location'    => $event->event_label,
+		'street'      => $event->event_street,
+		'city'        => $event->event_city,
+		'phone'       => $event->event_phone,
+		'blogname'    => get_option( 'blogname' ),
+		'edit_link'   => admin_url( "admin.php?page=my-calendar&mode=edit&event_id=$event_id" )
 	);
+	
 	// if event is flagged as spam, don't send email notification.
 	// filter allows you to disable email notifications for various custom reasons.
 	$dont_send_email = apply_filters( 'mcs_dont_send_admin_email', false, $event_id, $array );
@@ -918,22 +923,30 @@ function mcs_notify_admin( $name, $email, $event_id, $action ) {
 	if ( $event->event_flagged == 1 || $dont_send_email == true ) {
 		return;
 	} else {
+		mcs_save_author( $fname, $lname, $email, $event );
+		
+		$subject = ( get_option( 'mcs_subject' ) == '' ) ? 'New event on {blogname}' : get_option( 'mcs_subject' );
+		$edit_subject = ( get_option( 'mcs_edit_subject' ) == '' ) ? 'Edited event on {blogname}' : get_option( 'mcs_edit_subject' );
+		$message = ( get_option( 'mcs_response' ) == '' ) ? 'New event from {first_name} {last_name}: {title}, {date}, {time}. Approve or reject this event: {edit_link}' : get_option( 'mcs_response' );
 		if ( $action = 'edit' ) {
-			$subject = ( get_option( 'mcs_edit_subject' ) == '' ) ? "Edited: " . jd_draw_template( $array, get_option( 'mcs_subject' ) ) : jd_draw_template( $array, get_option( 'mcs_edit_subject' ) );			
+			$subject = jd_draw_template( $array, $edit_subject );			
 		} else {
-			$subject = jd_draw_template( $array, get_option( 'mcs_subject' ) );
+			$subject = jd_draw_template( $array, $subject );
 		}
-		$message = jd_draw_template( $array, get_option( 'mcs_response' ) );
+		$message = jd_draw_template( $array, $message );
 		if ( get_option( 'mcs_html_email' ) == 'true' ) {
-			add_filter( 'wp_mail_content_type',create_function( '', 'return "text/html";' ) );
+			add_filter( 'wp_mail_content_type', create_function( '', 'return "text/html";' ) );
 		}
-		$mcs_to = get_option( 'mcs_to' );
+		$mcs_to = ( get_option( 'mcs_to' ) == '' ) ? get_bloginfo( 'admin_email' ) : get_option( 'mcs_to' );
 		if ( strpos( $mcs_to, ',' ) !== false ) {
 			// remove any extra spaces
 			$mcs_to = array_map( 'trim', explode( ',', $mcs_to ) );
 			$mcs_to = implode( ',', $mcs_to );
 		}
-		$mail = wp_mail( $mcs_to, $subject, $message, "From: \"$name\" <$email>" );
+
+		$headers = array( "From: \"$name\" <$email>" );
+		$headers = apply_filters( 'mcs_notify_admin_headers', $headers );
+		$mail = wp_mail( $mcs_to, $subject, $message, $headers );
 		if ( get_option( 'mcs_html_email' ) == 'true' ) {
 			remove_filter( 'wp_mail_content_type',create_function( '', 'return "text/html";' ) );
 		}
@@ -961,22 +974,22 @@ function mcs_notify_submitter( $name, $email, $event_id, $action ) {
 	}
 	$event = mc_get_event_core( $event_id );
 	$array = array ( 
-		'first_name'=>$fname,
-		'last_name'=>$lname,
-		'email'=>$email, 
-		'title'=>$event->event_title, 
-		'date'=>$event->event_begin, 
-		'time'=>$event->event_time,
-		'description'=>$event->event_desc,
-		'short'=>$event->event_short,
-		'image'=>$event->event_image,
-		'url'=>$event->event_link,
-		'location'=>$event->event_label,
-		'street'=>$event->event_street,
-		'city'=>$event->event_city,
-		'phone'=>$event->event_phone,
-		'blogname'=>get_option('blogname'),
-		'edit_link'=>mcs_submit_url( $event_id )		
+		'first_name'  => $fname,
+		'last_name'   => $lname,
+		'email'       => $email, 
+		'title'       => $event->event_title, 
+		'date'        => $event->event_begin, 
+		'time'        => $event->event_time,
+		'description' => $event->event_desc,
+		'short'       => $event->event_short,
+		'image'       => $event->event_image,
+		'url'         => $event->event_link,
+		'location'    => $event->event_label,
+		'street'      => $event->event_street,
+		'city'        => $event->event_city,
+		'phone'       => $event->event_phone,
+		'blogname'    => get_option('blogname'),
+		'edit_link'   => mcs_submit_url( $event_id )		
 	);
 	// if event is flagged as spam, don't send email notification.
 	// filter allows you to disable email notifications for various custom reasons.
@@ -987,37 +1000,42 @@ function mcs_notify_submitter( $name, $email, $event_id, $action ) {
 	if ( $event->event_flagged == 1 || $dont_send_email == true ) {
 		return;
 	} else {
+		$subject = ( get_option( 'mcs_confirmation_subject' ) == '' ) ? 'New event on {blogname}' : get_option( 'mcs_confirmation_subject' );
+		$edit_subject = ( get_option( 'mcs_edit_confirmation_subject' ) == '' ) ? 'Edited event on {blogname}' : get_option( 'mcs_edit_confirmation_subject' );
+		$message = ( get_option( 'mcs_confirmation' ) == '' ) ? 'Thanks for proposing a new event, {first_name} {last_name}! {title}, {date}, {time}' : get_option( 'mcs_confirmation' );
+		
 		if ( $action = 'edit' ) {
-			$edit_subject = get_option( 'mcs_edit_confirmation_subject' );
-			$subject = ( $edit_subject == '' ) ? get_option( 'mcs_confirmation_subject' ) : $edit_subject;			
-		} else {
-			$subject = get_option( 'mcs_confirmation_subject' );
-		}		
+			$subject = $edit_subject;			
+		}	
 		$subject = jd_draw_template( $array, $subject );
-		$message = jd_draw_template( $array, get_option( 'mcs_confirmation' ) );
+		$message = jd_draw_template( $array, $message );
 		$blogname = get_option('blogname');
-		$from = get_option( 'mcs_from' );	
+		$from = ( get_option( 'mcs_from' ) == '' ) ? get_bloginfo( 'admin_email' ) : get_option( 'mcs_from' );	
 		if ( get_option( 'mcs_html_email' ) == 'true' ) {
-			add_filter( 'wp_mail_content_type',create_function( '', 'return "text/html";' ) );
+			add_filter( 'wp_mail_content_type', create_function( '', 'return "text/html";' ) );
 		}
 		
-		$mail = wp_mail( $email, $subject, $message, "From: $from" );
+		$headers = array( "From: $from" );
+		$headers = apply_filters( 'mcs_notify_admin_headers', $headers );		
+		$mail = wp_mail( $email, $subject, $message, $headers );
 		if ( get_option( 'mcs_html_email' ) == 'true' ) {
 			remove_filter( 'wp_mail_content_type',create_function( '', 'return "text/html";' ) );
 		}
 	}	
 }
-/*
- * If I change this to save the information in post meta, it'll work easily.
-function mcs_save_author( $name, $email, $post_ID ) {
-	global $wpdb;
-	list($fname,$lname) = preg_split('/\s+(?=[^\s]+$)/', $name, 2); 
-	$add = array( 'item_number'=>1,'first_name'=>$fname,'last_name'=>$lname,'payer_email'=>$email );
-	$formats = array ( '%d','%s','%s','%s' );
-	// saves author name and email into payment DB
-	$results = $wpdb->insert( my_calendar_payments_table(), $add, $formats );
+
+/**
+ * Save public submitter data in event post
+ */
+function mcs_save_author( $fname, $lname, $email, $event ) {
+	$post_ID = $event->event_post;
+	if ( ! $post_ID ) {
+		$post_ID = mc_event_post( 'add', $_POST, $event->event_id );		
+	}
+	$add = array( 'first_name'=>$fname, 'last_name'=>$lname, 'email'=>$email );
+	
+	add_post_meta( $post_ID, '_submitter_details', $add );
 }
-*/
 
 function my_calendar_payments_table() {
 	$option = (int) get_site_option('mc_multisite');
