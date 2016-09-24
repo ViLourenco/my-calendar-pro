@@ -133,7 +133,12 @@ function mcs_check() {
 	if ( $new_install == true ) {
 		mcs_default_settings();
     } else {
-		if ( version_compare( $current_version, "1.1.1", "<" ) ) {	$upgrade_path[] = "1.1.1"; } 
+		if ( version_compare( $current_version, "1.1.1", "<" ) ) {
+			$upgrade_path[] = "1.1.1";
+		}
+		if ( version_compare( $current_version, "1.5.8", "<" ) ) {
+			$upgrade_path[] = "1.5.8";
+		}
 	}
 	// switch for different upgrade paths
 	foreach ($upgrade_path as $upgrade) {
@@ -141,6 +146,18 @@ function mcs_check() {
 			case '1.1.1':
 				mcs_update_database();
 			break;
+			case '1.5.8':
+				delete_option( 'mcs-parsed-files' );
+				delete_option( 'mcs-number-of-files' );
+				delete_option( 'mcs-delimiter' );
+				delete_option( "mcs_parsing_now_0" );
+				delete_option( "mcs_parsing_now_1" );
+				delete_option( "mcs_parsing_now_2" );
+				delete_option( "mcs_parsing_now_3" );
+				delete_option( "mcs_parsing_now_4" );
+				delete_option( "mcs_parsing_now_5" );
+				delete_option( "mcs_parsing_now_6" );
+			break;			
 		}
 	}
 }
