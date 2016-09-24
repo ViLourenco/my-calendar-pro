@@ -23,7 +23,7 @@
 			 * If the response is -1, then the operation is done and we can stop the
 			 * timer; otherwise, we can update the progressbar.
 			 */
-			importTimer = setInterval(function() {
+			importTimer = setInterval( function() {
 
 				// Get the current status of the update
 				$.get( ajaxurl, {
@@ -33,11 +33,11 @@
 					console.log( response );
 					
 					if ( '-1' === response ) {
-						
-						$( '.mcs-importer-progress span' ).attr( 'data-progress', 100 ).addClass( 'percent100' ).css( 'width', '100%' );
-						$( '.mcs-importer-progress strong' ).text( '100%' ).delay( 1000 ).text( 'Import Completed' );
 						// Set the progress bar equal to 100 and clear the timer
 						window.clearInterval( importTimer );
+						
+						$( '.mcs-importer-progress span' ).attr( 'data-progress', 100 ).addClass( 'percent100' ).css( 'width', '100%' );
+						$( '.mcs-importer-progress strong' ).text( '100%' ).delay( 500 ).text( 'Import Completed' );
 
 					} else {
 						
