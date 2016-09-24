@@ -70,10 +70,10 @@ function mcs_importer_update() {
 		 *
 		 * We use floor() so we don't round up by one.
 		 */
-		$rows          = floor( $total_rows / $number_per_row );
+		$rows          = ceil( $total_rows / $number_per_row );
 		// have to have at least one file.
 		$rows          = ( $rows == 0 ) ? 1 : $rows;
-		$remaining_row = ( $rows % $number_per_row );
+		$remaining_row = ( $total_rows % $number_per_row );
 		// Prepare to write out the files. This could just as easily be a for loop.
 		$file_counter = 0;
 		
@@ -82,8 +82,9 @@ function mcs_importer_update() {
 			/* Create the output file that will contain a title row and a set of ten rows.
 			 * The filename is generated based on which file we're importing.
 			 */
+			$loops = ( $rows == 1 && $remaining_row != 0 ) ? $remaining_row : $number_per_row;
 			// set a batch of rows into a string.
-			for( $i = 1; $i <= $number_per_row; $i++ ) {
+			for( $i = 1; $i < $loops; $i++ ) {
 				/* Read the value from the array and then remove from
 				 * the array so it's not read again.
 				 */
@@ -96,7 +97,7 @@ function mcs_importer_update() {
 				}
 				
 				// extra PHP EOL will break data
-				$csv_data .= ( $data ) ? str_replace( PHP_EOL, '', $data ) . PHP_EOL : PHP_EOL;
+				$csv_data .= ( $data && trim( $data ) != '' ) ? str_replace( PHP_EOL, '', $data ) . PHP_EOL : PHP_EOL;
 				unset( $csv_rows[ $i ] );
 			}
 			/* Write out the file and then close the handle since we'll be opening
@@ -117,8 +118,8 @@ function mcs_importer_update() {
 			$csv_rows = array_values( $csv_rows );
 		}
 		
-		update_option( 'mcs-number-of-files', $file_counter );	
-		update_option( 'mcs-parsed-files', 0 );
+		set_transient( 'mcs-number-of-files', $file_counter, 60 );	
+		set_transient( 'mcs-parsed-files', 0, 60 );
 
 		if ( $constructed ) {
 			// highly improbable pattern to help cope with unknown data in content.
@@ -126,7 +127,7 @@ function mcs_importer_update() {
 		} else {
 			$delimiter = ',';
 		}
-		update_option( 'mcs-delimiter', $delimiter );
+		set_transient( 'mcs-delimiter', $delimiter, 60 );
 		
 		$titles = explode( $delimiter, $title_row );
 		$imports = $total_rows - 1;
@@ -258,13 +259,13 @@ function mcs_importer_settings( $panels ) {
  */
 add_action( 'wp_ajax_mcs_import_files', 'mcs_import_files' );
 function mcs_import_files( $i = 0 ) {
-   add_option( "mcs_parsing_now_$i", 'true' );
+   set_transient( "mcs-parsing-$i", 'true', 10 );
    $content         = array();
    $defaults        = mcs_default_event_values();
-   $number_of_files = get_option( 'mcs-number-of-files' );
-   $delimiter       = get_option( 'mcs-delimiter' );	
+   $number_of_files = get_transient( 'mcs-number-of-files' );
+   $delimiter       = get_transient( 'mcs-delimiter' );	
    
-   if ( $i < $number_of_files ) {
+   if ( $i <= $number_of_files ) {
 		$filename = dirname( __FILE__ ). '/mcs_csv_' . $i . '.csv';
 
 		if ( file_exists( $filename ) ) {
@@ -299,17 +300,16 @@ function mcs_import_files( $i = 0 ) {
 			unset( $event );
 			// update count of parsed files; close & delete input file
 			unlink( $filename );
-			//echo 'Parsed: ' . get_option( 'mcs-parsed-files' );
+			//echo 'Parsed: ' . get_transient( 'mcs-parsed-files' );
 			//usleep( 200000 );
 		}
 	} else {
 		// delete data about imports
-		delete_option( 'mcs-parsed-files' );
-		delete_option( 'mcs-number-of-files' );
-		delete_option( 'mcs-delimiter' );
-		
+		delete_transient( 'mcs-parsed-files' );
+		delete_transient( 'mcs-number-of-files' );
+		delete_transient( 'mcs-delimiter' );
 	}
-	delete_option( "mcs_parsing_now_$i" );
+	delete_transient( "mcs-parsing-$i" );
 }
 
 // Define the hook for getting the status somewhere in your plugin
@@ -323,18 +323,18 @@ function mcs_get_import_status() {
 	* -1 indicates that we're done
 	*/
 
-	if ( FALSE !== get_option( 'mcs-parsed-files' ) ) {
-		$parsed_files = floatval( get_option( 'mcs-parsed-files' ) );
-		$total_files =  floatval( get_option( 'mcs-number-of-files' ) );
+	if ( FALSE !== get_transient( 'mcs-parsed-files' ) ) {
+		$parsed_files = floatval( get_transient( 'mcs-parsed-files' ) );
+		$total_files =  floatval( get_transient( 'mcs-number-of-files' ) );
 		if ( $total_files != 0 ) {
 			// prevent duplicate imports
-			if ( get_option( "mcs_parsing_now_$parsed_files" ) != 'true' ) {
+			if ( get_transient( "mcs-parsing-$parsed_files" ) != 'true' ) {
 				mcs_import_files( $parsed_files );
 				/**
 				 * Update data about imports 
 				 */
-				update_option( 'mcs-parsed-files', $parsed_files + 1 );
-			}	
+				set_transient( 'mcs-parsed-files', $parsed_files + 1, 60 );
+			}
 			$progress =  $parsed_files / $total_files;
 			/* Return progress values */
 			if ( $progress == 1 ) {
@@ -342,7 +342,7 @@ function mcs_get_import_status() {
 			}
 			die( $progress );
 		} else {
-			die ( 0 );
+			die ( '0' );
 		}
 		
 	} else {
@@ -527,7 +527,7 @@ function mcs_default_event_values() {
 		$dvalue = 0;
 	}	
 	$expires = ( get_option('mc_event_link_expires') == 'false' ) ? 1 : 0;
-	
+		
 	// import values from settings & autogenerate generated values
 	$defaults = array(
 		'event_fifth_week' => ( get_option( 'event_fifth_week' ) == 'true' ) ? 1 : '',
@@ -538,7 +538,7 @@ function mcs_default_event_values() {
 		'event_recur' => 'S',
 		'event_repeats' => 0,
 		'event_approved' => $dvalue,
-		'event_link_expires' => $expires
+		'event_link_expires' => $expires,
 	);
 	
 	return apply_filters( 'mcs_default_event_values', $defaults );
