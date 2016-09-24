@@ -496,7 +496,11 @@ class my_calendar_advanced_search extends WP_Widget {
 
 	function update( $new, $old ) {
 		$instance          = $old;
-		$instance['title'] = wp_kses_post( $new['title'] );
+		if ( function_exists( 'mc_kses_post' ) ) {
+			$instance['title'] = mc_kses_post( $new['title'] );
+		} else {
+			$instance['title'] = wp_kses_post( $new['title'] );
+		}
 		$instance['url']   = esc_url_raw( $new['url'] );
 		$instance['args']  = $new['args'];
 
