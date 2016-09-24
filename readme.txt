@@ -39,6 +39,7 @@ TODO: handle tzoffsetfrom/to in iCal from Google (part of the overall vcal block
 * Miscellaneous improvements to usage of defaults in submissions
 * Save author data from public submissions
 * Display author data when submitted from public
+* Change import options to transients so errors expire.
 
 = 1.5.7 =
 
