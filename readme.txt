@@ -32,6 +32,7 @@ New or updated translations are always appreciated. The translation files are in
 
 TODO: track UID in imported events
 TODO: handle tzoffsetfrom/to in iCal from Google (part of the overall vcal block, not part of an event)
+TODO: add location search based on alternate location characteristics to query
 
 = 1.5.8 =
 
@@ -40,6 +41,7 @@ TODO: handle tzoffsetfrom/to in iCal from Google (part of the overall vcal block
 * Save author data from public submissions
 * Display author data when submitted from public
 * Change import options to transients so errors expire.
+* Import correct number of files & number of rows per file
 
 = 1.5.7 =
 
@@ -247,7 +249,6 @@ Todo for this release:
 
 * Feature: limiting of viewing categories to specific member groups
 * Feature: limit ability to enter categories by member groups
-* Create selectable event details templates 
 * Make only portions of events private (e.g., time and location for children's events, etc.)
 * Provide notifications of new events by category (to specific users or to lists of users; set up as user meta option?) (use save_event hooks; set up reminder schedule; use cron; see RQ by Don Brown via email)
 * Add controls on My Calendar defined page to alter shortcode settings on that page?

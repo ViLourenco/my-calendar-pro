@@ -168,10 +168,10 @@ function mcs_wrap_field( $content ) {
 function mcs_convert_ics( $file ) {
 	include( dirname( __FILE__ ). '/classes/class.iCalReader.php' );
 	$ics    = new ical( $file );
+	// is timezone from/to data in $ics->cal['VCALENDAR']?
 	$events = $ics->cal['VEVENT'];
 	$uids = array();
 	// map each element to existing My Calendar fields
-	//$rows = 'event_begin,event_time,event_end,event_endtime,content,event_label,event_title,event_group_id'.PHP_EOL;
 	$rows = 'event_begin|||event_time|||event_end|||event_endtime|||content|||event_label|||event_title|||event_group_id'.PHP_EOL;
 	foreach ( $events as $event ) {
 		$event_begin = date( 'Y-m-d', strtotime( $event['DTSTART'] ) );
@@ -186,6 +186,7 @@ function mcs_convert_ics( $file ) {
 		$summary     = ( isset( $event['SUMMARY'] ) ) ? $event['SUMMARY'] : '';
 			
 		$uid         = ( isset( $event['UID'] ) ) ? $event['UID'] : '';
+		// add UID field to event object; use to track for imports
 		if ( in_array( $uid, $uids ) ) {
 			$group_id = mc_group_id();
 		} else {
