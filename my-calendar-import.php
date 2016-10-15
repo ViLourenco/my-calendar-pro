@@ -153,7 +153,7 @@ function mcs_importer_update() {
 		}
 		unset( $title );		
 		$return .= "</ul>";
-		$return .= "<button name='mcs_import_events' class='button-primary' type='button'>" . __( 'Import Events', 'my-calendar-submissions' ) . "</button>
+		$return .= "<button type='button' name='mcs_import_events' class='button-primary' type='button'>" . __( 'Import Events', 'my-calendar-submissions' ) . "</button>
 		<div class='mcs-importer-progress' aria-live='assertive' aria-atomic='false'><span>Importing...<strong class='percent'></strong></span></div>";
 		
 		return $return;
@@ -489,6 +489,8 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 			}*/
 			$values = $row;
 			$i = 0;
+			$event_begin = '';
+			$event_end = '';
 			foreach ( $values as $value ) {
 				$value = str_replace( array( $enclosure, $escape ), '', $value );
 				if ( in_array( $titles[$i], array( 'event_begin', 'event_end', 'event_time', 'event_endtime' ) ) ) {
@@ -496,7 +498,7 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 						$value = date( 'Y-m-d', strtotime( $value ) );
 					} else {
 						$value = date( 'H:i:s', strtotime( $value ) );
-					}
+					}					
 					// endtime must be listed after start time.
 					if ( $titles[$i] == 'event_endtime' && $value == '00:00:00' ) {
 						$value = date( 'H:i:s', strtotime( $r['event_time'][0] . ' + 1 hour' ) );
@@ -507,9 +509,17 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 				}
 				$i++;
 			}
+			
 			unset( $value );
 		}
-
+		
+		$event_begin = $r['event_begin'][0];
+		$event_end   = $r['event_end'][0];
+		
+		if ( strtotime( $event_end ) < strtotime( $event_begin ) ) {
+			$r['event_end'] = array( $event_begin );
+		}
+		
 		$output[] = $r;
 	}
 	unset( $row );
