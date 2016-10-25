@@ -34,6 +34,10 @@ TODO: track UID in imported events
 TODO: handle tzoffsetfrom/to in iCal from Google (part of the overall vcal block, not part of an event)
 TODO: add location search based on alternate location characteristics to query
 
+= 1.5.9 =
+
+* Bug fix: Handle event end dates if not provided in import file
+
 = 1.5.8 =
 
 * Add user-agent to PayPal integration
