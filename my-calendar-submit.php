@@ -550,7 +550,7 @@ function mcs_submit_category( $category, $categories ) {
 }
 
 function mcs_submit_location( $location, $locations, $location_fields, $selected_location ) {
-	if ( $locations == 'none' ) { return '<div><input type="hidden" name="location_preset" value="none" /></div>'; }
+	if ( $locations == 'none' && !$location ) { return '<div><input type="hidden" name="location_preset" value="none" /></div>'; }
 	$return = '';
 	switch ( $locations ) {
 		case 'choose':
@@ -575,6 +575,7 @@ function mcs_submit_location( $location, $locations, $location_fields, $selected
 			} // if 'neither', but a preset is set, this value should be set.
 		break;
 	}
+	
 	return $return;
 }
 
