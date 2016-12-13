@@ -452,7 +452,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		$return .=	"
 			<p class='recurring'>
 			<label for='event_repeats'>".__('Repeats','my-calendar-submissions')."</label> <input type='number' name='event_repeats' id='event_repeats' class='input' size='1' min='0' max='999' value='$repeats' /> 
-			<label for='event_every'>".__('every','my-calendar')."</label> <input type='number' name='event_every' id='event_every' class='input' size='1' min='1' max='9' maxlength='1' value='$every' /> 
+			<label for='event_every'>".__('every','my-calendar')."</label> <input type='number' name='event_every' id='event_every' class='input' size='1' min='1' max='99' maxlength='2' value='$every' /> 
 			<label for='event_recur' class='screen-reader-text'>". __('Units','my-calendar-submissions')."</label> <select name='event_recur' class='input' id='event_recur'>"
 				.mc_recur_options($recur)."
 			</select> 
@@ -557,19 +557,23 @@ function mcs_submit_location( $location, $locations, $location_fields, $selected
 			$return .= "<p><label for='mcs_event_location'>".__('Location','my-calendar-submissions')."</label> <select name='location_preset' id='mcs_event_location'><option value='none'> -- </option>".mc_location_select( $location )."</select></p>";
 		break;		
 		case 'either':
-			$return .= "<p><label for='mcs_event_location'>".__('Location','my-calendar-submissions')."</label> <select name='location_preset' id='mcs_event_location'><option value='none'> -- </option>".mc_location_select( $location )."</select></p>";
-			$return .= "<button type='button' class='toggle_location_fields' aria-expanded='false'>" . __( 'Add New Location', 'my-calendar-submissions' ) . "<span class='dashicons dashicons-plus' aria-hidden='true'></span></button>
-			<div class='mcs_location_fields'>";
-			$return .= mcs_location_form($location_fields, $selected_location);
-			$return .= "</div>";
+			$return .= "<p><label for='mcs_event_location'>" . __( 'Location','my-calendar-submissions' ) . "</label> <select name='location_preset' id='mcs_event_location'><option value='none'> -- </option>" . mc_location_select( $location ) . "</select></p>";
+			if ( !apply_filters( 'mcs_expand_location_fields', false ) ) {
+				$return .= "<button type='button' class='toggle_location_fields' aria-expanded='false'>" . __( 'Add New Location', 'my-calendar-submissions' ) . "<span class='dashicons dashicons-plus' aria-hidden='true'></span></button>
+				<div class='mcs_location_fields'>";
+				$return .= mcs_location_form( $location_fields, $selected_location );
+				$return .= "</div>";
+			} else {
+				$return .= mcs_location_form( $location_fields, $selected_location );
+			}
 		break;
 		case 'enter':
-			$return .= mcs_location_form($location_fields, $selected_location);
+			$return .= mcs_location_form( $location_fields, $selected_location );
 			$return .= '<div><input type="hidden" name="location_preset" value="none" /></div>'; 
 		break;
 		default:
 			if ( $location ) {
-				$return = '<div><input type="hidden" name="location_preset" value="'.$location.'" /></div>'; 
+				$return = '<div><input type="hidden" name="location_preset" value="'. esc_attr( $location ) .'" /></div>'; 
 			} else {
 				$return = '<div><input type="hidden" name="location_preset" value="none" /></div>'; 
 			} // if 'neither', but a preset is set, this value should be set.
@@ -944,7 +948,9 @@ function mcs_notify_admin( $name, $email, $event_id, $action ) {
 			$mcs_to = array_map( 'trim', explode( ',', $mcs_to ) );
 			$mcs_to = implode( ',', $mcs_to );
 		}
-
+		
+// VERIFY each email address is valid JCD TODO
+		
 		$headers = array( "From: \"$name\" <$email>" );
 		$headers = apply_filters( 'mcs_notify_admin_headers', $headers );
 		$mail = wp_mail( $mcs_to, $subject, $message, $headers );

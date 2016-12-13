@@ -34,6 +34,11 @@ TODO: track UID in imported events
 TODO: handle tzoffsetfrom/to in iCal from Google (part of the overall vcal block, not part of an event)
 TODO: add location search based on alternate location characteristics to query
 
+= 1.5.10 =
+
+* In import, use occur_begin & occur_end instead of event_begin and event_end if exists TODO; support My Calendar exports
+* Bug fix: pass default location with no selector
+
 = 1.5.9 =
 
 * Bug fix: Handle event end dates if not provided in import file
