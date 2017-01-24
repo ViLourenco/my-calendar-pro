@@ -8,7 +8,10 @@
 		$(this).find( 'span' ).removeClass( dashicon_old ).addClass( dashicon_new );
 		$( '.mcs_location_fields' ).toggle();
 		if ( $( '.mcs_location_fields' ).is( ':visible' ) ) {
+			$( '.mcs_location_fields' ).addClass( 'active' );
 			$( '.mcs_location_fields #event_label' ).focus();
+		} else {
+			$( '.mcs_location_fields' ).removeClass( 'active' );
 		}
 	});
 	

@@ -40,9 +40,10 @@ TODO: add location search based on alternate location characteristics to query
 * Bug fix: pass default location with no selector
 * Bug fix: better support for My Calendar exported CSVs
 * Bug fix: Support multiline descriptions in ics import
-* Enhancement: better default text for location selector
 * Update translations
 * Accessibility: broken explicit label relationship
+* Enhancement: Added some additional classes
+* Enhancement: better default text for location selector
 
 = 1.5.9 =
 

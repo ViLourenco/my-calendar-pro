@@ -11,10 +11,11 @@
 }
 
 .mc-submissions .recurring input {
-	width: 4em;
+	width: 3em;
 }
 
 .mc-submissions .recurring select {
+	margin-top: .25em;
 	width: 12em;
 }
 
@@ -25,6 +26,7 @@
 
 .mc-submissions .toggle_location_fields {
 	margin-bottom: 1em;
+	width: 100%;
 }
 
 .mc-submissions .updated {
