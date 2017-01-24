@@ -372,14 +372,14 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		$tlabel = ( isset( $fields['event_time'] ) ) ? $fields['event_time'] : __('Time','my-calendar-submissions');		
 		$return .="
 		<p>
-		<label for='mc_event_title'>$flabel <span>".__('(required)','my-calendar-submissions')."</span></label> <input type='text' name='event_title' id='mc_event_title' value='$title' required='required' aria-required='true' />
+			<label for='mc_event_title'>$flabel <span>".__('(required)','my-calendar-submissions')."</span></label> <input type='text' name='event_title' id='mc_event_title' value='$title' required='required' aria-required='true' />
 		</p>
 		<div class='mc_begin_container'>
+			<p>
+				<label for='mc_event_date'>$dlabel <span>".__('(required)','my-calendar-submissions')."</span></label> <input type='text' class='mc-date' name='event_begin[]' id='mc_event_date' value='$begin' required='required' aria-required='true' />
+			</p>
 		<p>
-		<label for='mc_event_date'>$dlabel <span>".__('(required)','my-calendar-submissions')."</span></label> <input type='text' class='mc-date' name='event_begin[]' id='mc_event_date' value='$begin' required='required' aria-required='true' />
-		</p>
-		<p>
-		<label for='mc_event_time'>$tlabel</label> <input type='time' name='event_time[]' id='mc_event_time' class='mc-time' value='$time' />
+			<label for='mc_event_time'>$tlabel</label> <input type='time' name='event_time[]' id='mc_event_time' class='mc-time' value='$time' />
 		</p>
 		</div>";
 		if ( isset( $fields['end_date']) || isset($fields['end_time'] ) ) {
@@ -388,7 +388,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		if ( isset( $fields['end_date'] ) ) {
 			$flabel = ( $fields['end_date'] != 'true' && $fields['end_date'] != 'End date' ) ? $fields['end_date'] : __( 'End date','my-calendar-submissions' );
 			$return .=	"<p>
-			<label for='mc_event_enddate'>$flabel</label> <input type='text' class='mc-date' name='event_end[]' id='mc_event_enddate' value='$end' />
+				<label for='mc_event_enddate'>$flabel</label> <input type='text' class='mc-date' name='event_end[]' id='mc_event_enddate' value='$end' />
 			</p>";
 		} else {
 			$return .= "<input type='hidden' name='event_end[]' value='' />";
@@ -396,7 +396,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		if ( isset($fields['end_time']) ) {
 			$flabel = ( $fields['end_time'] != 'true' && $fields['end_time'] != 'End time' )?$fields['end_time']:__('End time','my-calendar-submissions');
 			$return .=	"<p>
-			<label for='mc_event_endtime'>$flabel</label> <input type='time' name='event_endtime[]' id='mc_event_endtime' class='mc-time' value='$endtime'/>
+				<label for='mc_event_endtime'>$flabel</label> <input type='time' name='event_endtime[]' id='mc_event_endtime' class='mc-time' value='$endtime'/>
 			</p>";
 		}
 		if ( isset($fields['end_date']) || isset($fields['end_time']) ) {
@@ -411,11 +411,11 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		} else {
 			$flabel = ( isset( $fields['mcs_name'] ) && $fields['mcs_name'] != 'true' && $fields['mcs_name'] != 'Your Name'  )?$fields['mcs_name']:__('Your Name','my-calendar-submissions');
 			$return .=	"<p>
-				<label for='mcs_name'>$flabel</label> <input type='text' name='mcs_name' id='mcs_name' value='$name' $required />
+					<label for='mcs_name'>$flabel</label> <input type='text' name='mcs_name' id='mcs_name' value='$name' $required />
 				</p>";
 			$flabel = ( isset( $fields['mcs_email'] ) && $fields['mcs_email'] != 'true' && $fields['mcs_email'] != 'Your Email'  )?$fields['mcs_email']:__('Your Email','my-calendar-submissions');
 			$return .=	"<p>
-				<label for='mcs_email'>$flabel</label> <input type='email' name='mcs_email' id='mcs_email' value='$email' $required />
+					<label for='mcs_email'>$flabel</label> <input type='email' name='mcs_email' id='mcs_email' value='$email' $required />
 				</p>";
 		}
 		if ( isset( $fields['event_host'] ) ) {
@@ -554,10 +554,12 @@ function mcs_submit_location( $location, $locations, $location_fields, $selected
 	$return = '';
 	switch ( $locations ) {
 		case 'choose':
-			$return .= "<p><label for='mcs_event_location'>".__('Location','my-calendar-submissions')."</label> <select name='location_preset' id='mcs_event_location'><option value='none'> -- </option>".mc_location_select( $location )."</select></p>";
+			$default_text = __( 'Select a location', 'my-calendar-submissions' );		
+			$return .= "<p><label for='mcs_event_location'>".__('Location','my-calendar-submissions')."</label> <select name='location_preset' id='mcs_event_location'><option value='none'> " . $default_text . "</option>".mc_location_select( $location )."</select></p>";
 		break;		
 		case 'either':
-			$return .= "<p><label for='mcs_event_location'>" . __( 'Location','my-calendar-submissions' ) . "</label> <select name='location_preset' id='mcs_event_location'><option value='none'> -- </option>" . mc_location_select( $location ) . "</select></p>";
+			$default_text = __( 'Select or add a location', 'my-calendar-submissions' );
+			$return .= "<p><label for='mcs_event_location'>" . __( 'Location','my-calendar-submissions' ) . "</label> <select name='location_preset' id='mcs_event_location'><option value='none'> " . $default_text . " </option>" . mc_location_select( $location ) . "</select></p>";
 			if ( !apply_filters( 'mcs_expand_location_fields', false ) ) {
 				$return .= "<button type='button' class='toggle_location_fields' aria-expanded='false'>" . __( 'Add New Location', 'my-calendar-submissions' ) . "<span class='dashicons dashicons-plus' aria-hidden='true'></span></button>
 				<div class='mcs_location_fields'>";
