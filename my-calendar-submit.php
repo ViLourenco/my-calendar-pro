@@ -710,6 +710,7 @@ function mcs_calculate_price( $quantity, $price, $discount, $discount_rate ) {
 	if ( $discount ) {
 		$total = $price * $discount_rate;
 	}
+	
 	return $total;
 }
 
@@ -719,6 +720,7 @@ function mcs_set_quantity_form( $price ) {
 				<label for='mcs_quantity'>".sprintf( __('Number of events?','my-calendar-submissions' ), $price )."</label> <input type='number' name='mcs_quantity' value='1' id='mcs_quantity' /> <input type='submit' name='mcs_set_quantity' value='".__('Go to Payment','my-calendar-submissions')."' />
 				</div>
 			</form>";
+			
 	return $form;
 }
 
@@ -737,6 +739,7 @@ function mcs_replace_http( $url ) {
 	if ( get_option( 'mcs_ssl' ) == 'true' ) {
 		$url = preg_replace('|^http://|', 'https://', $url ); 
 	}
+	
 	return $url;
 }
 
@@ -751,6 +754,7 @@ function mcs_on_sale( $discounts ) {
 	} else {
 		$return = false;
 	}
+	
 	return $return;
 }
 
@@ -763,6 +767,7 @@ function mcs_get_price( $logged_in ) {
 		$discounted = sprintf("%01.2f", $discounted );
 		$price = $discounted;
 	}
+	
 	return apply_filters( 'mcs_get_price', $price );
 }
 
@@ -851,8 +856,10 @@ function mcs_processor( $post ) {
 				do_action( 'mcs_complete_submission', $name, $email, $event_id, $action );
 			}
 		}
+		
 		return $return;
 	} else {
+		
 		return false;
 	}
 }
@@ -863,6 +870,7 @@ function mc_event_is_spam( $event_id ) {
 	if ( $flag == 1 ) {
 		return true;
 	}
+	
 	return false;
 }
 
@@ -876,6 +884,7 @@ function mcs_update_key_quantity( $key, $quantity ) {
 		array( 'hash'=>$key ),
 		$formats,
 		'%s' );	
+		
 	return;
 }
 
@@ -884,9 +893,11 @@ function mcs_check_key( $key ) {
 	global $wpdb;
 	$sql = "SELECT quantity FROM ".my_calendar_payments_table()." WHERE hash = '$key' AND status = 'Completed'";
 	$quantity = $wpdb->get_var($sql);
-	if ( !$quantity || $quantity === 0 ) { 
+	if ( !$quantity || $quantity === 0 ) {
+		
 		return false; 
 	} else {
+		
 		return $quantity;
 	}
 }
@@ -903,6 +914,7 @@ function mcs_key_status( $key ) {
 	} else if ( $key->status != 'Completed' ) {
 		$return = sprintf( __('Your payment key status is "%s".','my-calendar-submissions'),$key->status );
 	}
+	
 	return $return;
 }
 
@@ -939,6 +951,7 @@ function mcs_notify_admin( $name, $email, $event_id, $action ) {
 		$dont_send_email = true;
 	}
 	if ( $event->event_flagged == 1 || $dont_send_email == true ) {
+		
 		return;
 	} else {
 		mcs_save_author( $fname, $lname, $email, $event );
@@ -962,8 +975,7 @@ function mcs_notify_admin( $name, $email, $event_id, $action ) {
 			$mcs_to = implode( ',', $mcs_to );
 		}
 		
-// VERIFY each email address is valid JCD TODO
-		
+		// VERIFY each email address is valid JCD TODO	
 		$headers = array( "From: \"$name\" <$email>" );
 		$headers = apply_filters( 'mcs_notify_admin_headers', $headers );
 		$mail = wp_mail( $mcs_to, $subject, $message, $headers );
@@ -990,7 +1002,8 @@ function mcs_notify_submitter( $name, $email, $event_id, $action ) {
 	if ( preg_match( '/\s/', $name ) ) {
 		@list($fname,$lname) = preg_split('/\s+(?=[^\s]+$)/', $name, 2); 
 	} else {
-		$fname = $name; $lname = '';
+		$fname = $name; 
+		$lname = '';
 	}
 	$event = mc_get_event_core( $event_id );
 	$array = array ( 
@@ -1089,10 +1102,10 @@ function my_calendar_payments_table() {
 	$option = (int) get_site_option('mc_multisite');
 	$choice = (int) get_option('mc_current_table');	
 	switch ($option) {
-		case 0:return MY_CALENDAR_PAYMENTS_TABLE;break;
-		case 1:return MY_CALENDAR_GLOBAL_PAYMENTS_TABLE;break;
-		case 2:return ($choice==1)?MY_CALENDAR_GLOBAL_PAYMENTS_TABLE:MY_CALENDAR_PAYMENTS_TABLE;break;
-		default:return MY_CALENDAR_PAYMENTS_TABLE;
+		case 0 : return MY_CALENDAR_PAYMENTS_TABLE;break;
+		case 1 : return MY_CALENDAR_GLOBAL_PAYMENTS_TABLE;break;
+		case 2 : return ( $choice==1 ) ? MY_CALENDAR_GLOBAL_PAYMENTS_TABLE : MY_CALENDAR_PAYMENTS_TABLE; break;
+		default : return MY_CALENDAR_PAYMENTS_TABLE;
 	}
 }
 

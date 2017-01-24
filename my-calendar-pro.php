@@ -5,7 +5,7 @@ Plugin URI: http://www.joedolson.com/my-calendar/pro/
 Description: Expands the capabilities of My Calendar to add premium features.
 Author: Joseph C Dolson
 Author URI: http://www.joedolson.com
-Version: 1.5.9
+Version: 1.5.10
 */
 /*  Copyright 2012-2016  Joe Dolson (email : joe@joedolson.com)
 
@@ -26,7 +26,7 @@ Version: 1.5.9
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 global $mcs_version, $wpdb;
-$mcs_version = '1.5.9';
+$mcs_version = '1.5.10';
 
 // The URL of the site with EDD installed
 define( 'EDD_MCP_STORE_URL', 'https://www.joedolson.com' ); 
@@ -64,23 +64,23 @@ if ( !function_exists( 'mcs_submit_exists' ) ) {
 	}
 }
 
-include(dirname(__FILE__).'/updates/my-calendar-common.php' );
-include(dirname(__FILE__).'/gateways/my-calendar-ipn.php' );
-include(dirname(__FILE__).'/my-calendar-submit.php' );
-include(dirname(__FILE__).'/my-calendar-submit-payments.php' );
-include(dirname(__FILE__).'/my-calendar-license.php' );
-include(dirname(__FILE__).'/my-calendar-submit-widgets.php' );
-include(dirname(__FILE__).'/my-calendar-submit-settings.php' );
-include(dirname(__FILE__).'/my-calendar-event-posts.php' );
-include(dirname(__FILE__).'/my-calendar-post-events.php' );
-include(dirname(__FILE__).'/my-calendar-advanced-search.php' );
-include(dirname(__FILE__).'/my-calendar-responsive-mode.php' );
-include(dirname(__FILE__).'/my-calendar-import.php' );
+include( dirname(__FILE__).'/updates/my-calendar-common.php' );
+include( dirname(__FILE__).'/gateways/my-calendar-ipn.php' );
+include( dirname(__FILE__).'/my-calendar-submit.php' );
+include( dirname(__FILE__).'/my-calendar-submit-payments.php' );
+include( dirname(__FILE__).'/my-calendar-license.php' );
+include( dirname(__FILE__).'/my-calendar-submit-widgets.php' );
+include( dirname(__FILE__).'/my-calendar-submit-settings.php' );
+include( dirname(__FILE__).'/my-calendar-event-posts.php' );
+include( dirname(__FILE__).'/my-calendar-post-events.php' );
+include( dirname(__FILE__).'/my-calendar-advanced-search.php' );
+include( dirname(__FILE__).'/my-calendar-responsive-mode.php' );
+include( dirname(__FILE__).'/my-calendar-import.php' );
 
 if ( get_option( 'mcs_license_key_valid' ) == 'true' || get_option( 'mcs_license_key_valid' ) == 'active'  || get_option( 'mcs_license_key_valid' ) == 'valid' ) {
-	
+
 } else {
-	$message = sprintf(__("You must <a href='%s'>enter your license key</a> to get support and updates for My Calendar Pro.", 'my-calendar-submissions'), admin_url('admin.php?page=my-calendar-submissions'));
+	$message = sprintf( __("You must <a href='%s'>enter your license key</a> to get support and updates for My Calendar Pro.", 'my-calendar-submissions'), admin_url('admin.php?page=my-calendar-submissions') );
 	add_action('admin_notices', create_function( '', "if ( ! current_user_can( 'manage_options' ) ) { return; } else { echo \"<div class='error'><p>$message</p></div>\";}" ) );
 }
 
