@@ -175,7 +175,9 @@ function mcs_convert_ics( $file ) {
 	// map each element to existing My Calendar fields
 	$rows = 'event_begin|||event_time|||event_end|||event_endtime|||content|||event_label|||event_title|||event_group_id'.PHP_EOL;
 	foreach ( $events as $event ) {
-				
+		if ( !isset( $event['DTSTART'] ) ) {
+			continue;
+		}
 		$event_begin = date( 'Y-m-d', strtotime( $event['DTSTART'] ) );
 		$event_time = date( "H:i:00", strtotime( $event['DTSTART'] ) );
 		$event_end = date( 'Y-m-d', strtotime( $event['DTEND'] ) );
@@ -232,7 +234,7 @@ function mcs_importer_settings( $panels ) {
 			}
 			$importer .= '
 				<p>
-					<label for="mcs_importer">' . __( 'Upload File (.csv or .ics)', 'my-calendar-submissions' ) . '</label>			
+					<label for="mcs_importer_mode">' . __( 'Upload File (.csv or .ics)', 'my-calendar-submissions' ) . '</label>			
 					<input type="file" name="mcs_importer" id="mcs_importer_mode" /> 
 				</p>
 				<fieldset class="mcs-importer">
@@ -492,17 +494,12 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 	foreach ( $content as $key => $row ) {
 		if ( $row ) {
 			// convert back into string
-			/*$row = implode( $delimiter, array_map( 'mcs_wrap_field', $csv_rows[ $i ] ) );
-			if ( function_exists( 'str_getcsv' ) ) {
-				$values = str_getcsv( $row, $delimiter, $enclosure, $escape ); // --> requires 5.3.0	
-			} else {
-				$values = explode( $delimiter, $row ); // won't accept cases where the delimiter is in values
-			}*/
 			$values = $row;
 			$i = 0;
 			$event_begin = '';
 			$event_end   = '';
 			foreach ( $values as $value ) {
+				$value = str_replace( '\n', '<br />', $value );
 				$value = str_replace( array( $enclosure, $escape ), '', $value );
 				if ( in_array( $titles[$i], array( 'event_begin', 'event_end', 'event_time', 'event_endtime', 'occur_begin', 'occur_end' ) ) ) {
 					if ( in_array( $titles[$i], array( 'event_begin', 'event_end', 'occur_begin', 'occur_end' ) ) ) {
@@ -530,12 +527,17 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 		$r['event_begin'] = array( $event_begin );
 		$r['event_end']   = array( $event_end );
 		
+		if ( isset( $r['event_desc'] ) && !isset( $r['content'] ) ) {
+			$r['content'] = $r['event_desc'];
+		}
+		
 		if ( strtotime( $event_end ) < strtotime( $event_begin ) ) {
 			$r['event_end'] = array( $event_begin );
 		}
 		
 		$output[] = $r;
 	}
+		
 	unset( $row );
 	
 	return $output;	

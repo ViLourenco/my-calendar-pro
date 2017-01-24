@@ -48,17 +48,24 @@ class iCal {
      */
     public function __construct($filename=false)
     {
-        if (!$filename) {
+        if ( !$filename ) {
             return false;
         }
 
-        if (is_array($filename)) {
+        if ( is_array( $filename ) ) {
             $lines = $filename;
         } else {
-            $lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $lines = file( $filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
         }
 
-        return $this->initLines($lines);
+		// JCD TODO:
+		// Problem: multiline fields are discarded.
+		//echo "<pre>";
+		//print_r( $this->initlines( $lines ) );
+		//echo "</pre>";
+		//die;	
+		
+        return $this->initLines( $lines );
     }
 
 
@@ -72,7 +79,6 @@ class iCal {
     public function initURL($url)
     {
         $contents = file_get_contents($url);
-
         $lines = explode("\n", $contents);
 
         return $this->initLines($lines);
@@ -86,37 +92,48 @@ class iCal {
      *
      * @return Object The iCal Object
      */
-    public function initLines($lines)
+    public function initLines( $lines )
     {
-        if (stristr($lines[0], 'BEGIN:VCALENDAR') === false) {
+		
+        if ( stristr( $lines[0], 'BEGIN:VCALENDAR' ) === false ) {
             return false;
         } else {
-            foreach ($lines as $line) {
-                $line = rtrim($line); // Trim trailing whitespace
-                $add  = $this->keyValueFromString($line);
-
-                if ($add === false) {
-                    $this->addCalendarComponentWithKeyAndValue($component, false, $line);
+            foreach ( $lines as $line ) {
+                $line = rtrim( $line ); // Trim trailing whitespace
+                $add  = $this->keyValueFromString( $line );
+				
+				// need to support multiline descriptions
+				if ( trim( $line ) == 'DESCRIPTION:' ) {
+					$add = array(
+						'DESCRIPTION',
+						' '
+					);
+				}
+				/*print_r( $add );
+				echo $line;
+				echo "<hr>";*/
+                if ( $add === false ) {
+                    $this->addCalendarComponentWithKeyAndValue( $component, false, $line );
                     continue;
                 }
 
                 $keyword = $add[0];
                 $values = $add[1]; // Could be an array containing multiple values
 
-                if (!is_array($values)) {
-                    if (!empty($values)) {
-                        $values = array($values); // Make an array as not already
+                if ( !is_array( $values ) ) {
+                    if ( !empty( $values ) ) {
+                        $values      = array( $values ); // Make an array as not already
                         $blank_array = array(); // Empty placeholder array
-                        array_push($values, $blank_array);
+                        array_push( $values, $blank_array );
                     } else {
                         $values = array(); // Use blank array to ignore this line
                     }
-                } else if(empty($values[0])) {
+                } else if ( empty( $values[0] ) ) {
                     $values = array(); // Use blank array to ignore this line
                 }
 
-                $values = array_reverse($values); // Reverse so that our array of properties is processed first
-
+                $values = array_reverse( $values ); // Reverse so that our array of properties is processed first
+				
                 foreach ($values as $value) {
                     switch ($line) {
                         // http://www.kanzaki.com/docs/ical/vtodo.html
@@ -165,6 +182,7 @@ class iCal {
                 }
             }
             $this->process_recurrences();
+			
             return $this->cal;
         }
     }
@@ -178,9 +196,9 @@ class iCal {
      *
      * @return {None}
      */
-    public function addCalendarComponentWithKeyAndValue($component, $keyword, $value)
+    public function addCalendarComponentWithKeyAndValue( $component, $keyword, $value )
     {
-        if ($keyword == false) {
+        if ( $keyword == false ) {
             $keyword = $this->last_keyword;
         }
 
@@ -189,14 +207,14 @@ class iCal {
                 $this->cal[$component][$this->todo_count - 1][$keyword] = $value;
                 break;
             case 'VEVENT':
-                if (!isset($this->cal[$component][$this->event_count - 1][$keyword . '_array'])) {
+                if ( !isset( $this->cal[$component][$this->event_count - 1][$keyword . '_array'] ) ) {
                     $this->cal[$component][$this->event_count - 1][$keyword . '_array'] = array(); // Create array()
                 }
 
-                if (is_array($value)) {
-                    array_push($this->cal[$component][$this->event_count - 1][$keyword . '_array'], $value); // Add array of properties to the end
+                if ( is_array( $value ) ) {
+                    array_push( $this->cal[$component][$this->event_count - 1][$keyword . '_array'], $value ); // Add array of properties to the end
                 } else {
-                    if (!isset($this->cal[$component][$this->event_count - 1][$keyword])) {
+                    if ( !isset( $this->cal[$component][$this->event_count - 1][$keyword] ) ) {
                         $this->cal[$component][$this->event_count - 1][$keyword] = $value;
                     }
 
@@ -206,14 +224,14 @@ class iCal {
                     if ($this->cal[$component][$this->event_count - 1][$keyword] != $value) {
                         $ord = (isset($value[0])) ? ord($value[0]) : NULL; // First char
 
-                        if(in_array($ord, array(9, 32))){ // Is space or tab?
+                        if ( in_array( $ord, array( 9, 32 ) ) ){ // Is space or tab?
                             $value = substr($value, 1); // Only trim the first character
                         }
 
-                        if(is_array($this->cal[$component][$this->event_count - 1][$keyword . '_array'][1])){ // Account for multiple definitions of current keyword (e.g. ATTENDEE)
+                        if( is_array( $this->cal[$component][$this->event_count - 1][$keyword . '_array'][1] ) ){ // Account for multiple definitions of current keyword (e.g. ATTENDEE)
                             $this->cal[$component][$this->event_count - 1][$keyword] .= ';' . $value; // Concat value *with separator* as content spans multiple lines
                         } else {
-                            $this->cal[$component][$this->event_count - 1][$keyword] .= $value; // Concat value as content spans multiple lines
+                            $this->cal[$component][$this->event_count - 1][$keyword] .= ' ' . trim( $value ); // Concat value as content spans multiple lines
                         }
                     }
                 }
@@ -225,6 +243,7 @@ class iCal {
                 $this->cal[$component][$keyword] = $value;
                 break;
         }
+				
         $this->last_keyword = $keyword;
     }
 
@@ -240,39 +259,44 @@ class iCal {
         // Match colon separator outside of quoted substrings
         // Fallback to nearest semicolon outside of quoted substrings, if colon cannot be found
         // Do not try and match within the value paired with the keyword
-        preg_match('/(.*?)(?::(?=(?:[^"]*"[^"]*")*[^"]*$)|;(?=[^:]*$))([\w\W]*)/', $text, $matches);
-
-        if (count($matches) == 0) {
+        preg_match( '/(.*?)(?::(?=(?:[^"]*"[^"]*")*[^"]*$)|;(?=[^:]*$))([\w\W]*)/', $text, $matches );
+				
+        if ( count( $matches ) == 0 ) {
             return false;
-        }
-
-        if (preg_match('/^([A-Z-]+)([;][\w\W]*)?$/', $matches[1])) {
-            $matches = array_splice($matches, 1, 2); // Remove first match and re-align ordering
-
+        }	
+		
+       // if (preg_match('/^([A-Z-]+)([;][\w\W]*)?$/', $matches[1]) ) { JCD MOD
+        if ( preg_match( "/^([A-Z\-]+)[;:](.*)$/", $text, $matches ) ) {
+			// Remove first match and re-align ordering	
+            $matches = array_splice( $matches, 1, 2 ); 				
             // Process properties
-            if (preg_match('/([A-Z-]+)[;]([\w\W]*)/', $matches[0], $properties)) {
-                array_shift($properties); // Remove first match
-                $matches[0] = $properties[0]; // Fix to ignore everything in keyword after a ; (e.g. Language, TZID, etc.)
-                array_shift($properties); // Repeat removing first match
-
+            //if (preg_match('/([A-Z-]+)[;]([\w\W]*)/', $matches[0], $properties)) {
+            if ( preg_match( '/^([A-Z\-]+)[;:](.*)$/', $matches[0], $properties ) || trim($text) == 'DESCRIPTION:' ) {
+                array_shift( $properties ); // Remove first match
+                $matches[0] = isset( $properties[0] ) ? $properties[0] : ''; // Fix to ignore everything in keyword after a ; (e.g. Language, TZID, etc.)
+                array_shift( $properties ); // Repeat removing first match
                 $formatted = array();
-                foreach ($properties as $property) {
-                    preg_match_all('~[^\r\n";]+(?:"[^"\\\]*(?:\\\.[^"\\\]*)*"[^\r\n";]*)*~', $property, $attributes); // Match semicolon separator outside of quoted substrings
+                foreach ( $properties as $property ) {
+                    // Match semicolon separator outside of quoted substrings
+					preg_match_all( '~[^\r\n";]+(?:"[^"\\\]*(?:\\\.[^"\\\]*)*"[^\r\n";]*)*~', $property, $attributes ); 
                     $attributes = (sizeof($attributes) == 0) ? array($property) : reset($attributes); // Remove multi-dimensional array and use the first key
+                    foreach ( $attributes as $attribute ) {
+                        // Match equals sign separator outside of quoted substrings
+						preg_match_all( '~[^\r\n"=]+(?:"[^"\\\]*(?:\\\.[^"\\\]*)*"[^\r\n"=]*)*~', $attribute, $values ); 
+						// Remove multi-dimensional array and use the first key
+                        $value = ( sizeof($values) == 0 ) ? NULL : reset( $values ); 
 
-                    foreach ($attributes as $attribute) {
-                        preg_match_all('~[^\r\n"=]+(?:"[^"\\\]*(?:\\\.[^"\\\]*)*"[^\r\n"=]*)*~', $attribute, $values); // Match equals sign separator outside of quoted substrings
-                        $value = (sizeof($values) == 0) ? NULL : reset($values); // Remove multi-dimensional array and use the first key
-
-                        if (is_array($value) && isset($value[1])) {
-                            $formatted[$value[0]] = trim($value[1], '"'); // Remove double quotes from beginning and end only
+                        if ( is_array($value) && isset($value[1]) ) {
+							// Remove double quotes from beginning and end only
+                            $formatted[$value[0]] = trim( $value[1], '"' ); 
                         }
                     }
                 }
+				
+				// Assign the keyword property information
+                $properties[0] = $formatted; 
 
-                $properties[0] = $formatted; // Assign the keyword property information
-
-                array_unshift($properties, $matches[1]); // Add match to beginning of array
+                array_unshift( $properties, $matches[1] ); // Add match to beginning of array
                 $matches[1] = $properties;
             }
 
