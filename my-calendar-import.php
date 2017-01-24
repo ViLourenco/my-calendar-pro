@@ -45,6 +45,7 @@ function mcs_importer_update() {
 				fclose( $file );				
 				$constructed = true;
 				$csv         = mcs_convert_ics( dirname( __FILE__ ). '/mcs_csv_source.ics' );
+				
 				unlink( dirname( __FILE__ ). '/mcs_csv_source.ics' );
 			}
 		}
@@ -57,7 +58,7 @@ function mcs_importer_update() {
 		$csv_rows       = ( !is_array( $csv ) ) ? explode( PHP_EOL, $csv ) : $csv;
 		$total_rows     = count( $csv_rows );
 		// number of rows per file
-		$number_per_row = 20;
+		$number_per_row = 30;
 		
 		// Store the title row. This will be written at the top of every file.
 		$title_row  = $csv_rows[ 0 ];
@@ -119,7 +120,7 @@ function mcs_importer_update() {
 		}
 		
 		set_transient( 'mcs-number-of-files', $file_counter, 60 );	
-		set_transient( 'mcs-parsed-files', 0, 60 );
+		set_transient( 'mcs-parsed-files', 'true', 60 );
 
 		if ( $constructed ) {
 			// highly improbable pattern to help cope with unknown data in content.
@@ -174,6 +175,7 @@ function mcs_convert_ics( $file ) {
 	// map each element to existing My Calendar fields
 	$rows = 'event_begin|||event_time|||event_end|||event_endtime|||content|||event_label|||event_title|||event_group_id'.PHP_EOL;
 	foreach ( $events as $event ) {
+				
 		$event_begin = date( 'Y-m-d', strtotime( $event['DTSTART'] ) );
 		$event_time = date( "H:i:00", strtotime( $event['DTSTART'] ) );
 		$event_end = date( 'Y-m-d', strtotime( $event['DTEND'] ) );
@@ -193,7 +195,7 @@ function mcs_convert_ics( $file ) {
 			$group_id = 'default';
 			$uids[]   = $uid;
 		}
-		$rows .= "\"$event_begin\"|||\"$event_time\"|||\"$event_end\"|||\"$event_endtime\"|||\"$description\"|||\"$location\"|||\"$summary\"|||\"$group_id\"" . PHP_EOL;
+		$rows .= "\"$event_begin\"|||\"$event_time\"|||\"$event_end\"|||\"$event_endtime\"|||\"$description\"|||\"$location\"|||\"$summary\"|||\"$group_id\"" . PHP_EOL;		
 	}
 	unset( $event );
 	
@@ -276,7 +278,7 @@ function mcs_import_files( $i = 0 ) {
 			while(( $row = fgetcsv( $file, 0, $delimiter ) ) !== false ) {
 				$content[]  = $row;
 			}
-			$array      = mcs_translate_csv( $content, $delimiter );
+			$array      = mcs_translate_csv( $content, $delimiter );			
 			unset( $content );
 			fclose( $file );
 			
@@ -329,6 +331,9 @@ function mcs_get_import_status() {
 		$total_files =  floatval( get_transient( 'mcs-number-of-files' ) );
 		if ( $total_files != 0 ) {
 			// prevent duplicate imports
+			if ( $parsed_files == 'true' ) {
+				$parsed_files = 0;
+			}
 			if ( get_transient( "mcs-parsing-$parsed_files" ) != 'true' ) {
 				mcs_import_files( $parsed_files );
 				/**
@@ -346,7 +351,7 @@ function mcs_get_import_status() {
 			die ( '0' );
 		}
 		
-	} else {
+	} else {		
 		die( '-1' );
 	}
 }
@@ -421,10 +426,13 @@ function mcs_option_fields() {
 			// Event data
 			'event_title'        => __( 'Title', 'my-calendar-submissions' ),			
 			'event_begin'        => __( 'Starting Date', 'my-calendar-submissions' ),
+			'occur_begin'        => __( 'Starting Date', 'my-calendar-submissions' ),
 			'event_end'          => __( 'Ending Date', 'my-calendar-submissions' ),
+			'occur_end'          => __( 'Ending Date', 'my-calendar-submissions' ),
 			'event_time'         => __( 'Starting Time', 'my-calendar-submissions' ),
 			'event_endtime'      => __( 'Ending Time', 'my-calendar-submissions' ),
 			'content'            => __( 'Description', 'my-calendar-submissions' ),
+			'event_desc'         => __( 'Description', 'my-calendar-submissions' ),
 			'event_short'        => __( 'Short Description', 'my-calendar-submissions' ),
 			'event_link'         => __( 'External event URL', 'my-calendar-submissions' ),
 			'event_link_expires' => __( 'Link expiration', 'my-calendar-submissions' ),
@@ -445,6 +453,9 @@ function mcs_option_fields() {
 			'event_span'         => __( 'Event spans multiple days', 'my-calendar-submissions' ),
 			'event_hide_end'     => __( 'Hide end date', 'my-calendar-submissions' ),
 			// Ticketing/Registration data
+			'event_status'       => __( 'Event Status', 'my-calendar-submissions' ),
+			'event_approved'     => __( 'Event Approved', 'my-calendar-submissions' ),
+			'event_flagged'      => __( 'Event Flagged as Spam', 'my-calendar-submissions' ),
 			'event_tickets'      => __( 'Event Tickets Link', 'my-calendar-submissions' ),
 			'event_registration' => __( 'Event Registration Info', 'my-calendar-submissions' ),
 			'event_open'         => __( 'Open for registrations', 'my-calendar-submissions' ),
@@ -490,11 +501,11 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 			$values = $row;
 			$i = 0;
 			$event_begin = '';
-			$event_end = '';
+			$event_end   = '';
 			foreach ( $values as $value ) {
 				$value = str_replace( array( $enclosure, $escape ), '', $value );
-				if ( in_array( $titles[$i], array( 'event_begin', 'event_end', 'event_time', 'event_endtime' ) ) ) {
-					if ( in_array( $titles[$i], array( 'event_begin', 'event_end' ) ) ) {
+				if ( in_array( $titles[$i], array( 'event_begin', 'event_end', 'event_time', 'event_endtime', 'occur_begin', 'occur_end' ) ) ) {
+					if ( in_array( $titles[$i], array( 'event_begin', 'event_end', 'occur_begin', 'occur_end' ) ) ) {
 						$value = date( 'Y-m-d', strtotime( $value ) );
 					} else {
 						$value = date( 'H:i:s', strtotime( $value ) );
@@ -512,9 +523,12 @@ function mcs_translate_csv( $content, $delimiter = ';', $enclosure = '"', $escap
 			
 			unset( $value );
 		}
+				
+		$event_begin = ( isset( $r['occur_begin'][0] ) ) ? $r['occur_begin'][0] : $r['event_begin'][0]; // todo
+		$event_end   = ( isset( $r['occur_end'][0] ) ) ? $r['occur_end'][0] : $r['event_end'][0];
 		
-		$event_begin = $r['event_begin'][0];
-		$event_end   = $r['event_end'][0];
+		$r['event_begin'] = array( $event_begin );
+		$r['event_end']   = array( $event_end );
 		
 		if ( strtotime( $event_end ) < strtotime( $event_begin ) ) {
 			$r['event_end'] = array( $event_begin );
@@ -593,6 +607,7 @@ function mcs_insert_category( $string ) {
 	
 	return $cat_ID;
 }
+
 /*
 
 These are the fields submitted to mc_check_data:
