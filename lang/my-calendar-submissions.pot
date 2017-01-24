@@ -3,14 +3,14 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: My Calendar Pro\n"
-"POT-Creation-Date: 2016-07-14 13:16-0500\n"
-"PO-Revision-Date: 2016-03-01 12:49-0600\n"
-"Last-Translator: Joseph Dolson <joe@joedolson.com>\n"
-"Language-Team: Joseph Dolson <joe@joedolson.com>\n"
+"POT-Creation-Date: 2017-01-24 10:39-0600\n"
+"PO-Revision-Date: 2017-01-24 10:39-0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: my-calendar-pro.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -70,8 +70,8 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
-#: gateways/lib/AuthorizeNetDPM.php:169 my-calendar-pro.php:173
-#: my-calendar-submit.php:561
+#: gateways/lib/AuthorizeNetDPM.php:169 my-calendar-pro.php:190
+#: my-calendar-submit.php:615
 msgid "City"
 msgstr ""
 
@@ -83,17 +83,17 @@ msgstr ""
 msgid "Zip Code"
 msgstr ""
 
-#: gateways/lib/AuthorizeNetDPM.php:181 my-calendar-pro.php:177
-#: my-calendar-submit.php:589
+#: gateways/lib/AuthorizeNetDPM.php:181 my-calendar-pro.php:194
+#: my-calendar-submit.php:643
 msgid "Country"
 msgstr ""
 
 #: gateways/lib/AuthorizeNetDPM.php:185 gateways/lib/AuthorizeNetDPM.php:187
-#: gateways/my-calendar-ipn.php:243 gateways/my-calendar-ipn.php:245
+#: gateways/my-calendar-ipn.php:245 gateways/my-calendar-ipn.php:247
 msgid "Buy a payment key"
 msgstr ""
 
-#: gateways/my-calendar-ipn.php:23 gateways/my-calendar-ipn.php:222
+#: gateways/my-calendar-ipn.php:23 gateways/my-calendar-ipn.php:224
 #, php-format
 msgid "%s Event Submission"
 msgstr ""
@@ -104,27 +104,27 @@ msgid ""
 "setting."
 msgstr ""
 
-#: gateways/my-calendar-ipn.php:139
+#: gateways/my-calendar-ipn.php:141
 msgid "INVALID IPN on My Calendar Submission Payment"
 msgstr ""
 
-#: gateways/my-calendar-ipn.php:140 gateways/my-calendar-ipn.php:150
+#: gateways/my-calendar-ipn.php:142 gateways/my-calendar-ipn.php:152
 msgid "Something went wrong. Hopefully this information will help:"
 msgstr ""
 
-#: gateways/my-calendar-ipn.php:149
+#: gateways/my-calendar-ipn.php:151
 msgid "WP HTTP Failed to contact Paypal"
 msgstr ""
 
-#: gateways/my-calendar-ipn.php:214
+#: gateways/my-calendar-ipn.php:216
 msgid "PayPal account is not configured."
 msgstr ""
 
-#: gateways/my-calendar-ipn.php:249
+#: gateways/my-calendar-ipn.php:251
 msgid "Quantity"
 msgstr ""
 
-#: gateways/my-calendar-ipn.php:265
+#: gateways/my-calendar-ipn.php:267
 #, php-format
 msgid ""
 "Thank you for your purchase! You can view your purchase information at %s. "
@@ -132,7 +132,7 @@ msgid ""
 "finalized."
 msgstr ""
 
-#: gateways/my-calendar-ipn.php:268
+#: gateways/my-calendar-ipn.php:270
 msgid ""
 "Sorry that you decided to cancel your purchase! Contact us if you have any "
 "questions!"
@@ -167,25 +167,25 @@ msgstr ""
 msgid "Enabled Search Fields"
 msgstr ""
 
-#: my-calendar-advanced-search.php:77 my-calendar-advanced-search.php:507
+#: my-calendar-advanced-search.php:77 my-calendar-advanced-search.php:513
 msgid "Dates"
 msgstr ""
 
-#: my-calendar-advanced-search.php:80 my-calendar-advanced-search.php:330
+#: my-calendar-advanced-search.php:80 my-calendar-advanced-search.php:332
 msgid "Author"
 msgstr ""
 
-#: my-calendar-advanced-search.php:83 my-calendar-advanced-search.php:342
+#: my-calendar-advanced-search.php:83 my-calendar-advanced-search.php:344
 msgid "Host"
 msgstr ""
 
-#: my-calendar-advanced-search.php:86 my-calendar-advanced-search.php:354
-#: my-calendar-submit.php:498
+#: my-calendar-advanced-search.php:86 my-calendar-advanced-search.php:356
+#: my-calendar-submit.php:545
 msgid "Category"
 msgstr ""
 
-#: my-calendar-advanced-search.php:89 my-calendar-advanced-search.php:366
-#: my-calendar-submit.php:510 my-calendar-submit.php:513
+#: my-calendar-advanced-search.php:89 my-calendar-advanced-search.php:368
+#: my-calendar-submit.php:558 my-calendar-submit.php:562
 msgid "Location"
 msgstr ""
 
@@ -198,67 +198,67 @@ msgstr ""
 msgid "See <a href=\"%s\">templating help</a> for template assistance."
 msgstr ""
 
-#: my-calendar-advanced-search.php:274 my-calendar-advanced-search.php:284
+#: my-calendar-advanced-search.php:274 my-calendar-advanced-search.php:286
 msgid "Search Events"
 msgstr ""
 
-#: my-calendar-advanced-search.php:332
+#: my-calendar-advanced-search.php:334
 msgid "All authors"
 msgstr ""
 
-#: my-calendar-advanced-search.php:344
+#: my-calendar-advanced-search.php:346
 msgid "All hosts"
 msgstr ""
 
-#: my-calendar-advanced-search.php:356
+#: my-calendar-advanced-search.php:358
 msgid "All categories"
 msgstr ""
 
-#: my-calendar-advanced-search.php:368
+#: my-calendar-advanced-search.php:370
 msgid "All locations"
 msgstr ""
 
-#: my-calendar-advanced-search.php:377
+#: my-calendar-advanced-search.php:379
 msgid "From"
 msgstr ""
 
-#: my-calendar-advanced-search.php:383
+#: my-calendar-advanced-search.php:385
 msgid "To"
 msgstr ""
 
-#: my-calendar-advanced-search.php:411
+#: my-calendar-advanced-search.php:413
 msgid "Perform another search"
 msgstr ""
 
-#: my-calendar-advanced-search.php:432
+#: my-calendar-advanced-search.php:434
 msgid "My Calendar: Advanced Event Search"
 msgstr ""
 
-#: my-calendar-advanced-search.php:471 my-calendar-import.php:421
+#: my-calendar-advanced-search.php:473 my-calendar-import.php:427
 msgid "Title"
 msgstr ""
 
-#: my-calendar-advanced-search.php:477
+#: my-calendar-advanced-search.php:479
 msgid "Search Results Page"
 msgstr ""
 
-#: my-calendar-advanced-search.php:508
+#: my-calendar-advanced-search.php:514
 msgid "Authors"
 msgstr ""
 
-#: my-calendar-advanced-search.php:509
+#: my-calendar-advanced-search.php:515
 msgid "Hosts"
 msgstr ""
 
-#: my-calendar-advanced-search.php:510 my-calendar-submit-widgets.php:83
+#: my-calendar-advanced-search.php:516 my-calendar-submit-widgets.php:83
 msgid "Categories"
 msgstr ""
 
-#: my-calendar-advanced-search.php:511 my-calendar-submit-widgets.php:94
+#: my-calendar-advanced-search.php:517 my-calendar-submit-widgets.php:94
 msgid "Locations"
 msgstr ""
 
-#: my-calendar-advanced-search.php:512
+#: my-calendar-advanced-search.php:518
 msgid "Undefined key"
 msgstr ""
 
@@ -317,7 +317,7 @@ msgid "Blog Post Title"
 msgstr ""
 
 #: my-calendar-event-posts.php:179 my-calendar-post-events.php:220
-#: my-calendar-submit.php:324
+#: my-calendar-submit.php:370
 msgid "Event Title"
 msgstr ""
 
@@ -346,7 +346,7 @@ msgstr ""
 msgid "Event Author"
 msgstr ""
 
-#: my-calendar-event-posts.php:195 my-calendar-submit.php:394
+#: my-calendar-event-posts.php:195 my-calendar-submit.php:440
 msgid "Event Host"
 msgstr ""
 
@@ -428,228 +428,228 @@ msgstr ""
 msgid "Edit blog post associated with this event"
 msgstr ""
 
-#: my-calendar-import.php:134
+#: my-calendar-import.php:136
 #, php-format
 msgid "Importing %s events."
 msgstr ""
 
-#: my-calendar-import.php:135
+#: my-calendar-import.php:137
 msgid "Mapping your CSV columns to My Calendar fields:"
 msgstr ""
 
-#: my-calendar-import.php:139
+#: my-calendar-import.php:141
 msgid "(No field name)"
 msgstr ""
 
-#: my-calendar-import.php:147
+#: my-calendar-import.php:149
 msgid "Unrecognized field - will be ignored"
 msgstr ""
 
-#: my-calendar-import.php:150
+#: my-calendar-import.php:152
 #, php-format
 msgid "&ldquo;<strong>%s</strong>&rdquo; to %s"
 msgstr ""
 
-#: my-calendar-import.php:155 my-calendar-import.php:222
-#: my-calendar-import.php:251
+#: my-calendar-import.php:157 my-calendar-import.php:226
+#: my-calendar-import.php:255
 msgid "Import Events"
 msgstr ""
 
-#: my-calendar-import.php:210
+#: my-calendar-import.php:214
 msgid "Importer"
 msgstr ""
 
-#: my-calendar-import.php:231
+#: my-calendar-import.php:235
 msgid "Upload File (.csv or .ics)"
 msgstr ""
 
-#: my-calendar-import.php:235
+#: my-calendar-import.php:239
 msgid "Remote import"
 msgstr ""
 
-#: my-calendar-import.php:237
+#: my-calendar-import.php:241
 msgid "Import from URL"
 msgstr ""
 
-#: my-calendar-import.php:241
+#: my-calendar-import.php:245
 msgid "iCal format (.ics)"
 msgstr ""
 
-#: my-calendar-import.php:242
+#: my-calendar-import.php:246
 msgid "Character separated values (.csv)"
 msgstr ""
 
-#: my-calendar-import.php:408
+#: my-calendar-import.php:414
 msgid "Take it as it is..."
 msgstr ""
 
-#: my-calendar-import.php:422
+#: my-calendar-import.php:428
 msgid "Starting Date"
 msgstr ""
 
-#: my-calendar-import.php:423
+#: my-calendar-import.php:429
 msgid "Ending Date"
 msgstr ""
 
-#: my-calendar-import.php:424
+#: my-calendar-import.php:430
 msgid "Starting Time"
 msgstr ""
 
-#: my-calendar-import.php:425
+#: my-calendar-import.php:431
 msgid "Ending Time"
 msgstr ""
 
-#: my-calendar-import.php:426 my-calendar-pro.php:160
-#: my-calendar-submit.php:423
+#: my-calendar-import.php:432 my-calendar-pro.php:177
+#: my-calendar-submit.php:469
 msgid "Description"
 msgstr ""
 
-#: my-calendar-import.php:427
+#: my-calendar-import.php:433
 msgid "Short Description"
 msgstr ""
 
-#: my-calendar-import.php:428
+#: my-calendar-import.php:434
 msgid "External event URL"
 msgstr ""
 
-#: my-calendar-import.php:429
+#: my-calendar-import.php:435
 msgid "Link expiration"
 msgstr ""
 
-#: my-calendar-import.php:430
+#: my-calendar-import.php:436
 msgid "Recurring frequency period"
 msgstr ""
 
-#: my-calendar-import.php:432
+#: my-calendar-import.php:438
 msgid "Number of repetitions"
 msgstr ""
 
-#: my-calendar-import.php:434
+#: my-calendar-import.php:440
 msgid "Recurrence frequency multiplier"
 msgstr ""
 
-#: my-calendar-import.php:436
+#: my-calendar-import.php:442
 msgid "Event Image URL"
 msgstr ""
 
-#: my-calendar-import.php:437
+#: my-calendar-import.php:443
 msgid "Event is all-day"
 msgstr ""
 
-#: my-calendar-import.php:438
+#: my-calendar-import.php:444
 msgid "Author ID"
 msgstr ""
 
-#: my-calendar-import.php:439
+#: my-calendar-import.php:445
 msgid "Category Name or ID"
 msgstr ""
 
-#: my-calendar-import.php:440
+#: my-calendar-import.php:446
 msgid "Omit week 5 recurrences"
 msgstr ""
 
-#: my-calendar-import.php:441
+#: my-calendar-import.php:447
 msgid "Cancel on Holidays"
 msgstr ""
 
-#: my-calendar-import.php:442
+#: my-calendar-import.php:448
 msgid "Event is grouped"
 msgstr ""
 
-#: my-calendar-import.php:443
+#: my-calendar-import.php:449
 msgid "Event Group ID"
 msgstr ""
 
-#: my-calendar-import.php:444
+#: my-calendar-import.php:450
 msgid "Event spans multiple days"
 msgstr ""
 
-#: my-calendar-import.php:445
+#: my-calendar-import.php:451
 msgid "Hide end date"
 msgstr ""
 
-#: my-calendar-import.php:447
+#: my-calendar-import.php:453
 msgid "Event Tickets Link"
 msgstr ""
 
-#: my-calendar-import.php:448
+#: my-calendar-import.php:454
 msgid "Event Registration Info"
 msgstr ""
 
-#: my-calendar-import.php:449
+#: my-calendar-import.php:455
 msgid "Open for registrations"
 msgstr ""
 
-#: my-calendar-import.php:450
+#: my-calendar-import.php:456
 msgid "Event Host ID"
 msgstr ""
 
-#: my-calendar-import.php:451
+#: my-calendar-import.php:457
 msgid "Event Accessibility Data"
 msgstr ""
 
-#: my-calendar-import.php:453
+#: my-calendar-import.php:459
 msgid "Location ID"
 msgstr ""
 
-#: my-calendar-import.php:454
+#: my-calendar-import.php:460
 msgid "Location Label"
 msgstr ""
 
-#: my-calendar-import.php:455
+#: my-calendar-import.php:461
 msgid "Location Street"
 msgstr ""
 
-#: my-calendar-import.php:456
+#: my-calendar-import.php:462
 msgid "Location Street (2)"
 msgstr ""
 
-#: my-calendar-import.php:457
+#: my-calendar-import.php:463
 msgid "Location City"
 msgstr ""
 
-#: my-calendar-import.php:458
+#: my-calendar-import.php:464
 msgid "Location State"
 msgstr ""
 
-#: my-calendar-import.php:459
+#: my-calendar-import.php:465
 msgid "Location Postcode"
 msgstr ""
 
-#: my-calendar-import.php:460
+#: my-calendar-import.php:466
 msgid "Location Region"
 msgstr ""
 
-#: my-calendar-import.php:461
+#: my-calendar-import.php:467
 msgid "Location Country"
 msgstr ""
 
-#: my-calendar-import.php:462 my-calendar-pro.php:178
-#: my-calendar-submit.php:596
+#: my-calendar-import.php:468 my-calendar-pro.php:195
+#: my-calendar-submit.php:650
 msgid "Location URL"
 msgstr ""
 
-#: my-calendar-import.php:463
+#: my-calendar-import.php:469
 msgid "Event Phone Number"
 msgstr ""
 
-#: my-calendar-import.php:464
+#: my-calendar-import.php:470
 msgid "Alternate Event Phone"
 msgstr ""
 
-#: my-calendar-import.php:465
+#: my-calendar-import.php:471
 msgid "Location longitude"
 msgstr ""
 
-#: my-calendar-import.php:466
+#: my-calendar-import.php:472
 msgid "Location latitude"
 msgstr ""
 
-#: my-calendar-import.php:467
+#: my-calendar-import.php:473
 msgid "Map zoom level"
 msgstr ""
 
-#: my-calendar-import.php:469
+#: my-calendar-import.php:475
 msgid "Copy location into DB"
 msgstr ""
 
@@ -734,63 +734,63 @@ msgid ""
 "for My Calendar Pro."
 msgstr ""
 
-#: my-calendar-pro.php:158 my-calendar-submit.php:343
+#: my-calendar-pro.php:175 my-calendar-submit.php:389
 msgid "End date"
 msgstr ""
 
-#: my-calendar-pro.php:159 my-calendar-submit.php:351
+#: my-calendar-pro.php:176 my-calendar-submit.php:397
 msgid "End time"
 msgstr ""
 
-#: my-calendar-pro.php:161 my-calendar-submit.php:428
+#: my-calendar-pro.php:178 my-calendar-submit.php:474
 msgid "Summary"
 msgstr ""
 
-#: my-calendar-pro.php:162 my-calendar-submit.php:440
+#: my-calendar-pro.php:179 my-calendar-submit.php:486
 msgid "Link"
 msgstr ""
 
-#: my-calendar-pro.php:163
+#: my-calendar-pro.php:180
 msgid "Event Recurrences"
 msgstr ""
 
-#: my-calendar-pro.php:164 my-calendar-submit.php:446
+#: my-calendar-pro.php:181 my-calendar-submit.php:492
 msgid "Image (URL)"
 msgstr ""
 
-#: my-calendar-pro.php:170 my-calendar-submit.php:540
+#: my-calendar-pro.php:187 my-calendar-submit.php:594
 msgid "Street Address"
 msgstr ""
 
-#: my-calendar-pro.php:171 my-calendar-submit.php:547
+#: my-calendar-pro.php:188 my-calendar-submit.php:601
 msgid "Street Address (2)"
 msgstr ""
 
-#: my-calendar-pro.php:172 my-calendar-submit.php:554
+#: my-calendar-pro.php:189 my-calendar-submit.php:608
 msgid "Phone"
 msgstr ""
 
-#: my-calendar-pro.php:174 my-calendar-submit.php:568
+#: my-calendar-pro.php:191 my-calendar-submit.php:622
 msgid "State/Province"
 msgstr ""
 
-#: my-calendar-pro.php:175
+#: my-calendar-pro.php:192
 msgid "Zip"
 msgstr ""
 
-#: my-calendar-pro.php:176 my-calendar-submit.php:582
+#: my-calendar-pro.php:193 my-calendar-submit.php:636
 msgid "Region"
 msgstr ""
 
-#: my-calendar-pro.php:179 my-calendar-submit.php:605
+#: my-calendar-pro.php:196 my-calendar-submit.php:659
 msgid "GPS Coordinates"
 msgstr ""
 
-#: my-calendar-pro.php:328
+#: my-calendar-pro.php:345
 msgid "You do not have permission to view the details for this event."
 msgstr ""
 
-#: my-calendar-pro.php:350
+#: my-calendar-pro.php:367
 msgid "Keep Event Details Private"
 msgstr ""
 
@@ -905,7 +905,7 @@ msgstr ""
 msgid "My Calendar Pro"
 msgstr ""
 
-#: my-calendar-submit-settings.php:166 my-calendar-submit.php:993
+#: my-calendar-submit-settings.php:166 my-calendar-submit.php:1103
 msgid "Submissions"
 msgstr ""
 
@@ -1410,198 +1410,194 @@ msgstr ""
 msgid "Submit Events"
 msgstr ""
 
-#: my-calendar-submit.php:225
+#: my-calendar-submit.php:267
 msgid "You'll need to log-in to edit this event."
 msgstr ""
 
-#: my-calendar-submit.php:322
+#: my-calendar-submit.php:355
+msgid "Do not complete this field."
+msgstr ""
+
+#: my-calendar-submit.php:368
 msgid "Payment Key"
 msgstr ""
 
-#: my-calendar-submit.php:322 my-calendar-submit.php:329
-#: my-calendar-submit.php:333
+#: my-calendar-submit.php:368 my-calendar-submit.php:375
+#: my-calendar-submit.php:379
 msgid "(required)"
 msgstr ""
 
-#: my-calendar-submit.php:325
+#: my-calendar-submit.php:371
 msgid "Date"
 msgstr ""
 
-#: my-calendar-submit.php:326
+#: my-calendar-submit.php:372
 msgid "Time"
 msgstr ""
 
-#: my-calendar-submit.php:366
+#: my-calendar-submit.php:412
 msgid "Your Name"
 msgstr ""
 
-#: my-calendar-submit.php:370
+#: my-calendar-submit.php:416
 msgid "Your Email"
 msgstr ""
 
-#: my-calendar-submit.php:408
+#: my-calendar-submit.php:454
 msgid "Repeats"
 msgstr ""
 
-#: my-calendar-submit.php:409
+#: my-calendar-submit.php:455
 msgid "every"
 msgstr ""
 
-#: my-calendar-submit.php:410
+#: my-calendar-submit.php:456
 msgid "Units"
 msgstr ""
 
-#: my-calendar-submit.php:435
+#: my-calendar-submit.php:481
 msgid "Event Access"
 msgstr ""
 
-#: my-calendar-submit.php:458
+#: my-calendar-submit.php:504
 msgid "Ticketing Information"
 msgstr ""
 
-#: my-calendar-submit.php:465
+#: my-calendar-submit.php:511
 msgid "Submit your event"
 msgstr ""
 
-#: my-calendar-submit.php:514
+#: my-calendar-submit.php:557
+msgid "Select a location"
+msgstr ""
+
+#: my-calendar-submit.php:561
+msgid "Select or add a location"
+msgstr ""
+
+#: my-calendar-submit.php:564
 msgid "Add New Location"
 msgstr ""
 
-#: my-calendar-submit.php:535
+#: my-calendar-submit.php:589
 msgid "Name of Location"
 msgstr ""
 
-#: my-calendar-submit.php:575
+#: my-calendar-submit.php:629
 msgid "Postal Code"
 msgstr ""
 
-#: my-calendar-submit.php:607
+#: my-calendar-submit.php:661
 msgid "Latitude"
 msgstr ""
 
-#: my-calendar-submit.php:610
+#: my-calendar-submit.php:664
 msgid "Longitude"
 msgstr ""
 
-#: my-calendar-submit.php:654
+#: my-calendar-submit.php:708
 msgid "Number of events?"
 msgstr ""
 
-#: my-calendar-submit.php:654
+#: my-calendar-submit.php:708
 msgid "Go to Payment"
 msgstr ""
 
-#: my-calendar-submit.php:742
+#: my-calendar-submit.php:801
 #, php-format
 msgid "That was not a valid payment key: %s"
 msgstr ""
 
-#: my-calendar-submit.php:744
+#: my-calendar-submit.php:803
 #, php-format
 msgid "%d submissions remaining with this payment key."
 msgstr ""
 
-#: my-calendar-submit.php:826
+#: my-calendar-submit.php:889
 msgid "That payment key does not exist"
 msgstr ""
 
-#: my-calendar-submit.php:828
+#: my-calendar-submit.php:891
 msgid "Your payment key has been used up!"
 msgstr ""
 
-#: my-calendar-submit.php:830
+#: my-calendar-submit.php:893
 #, php-format
 msgid "Your payment key status is \"%s\"."
 msgstr ""
 
-#: my-calendar-submit.php:1075
+#: my-calendar-submit.php:1049
+#, php-format
+msgid "Event submitted by %s on %s"
+msgstr ""
+
+#: my-calendar-submit.php:1185
 msgid "Event Field Settings"
 msgstr ""
 
-#: my-calendar-submit.php:1075
+#: my-calendar-submit.php:1185
 msgid "Enable Field"
 msgstr ""
 
-#: my-calendar-submit.php:1075 my-calendar-submit.php:1100
+#: my-calendar-submit.php:1185 my-calendar-submit.php:1210
 msgid "Label"
 msgstr ""
 
-#: my-calendar-submit.php:1080
+#: my-calendar-submit.php:1190
 msgid "Required"
 msgstr ""
 
-#: my-calendar-submit.php:1084 my-calendar-submit.php:1104
+#: my-calendar-submit.php:1194 my-calendar-submit.php:1214
 #, php-format
 msgid "%s label"
 msgstr ""
 
-#: my-calendar-submit.php:1087
+#: my-calendar-submit.php:1197
 msgid "Enable Category Dropdown"
 msgstr ""
 
-#: my-calendar-submit.php:1088
+#: my-calendar-submit.php:1198
 msgid "Select default category"
 msgstr ""
 
-#: my-calendar-submit.php:1089
+#: my-calendar-submit.php:1199
 msgid "Enable Location Options"
 msgstr ""
 
-#: my-calendar-submit.php:1091
+#: my-calendar-submit.php:1201
 msgid "User cannot enter locations"
 msgstr ""
 
-#: my-calendar-submit.php:1092
+#: my-calendar-submit.php:1202
 msgid "User can choose locations from a dropdown"
 msgstr ""
 
-#: my-calendar-submit.php:1093
+#: my-calendar-submit.php:1203
 msgid "User can enter new locations"
 msgstr ""
 
-#: my-calendar-submit.php:1094
+#: my-calendar-submit.php:1204
 msgid "User can either enter new locations or select an existing location"
 msgstr ""
 
-#: my-calendar-submit.php:1097
+#: my-calendar-submit.php:1207
 msgid "Select default location"
 msgstr ""
 
-#: my-calendar-submit.php:1100
+#: my-calendar-submit.php:1210
 msgid "Location Field Settings"
 msgstr ""
 
-#: my-calendar-submit.php:1100
+#: my-calendar-submit.php:1210
 msgid "Enable Location Field"
 msgstr ""
 
-#: my-calendar-submit.php:1124
+#: my-calendar-submit.php:1234
 msgid "My Calendar: Submissions"
 msgstr ""
 
-#: my-calendar-submit.php:1131
+#: my-calendar-submit.php:1241
 msgid "Generate Shortcode"
-msgstr ""
-
-#: updates/EDD_SL_Plugin_Updater.php:186
-#, php-format
-msgid ""
-"There is a new version of %1$s available. %2$sView version %3$s details%4$s."
-msgstr ""
-
-#: updates/EDD_SL_Plugin_Updater.php:194
-#, php-format
-msgid ""
-"There is a new version of %1$s available. %2$sView version %3$s details%4$s "
-"or %5$supdate now%6$s."
-msgstr ""
-
-#: updates/EDD_SL_Plugin_Updater.php:337
-msgid "You do not have permission to install plugin updates"
-msgstr ""
-
-#: updates/EDD_SL_Plugin_Updater.php:337
-msgid "Error"
 msgstr ""
 
 #: updates/my-calendar-common.php:53
