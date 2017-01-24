@@ -65,3 +65,9 @@ fieldset.mcs-importer {
 .mcs-tabs .jcd-narrow {
 	margin-top: -20px;
 }
+
+.mcs-license-status {
+	background: #ffc;
+	padding: 1em;
+	color: #222;
+}
