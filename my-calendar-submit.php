@@ -61,7 +61,7 @@ function mcs_show_receipt() {
 			<strong>Transaction Date</strong><span> {transaction_date}</span>
 			<em><a href="javascript:window.print()">Print</a></em>';
 		$template = apply_filters( 'mcs_receipt_template', $template, $results );
-		$wrapper = apply_filters( 'mcs_receipt_header', $header, $receipt_id );
+		$wrapper  = apply_filters( 'mcs_receipt_header', $header, $receipt_id );
 		$wrapper .= $logo;
 		$wrapper .= jd_draw_template( $results, $template );
 		$wrapper .= apply_filters( 'mcs_receipt_header', $footer, $receipt_id );
@@ -84,7 +84,7 @@ add_filter( 'mcs_receipt_template', 'wpautop' );
 function mcs_generate_submit_page( $slug ) {
 	$current_user = wp_get_current_user();
 	if ( ! is_page( $slug ) ) {
-		$page      = array(
+		$page = array(
 			'post_title'  => __( 'Submit Events', 'my-calendar' ),
 			'post_status' => 'publish',
 			'post_type'   => 'page',
@@ -117,20 +117,21 @@ function mcs_submit_form( $atts, $content=null ) {
 			'category' => 1, // default category value
 			'location' => 0, // default location value
 			'location_fields'=>'street,street2,phone,city,state,zip,country,url'
-		), $atts, 'submit_event' ) );
+		), $atts, 'submit_event' ) 
+	);
 	$fields = explode( ',', $fields );
-	$fld = array();
+	$fld    = array();
 	foreach ( $fields as $value ) {
-		$set = explode( '=',$value );
-		$value = strtolower( trim( $set[0] ) );
-		$fld[$value]=( isset($set[1]) )?$set[1]:'true';
+		$set         = explode( '=',$value );
+		$value       = strtolower( trim( $set[0] ) );
+		$fld[$value] = ( isset($set[1]) ) ? $set[1] : 'true';
 	}
 	$location_fields = explode(',',$location_fields );
-	$loc = array();
+	$loc             = array();
 	foreach ( $location_fields as $value ) {
-		$set = explode( '=',$value );
-		$value = strtolower(trim($set[0]));
-		$loc[$value]=( isset($set[1]) )?$set[1]:'true';	
+		$set         = explode( '=',$value );
+		$value       = strtolower(trim($set[0]));
+		$loc[$value] = ( isset($set[1]) ) ? $set[1] : 'true';	
 	}
 	if ( mcs_user_can_submit_events() ) {
 		return mc_submit_form( $fld, $categories, $locations, $category, $location, $loc );
@@ -149,9 +150,9 @@ function mcs_set_unique_id() {
 }
 
 function mcs_generate_unique_id() {
-	$length = 16;
+	$length     = 16;
 	$characters = "0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz-_";
-	$string = '';
+	$string     = '';
 	for ( $p = 0; $p < $length; $p++ ) {
 		$string .= $characters[mt_rand(0, strlen($characters)-1)];
 	}
@@ -173,16 +174,26 @@ function mcs_run_processor() {
 
 function mcs_processor_response() {
 	$unique_id = isset( $_COOKIE['mcs_unique_id'] ) ? $_COOKIE['mcs_unique_id'] : false;
-
-	$response = get_transient( 'mcs_'.$unique_id );
+	$response  = get_transient( 'mcs_'.$unique_id );
 		
 	if ( $response != '' ) {
 		return $response;
 	}
 }
 
+/**
+ * Build the submission form 
+ *
+ * @param array $fields Fields to include in the form
+ * @param int $categories Status of categories in the form
+ * @param int $locations Status of locations in the form
+ * @param int $category Default category
+ * @param int $location Default location
+ * @param array $location_fields Location fields to include in the form if locations included
+ *
+ * @return string
+ */
 function mc_submit_form( $fields,$categories,$locations,$category,$location,$location_fields ) {
-	
 	$fields = apply_filters( 'mcs_submit_fields', $fields );
 	$location_fields = apply_filters( 'mcs_submit_location_fields', $location_fields );
 	// the big function. This creates the form.
@@ -218,11 +229,11 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 
 	$format = get_option('mcs_date_format');
 	switch ($format) {
-		case "m/d/Y": $js_format = 'mm/dd/yyyy'; break;
-		case "d-m-Y": $js_format = 'dd-mm-yyyy'; break;
-		case "Y-m-d": $js_format = 'yy-mm-dd'; break;
-		case "j F Y": $js_format = 'd mmmm yyyy'; break;
-		case "M j, Y": $js_format = 'mmm d, yyyy'; break;
+		case "m/d/Y"  : $js_format = 'mm/dd/yyyy'; break;
+		case "d-m-Y"  : $js_format = 'dd-mm-yyyy'; break;
+		case "Y-m-d"  : $js_format = 'yy-mm-dd'; break;
+		case "j F Y"  : $js_format = 'd mmmm yyyy'; break;
+		case "M j, Y" : $js_format = 'mmm d, yyyy'; break;
 		default: $js_format = 'yy-mm-dd';
 	}
 	$time = get_option('mcs_time_format');
@@ -251,10 +262,10 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 })(jQuery);
 </script>";
 	global $user_ID;
-	if ( is_user_logged_in() ) { $auth = $user_ID; } else { $auth = 0; }
-	$nonce = "<input type='hidden' name='event_nonce_name' value='".wp_create_nonce('event_nonce')."' />";
+	$auth     = ( is_user_logged_in() ) ? $user_ID : 0;
+	$nonce    = "<input type='hidden' name='event_nonce_name' value='".wp_create_nonce('event_nonce')."' />";
 	$response = mcs_processor_response();
-	$event = false;
+	$event    = false;
 	if ( empty( $response[1] ) && isset( $_GET['mcs_id'] ) && is_user_logged_in() ) {
 		$mc_id = intval( $_GET['mcs_id'] );
 		$event = mc_form_data( $mc_id );
@@ -269,52 +280,52 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 		$message = '';
 	}
 	
-	$data = ( !empty( $response[1] ) ) ? $response[1] : $event;
-	$has_data = ( empty($data) ) ? false : true; 
-	$title = ( !empty($data) ) ? esc_attr( $data->event_title ) : '';
-	$desc = ( !empty($data) )?esc_attr( $data->event_desc ): '';
-	$tickets = ( !empty( $data ) )?esc_attr( $data->event_tickets ): '';
+	$data         = ( !empty( $response[1] ) ) ? $response[1] : $event;
+	$has_data     = ( empty($data) ) ? false : true; 
+	$title        = ( !empty($data) ) ? esc_attr( $data->event_title ) : '';
+	$desc         = ( !empty($data) )?esc_attr( $data->event_desc ): '';
+	$tickets      = ( !empty( $data ) )?esc_attr( $data->event_tickets ): '';
 	$registration = ( !empty( $data ) ) ? esc_attr( $data->event_registration ) : '';	
-	$begin = ( !empty($data) ) ? esc_attr( $data->event_begin ) : '';
-	$format = date( get_option('mcs_date_format'), current_time( 'timestamp' ) );
-	$format2 = date( get_option('mcs_time_format'), current_time( 'timestamp' ) );
-	$endformat2 = date( get_option('mcs_time_format'), current_time( 'timestamp' ) + 3600 );
-	$end = ( !empty($data) ) ? esc_attr( $data->event_end ) : '';
-	$time = ( !empty($data) ) ? esc_attr( $data->event_time ) : $format2;
-	$endtime = ( !empty($data) ) ? esc_attr( $data->event_endtime ) : $endformat2;
-	$recur = ( !empty($data) ) ? esc_attr( $data->event_recur ) : 'S';
-		$recurs = str_split( $recur, 1 );
-		$recur = $recurs[0];
-		$every = ( isset( $recurs[1] ) )?$recurs[1]:1;
-		if ( $every == 1 && $recur == 'B' ) { $every = 2; }
-	$repeats = ( !empty($data) ) ? esc_attr( $data->event_repeats ) : 0;
-	$selected_category = ( !empty($data) )?esc_attr( $data->event_category ):$category;
-	$event_host = ( !empty($data) ) ? esc_attr( $data->event_host ) : $user_ID;
-	$link = ( !empty($data) )?esc_attr( $data->event_link ):'';
-	$label = ( !empty($data) )?esc_attr( $data->event_label ):'';
-	$street = ( !empty($data) )?esc_attr( $data->event_street ):'';	
-	$street2 = ( !empty($data) )?esc_attr( $data->event_street2 ):'';
-	$city = ( !empty($data) )?esc_attr( $data->event_city ):'';
-	$state = ( !empty($data) )?esc_attr( $data->event_state ):'';
-	$postcode = ( !empty($data) )?esc_attr( $data->event_postcode ):'';
-	$country = ( !empty($data) )?esc_attr( $data->event_country ):'';
-	$region = ( !empty($data) )?esc_attr( $data->event_region ):'';	
-	$url = ( !empty($data) )?esc_attr( $data->event_url ):'';
-	$longitude = ( !empty($data) )?esc_attr( $data->event_longitude ):'';
-	$latitude = ( !empty($data) )?esc_attr( $data->event_latitude ):'';
-	$phone = ( !empty($data) )?esc_attr( $data->event_phone ):'';
-	$short = ( !empty($data) )?esc_attr( $data->event_short ):'';
-	$image = ( !empty($data) )?esc_attr( $data->event_image ):'';
-	$name = ( isset( $_POST['event_name'] ) )?esc_attr( $_POST['event_name'] ):'';
-	$email = ( isset( $_POST['event_email'] ) )?esc_attr( $_POST['event_email'] ):'';
-	$key = ( isset( $_POST['event_key'] ) )?esc_attr( $_POST['event_key'] ):'';
-	$key = ( isset( $_GET['event_key'] ) )?esc_attr( $_GET['event_key'] ):'';
+	$begin        = ( !empty($data) ) ? esc_attr( $data->event_begin ) : '';
+	$format       = date( get_option('mcs_date_format'), current_time( 'timestamp' ) );
+	$format2      = date( get_option('mcs_time_format'), current_time( 'timestamp' ) );
+	$endformat2   = date( get_option('mcs_time_format'), current_time( 'timestamp' ) + 3600 );
+	$end          = ( !empty($data) ) ? esc_attr( $data->event_end ) : '';
+	$time         = ( !empty($data) ) ? esc_attr( $data->event_time ) : $format2;
+	$endtime      = ( !empty($data) ) ? esc_attr( $data->event_endtime ) : $endformat2;
+	$recur        = ( !empty($data) ) ? esc_attr( $data->event_recur ) : 'S';
+		$recurs   = str_split( $recur, 1 );
+		$recur    = $recurs[0];
+		$every    = ( isset( $recurs[1] ) ) ? $recurs[1] : 1;
+		$every    = ( $every == 1 && $recur == 'B' ) ? 2 : $every;
+	$repeats      = ( !empty($data) ) ? esc_attr( $data->event_repeats ) : 0;
+	$selected_cat = ( !empty($data) )?esc_attr( $data->event_category ):$category;
+	$event_host   = ( !empty($data) ) ? esc_attr( $data->event_host ) : $user_ID;
+	$link         = ( !empty($data) )?esc_attr( $data->event_link ):'';
+	$label        = ( !empty($data) )?esc_attr( $data->event_label ):'';
+	$street       = ( !empty($data) )?esc_attr( $data->event_street ):'';	
+	$street2      = ( !empty($data) )?esc_attr( $data->event_street2 ):'';
+	$city         = ( !empty($data) )?esc_attr( $data->event_city ):'';
+	$state        = ( !empty($data) )?esc_attr( $data->event_state ):'';
+	$postcode     = ( !empty($data) )?esc_attr( $data->event_postcode ):'';
+	$country      = ( !empty($data) )?esc_attr( $data->event_country ):'';
+	$region       = ( !empty($data) )?esc_attr( $data->event_region ):'';	
+	$url          = ( !empty($data) )?esc_attr( $data->event_url ):'';
+	$longitude    = ( !empty($data) )?esc_attr( $data->event_longitude ):'';
+	$latitude     = ( !empty($data) )?esc_attr( $data->event_latitude ):'';
+	$phone        = ( !empty($data) )?esc_attr( $data->event_phone ):'';
+	$short        = ( !empty($data) )?esc_attr( $data->event_short ):'';
+	$image        = ( !empty($data) )?esc_attr( $data->event_image ):'';
+	$name         = ( isset( $_POST['event_name'] ) )?esc_attr( $_POST['event_name'] ):'';
+	$email        = ( isset( $_POST['event_email'] ) )?esc_attr( $_POST['event_email'] ):'';
+	$key          = ( isset( $_POST['event_key'] ) )?esc_attr( $_POST['event_key'] ):'';
+	$key          = ( isset( $_GET['event_key'] ) )?esc_attr( $_GET['event_key'] ):'';
 
 	if ( $event ) {
-		$link_expires = $event->event_link_expires;
-		$event_holiday = $event->event_holiday;
+		$link_expires     = $event->event_link_expires;
+		$event_holiday    = $event->event_holiday;
 		$event_fifth_week = $event->event_fifth_week;
-		$edit = "<input type='hidden' name='event_edit' value='$mc_id' />";
+		$edit             = "<input type='hidden' name='event_edit' value='$mc_id' />";
 		$edit .= "
 			<input type='hidden' name='prev_event_begin' value='$begin' />
 			<input type='hidden' name='prev_event_repeats' value='$repeats' />
@@ -322,10 +333,10 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 			<input type='hidden' name='prev_event_status' value='$event->event_approved' />
 			<input type='hidden' name='event_post' value='$event->event_post' />";
 	} else {
-		$link_expires = ( get_option('mc_event_link_expires') == 'false' ) ? 1 : 0;
-		$event_holiday = ( get_option( 'mc_skip_holidays' ) == 'true' )?'on':'false';
+		$link_expires     = ( get_option('mc_event_link_expires') == 'false' ) ? 1 : 0;
+		$event_holiday    = ( get_option( 'mc_skip_holidays' ) == 'true' )?'on':'false';
 		$event_fifth_week = ( get_option( 'mc_no_fifth_week' ) == 'true' )?1:'';
-		$edit = '';
+		$edit             = '';
 	}	
 	
 	$selected_location = array( 'label'=>$label, 'street'=>$street, 'street2'=>$street2, 'city'=>$city, 'state'=>$state, 
@@ -386,7 +397,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 			$return .= "<div class='mc_end_container'>";
 		}
 		if ( isset( $fields['end_date'] ) ) {
-			$flabel = ( $fields['end_date'] != 'true' && $fields['end_date'] != 'End date' ) ? $fields['end_date'] : __( 'End date','my-calendar-submissions' );
+			$flabel  = ( $fields['end_date'] != 'true' && $fields['end_date'] != 'End date' ) ? $fields['end_date'] : __( 'End date','my-calendar-submissions' );
 			$return .=	"<p>
 				<label for='mc_event_enddate'>$flabel</label> <input type='text' class='mc-date' name='event_end[]' id='mc_event_enddate' value='$end' />
 			</p>";
@@ -394,8 +405,8 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 			$return .= "<input type='hidden' name='event_end[]' value='' />";
 		}
 		if ( isset($fields['end_time']) ) {
-			$flabel = ( $fields['end_time'] != 'true' && $fields['end_time'] != 'End time' )?$fields['end_time']:__('End time','my-calendar-submissions');
-			$return .=	"<p>
+			$flabel  = ( $fields['end_time'] != 'true' && $fields['end_time'] != 'End time' )?$fields['end_time']:__('End time','my-calendar-submissions');
+			$return .= "<p>
 				<label for='mc_event_endtime'>$flabel</label> <input type='time' name='event_endtime[]' id='mc_event_endtime' class='mc-time' value='$endtime'/>
 			</p>";
 		}
@@ -499,7 +510,7 @@ function mc_submit_form( $fields,$categories,$locations,$category,$location,$loc
 				<label for='mc_event_image'>$flabel</label> <input type='$input_type' name='event_image' id='mc_event_image' value='$image' />
 				</p>";
 		}	
-		$return .= mcs_submit_category( $selected_category, $categories );
+		$return .= mcs_submit_category( $selected_cat, $categories );
 		if ( isset( $fields['registration'] ) ) {
 			$flabel = ( $fields['registration'] != 'true' && $fields['registration'] != 'Ticketing Information'  )?$fields['registration']:__('Ticketing Information','my-calendar-submissions');	
 			$return .= "<fieldset>
@@ -932,10 +943,10 @@ function mcs_notify_admin( $name, $email, $event_id, $action ) {
 	} else {
 		mcs_save_author( $fname, $lname, $email, $event );
 		
-		$subject = ( get_option( 'mcs_subject' ) == '' ) ? 'New event on {blogname}' : get_option( 'mcs_subject' );
+		$subject      = ( get_option( 'mcs_subject' ) == '' ) ? 'New event on {blogname}' : get_option( 'mcs_subject' );
 		$edit_subject = ( get_option( 'mcs_edit_subject' ) == '' ) ? 'Edited event on {blogname}' : get_option( 'mcs_edit_subject' );
-		$message = ( get_option( 'mcs_response' ) == '' ) ? 'New event from {first_name} {last_name}: {title}, {date}, {time}. Approve or reject this event: {edit_link}' : get_option( 'mcs_response' );
-		if ( $action = 'edit' ) {
+		$message      = ( get_option( 'mcs_response' ) == '' ) ? 'New event from {first_name} {last_name}: {title}, {date}, {time}. Approve or reject this event: {edit_link}' : get_option( 'mcs_response' );
+		if ( $action == 'edit' ) {
 			$subject = jd_draw_template( $array, $edit_subject );			
 		} else {
 			$subject = jd_draw_template( $array, $subject );
@@ -1030,7 +1041,7 @@ function mcs_notify_submitter( $name, $email, $event_id, $action ) {
 		if ( get_option( 'mcs_html_email' ) == 'true' ) {
 			remove_filter( 'wp_mail_content_type',create_function( '', 'return "text/html";' ) );
 		}
-	}	
+	}
 }
 
 add_filter( 'mc_before_event_form', 'mcs_show_author', 10, 2 );
@@ -1056,8 +1067,6 @@ function mcs_show_author( $content, $event_id ) {
 					</div>
 				</div>";
 		}
-		
-		
 	}
 	
 	return $content;
@@ -1154,7 +1163,7 @@ function mcs_shortcode_generator( $output, $post ) {
 					if ( isset( $post['location'] ) ) {
 						$cat = (int) $post['location'];
 						$string .= " location='$cat'";
-					}				
+					}
 				break; 
 				case 'location_fields' :
 					if ( $locations == 'enter' || $locations == 'either' ) {
@@ -1219,14 +1228,14 @@ function mcs_generate_fields() {
 }
 
 function mcs_generator() { 
-/* 
-'fields' => 'event_title,event_date, event_time, end_date,end_time, mcs_name, mcs_email, event_recurring, description,short_description,access, event_link,event_image, categories, registration, locations',
-'categories' => 1, (see above)
-'locations' => 'either|none|choose|enter', (see above)
-'category' => 1, // select a category
-'location' => 1, // select a location
-'location_fields'=>'event_label=,street,street2,phone,city,state,zip,region,country,url,gps'
-*/
+	/* 
+	'fields'          => 'event_title, event_date, event_time, end_date,end_time, mcs_name, mcs_email, event_recurring, description,short_description,access, event_link,event_image, categories, registration, locations',
+	'categories'      => 1, (see above)
+	'locations'       => 'either|none|choose|enter', (see above)
+	'category'        => 1, // select a category
+	'location'        => 1, // select a location
+	'location_fields' => 'event_label=,street,street2,phone,city,state,zip,region,country,url,gps'
+	*/
 	$include_fields = mcs_generate_fields();
 	$output = '<form action="'.admin_url('admin.php?page=my-calendar-help').'" method="POST" id="my-calendar-generate">
 			<div><input type="hidden" name="_wpnonce" value="' . wp_create_nonce( 'my-calendar-generator' ) . '"/></div>		

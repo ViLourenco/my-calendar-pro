@@ -36,8 +36,13 @@ TODO: add location search based on alternate location characteristics to query
 
 = 1.5.10 =
 
-* In import, use occur_begin & occur_end instead of event_begin and event_end if exists TODO; support My Calendar exports
+* Bug fix: In import, use occur_begin & occur_end instead of event_begin and event_end if exists
 * Bug fix: pass default location with no selector
+* Bug fix: better support for My Calendar exported CSVs
+* Bug fix: Support multiline descriptions in ics import
+* Enhancement: better default text for location selector
+* Update translations
+* Accessibility: broken explicit label relationship
 
 = 1.5.9 =
 

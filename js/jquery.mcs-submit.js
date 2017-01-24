@@ -11,4 +11,5 @@
 			$( '.mcs_location_fields #event_label' ).focus();
 		}
 	});
+	
 }(jQuery));
