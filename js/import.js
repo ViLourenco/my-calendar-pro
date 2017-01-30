@@ -38,7 +38,9 @@
 						
 						$( '.mcs-importer-progress span' ).attr( 'data-progress', 100 ).addClass( 'percent100' ).css( 'width', '100%' );
 						$( '.mcs-importer-progress strong' ).text( '100%' ).delay( 500 ).text( 'Import Completed' );
-
+						
+					} else if ( '0' === response ) {
+						// do nothing in this case
 					} else {
 						
 						$( '.mcs-importer-progress span' ).attr( 'data-progress', response*100 ).css( 'width', response*100 + '%' );
