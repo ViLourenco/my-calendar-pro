@@ -33,6 +33,7 @@ New or updated translations are always appreciated. The translation files are in
 TODO: track UID in imported events
 TODO: handle tzoffsetfrom/to in iCal from Google (part of the overall vcal block, not part of an event)
 TODO: add location search based on alternate location characteristics to query
+TODO: allow logged-in users to delete events from the front-end without visiting admin
 
 = 1.5.10 =
 
@@ -40,6 +41,8 @@ TODO: add location search based on alternate location characteristics to query
 * Bug fix: pass default location with no selector
 * Bug fix: better support for My Calendar exported CSVs
 * Bug fix: Support multiline descriptions in ics import
+* Bug fix: Support DATE format in ics datetime fields
+* Bug fix: don't remove 'Import Completed' message after import completes.
 * Update translations
 * Accessibility: broken explicit label relationship
 * Enhancement: Added some additional classes
