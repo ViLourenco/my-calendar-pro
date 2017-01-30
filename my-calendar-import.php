@@ -178,10 +178,19 @@ function mcs_convert_ics( $file ) {
 		if ( !isset( $event['DTSTART'] ) ) {
 			continue;
 		}
-		$event_begin = date( 'Y-m-d', strtotime( $event['DTSTART'] ) );
-		$event_time = date( "H:i:00", strtotime( $event['DTSTART'] ) );
-		$event_end = date( 'Y-m-d', strtotime( $event['DTEND'] ) );
-		$event_endtime = date( 'H:i:00', strtotime( $event['DTEND'] ) );
+		$start = $end = 'datetime';
+		if ( stripos( $event['DTSTART'], 'VALUE=DATE' ) !== false ) {
+			$event['DTSTART'] = str_replace( 'VALUE=DATE:', '', $event['DTSTART'] );
+			$start            = 'date';
+		}
+		$event_begin   = date( 'Y-m-d', strtotime( $event['DTSTART'] ) );
+		$event_time    = ( $start == 'datetime' ) ? date( "H:i:00", strtotime( $event['DTSTART'] ) ) : '00:00:00';
+		if ( stripos( $event['DTEND'], 'VALUE=DATE' ) !== false ) {
+			$event['DTEND'] = str_replace( 'VALUE=DATE:', '', $event['DTEND'] );
+			$end            = 'date';
+		}		
+		$event_end     = date( 'Y-m-d', strtotime( $event['DTEND'] ) );
+		$event_endtime = ( $end == 'datetime' ) ? date( 'H:i:00', strtotime( $event['DTEND'] ) ) : '23:59:59';
 		
 		$date_diff   = strtotime( $event_end ) - strtotime( $event_begin );
 		$time_diff   = strtotime( $event_endtime ) - strtotime( $event_time );

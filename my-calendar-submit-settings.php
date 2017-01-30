@@ -206,75 +206,75 @@ function mcs_settings() {
 			</select>
 			</p>			
 			<p>
-			<input type="checkbox" id="mcs_check_conflicts" name="mcs_check_conflicts" <?php mc_is_checked('mcs_check_conflicts','true'); ?> /> <label for="mcs_check_conflicts"><?php _e('Prevent conflicting events. (if locations are used, checks only for conflicts at that location.)','my-calendar-submissions'); ?></label>
+				<input type="checkbox" id="mcs_check_conflicts" name="mcs_check_conflicts" <?php mc_is_checked('mcs_check_conflicts','true'); ?> /> <label for="mcs_check_conflicts"><?php _e('Prevent conflicting events. (if locations are used, checks only for conflicts at that location.)','my-calendar-submissions'); ?></label>
 			</p>
 			<p>
-			<input type="checkbox" id="mcs_upload_images" name="mcs_upload_images" <?php mc_is_checked('mcs_upload_images','true'); ?> /> <label for="mcs_upload_images"><?php _e('Allow public event submitters to upload their own images','my-calendar-submissions'); ?></label>
+				<input type="checkbox" id="mcs_upload_images" name="mcs_upload_images" <?php mc_is_checked('mcs_upload_images','true'); ?> /> <label for="mcs_upload_images"><?php _e('Allow public event submitters to upload their own images','my-calendar-submissions'); ?></label>
 			</p>			
 			<p>
-			<input type="checkbox" id="mcs_automatic_approval" name="mcs_automatic_approval" <?php mc_is_checked('mcs_automatic_approval','true'); ?> /> <label for="mcs_automatic_approval"><?php _e('Submitted events do not require approval.','my-calendar-submissions'); ?></label>
+				<input type="checkbox" id="mcs_automatic_approval" name="mcs_automatic_approval" <?php mc_is_checked('mcs_automatic_approval','true'); ?> /> <label for="mcs_automatic_approval"><?php _e('Automatically approve submitted events','my-calendar-submissions'); ?></label>
 			</p>
 			<p>
-			<input type="checkbox" id="mcs_dont_send_submitter_email" name="mcs_dont_send_submitter_email" <?php mc_is_checked('mcs_dont_send_submitter_email','true'); ?> /> <label for="mcs_dont_send_submitter_email"><?php _e('Disable submitter email notification on automatically approved events.','my-calendar-submissions'); ?></label>
+				<input type="checkbox" id="mcs_dont_send_submitter_email" name="mcs_dont_send_submitter_email" <?php mc_is_checked('mcs_dont_send_submitter_email','true'); ?> /> <label for="mcs_dont_send_submitter_email"><?php _e('Disable submitter email notification on automatically approved events.','my-calendar-submissions'); ?></label>
 			</p>
 			<p>
-			<input type="checkbox" id="mcs_dont_send_admin_email" name="mcs_dont_send_admin_email" <?php mc_is_checked('mcs_dont_send_admin_email','true'); ?> /> <label for="mcs_dont_send_admin_email"><?php _e('Disable admin email notification on automatically approved events.','my-calendar-submissions'); ?></label>
+				<input type="checkbox" id="mcs_dont_send_admin_email" name="mcs_dont_send_admin_email" <?php mc_is_checked('mcs_dont_send_admin_email','true'); ?> /> <label for="mcs_dont_send_admin_email"><?php _e('Disable admin email notification on automatically approved events.','my-calendar-submissions'); ?></label>
 			</p>			
 			<h4><?php _e('New event messages','my-calendar-submissions'); ?></h4>
 			<p>
-			<input type="checkbox" id="mcs_html_email" name="mcs_html_email" <?php mc_is_checked('mcs_html_email','true'); ?> /> <label for="mcs_html_email"><?php _e('Send email notifications as HTML.','my-calendar-submissions'); ?></label>
+				<input type="checkbox" id="mcs_html_email" name="mcs_html_email" <?php mc_is_checked('mcs_html_email','true'); ?> /> <label for="mcs_html_email"><?php _e('Send email notifications as HTML.','my-calendar-submissions'); ?></label>
 			</p>
 			<fieldset>
-			<legend><?php _e('Sent to administrators','my-calendar-submissions'); ?></legend>
-			<ul>
-			<li>
-			<label for="mcs_to"><?php _e('Send notifications to:','my-calendar-submissions'); ?></label> <input type="text" name="mcs_to" id="mcs_to" size="60" value="<?php echo ( $mcs_to == '' ) ? get_bloginfo('admin_email') : esc_attr($mcs_to); ?>" />
-			</li>
-			<li>
-			<label for="mcs_from"><?php _e('Send notifications from:','my-calendar-submissions'); ?></label> <input type="text" name="mcs_from" id="mcs_from" size="60" value="<?php echo ( $mcs_from == '' ) ? get_bloginfo('admin_email') : esc_attr($mcs_from); ?>" />
-			</li>
-			<li>
-			<label for="mcs_subject"><?php _e('Notification Subject','my-calendar-submissions'); ?></label> <input type="text" name="mcs_subject" id="mcs_subject" size="60" value="<?php echo stripslashes(esc_attr($mcs_subject)); ?>" />
-			</li>
-			<li>
-			<label for="mcs_edit_subject"><?php _e('Notification Subject (Edits)','my-calendar-submissions'); ?></label> <input type="text" name="mcs_edit_subject" id="mcs_edit_subject" size="60" value="<?php echo stripslashes(esc_attr($mcs_edit_subject)); ?>" />
-			</li>		
-			<li>
-			<label for="mcs_response"><?php _e('Notification message','my-calendar-submissions'); ?></label><br /><textarea name="mcs_response" id="mcs_response" rows="4" cols="60"><?php echo stripslashes(esc_attr($mcs_response)); ?></textarea>
-			<?php $edit_link = ( mcs_submit_url() ) ? ', <code>edit_link</code>' : ''; ?>
-			<em><?php echo __( 'Available template tags: <code>first_name</code>, <code>last_name</code>, <code>email</code>, <code>title</code>, <code>date</code>, <code>time</code>, <code>description</code>, <code>short</code>, <code>image</code>, <code>url</code>, <code>location</code>, <code>street</code>, <code>city</code>, <code>phone</code>, <code>blogname</code>','my-calendar-submissions') . $edit_link; ?></em>
-			</li>
-			</ul>
+				<legend><?php _e('Sent to administrators','my-calendar-submissions'); ?></legend>
+				<ul>
+				<li>
+					<label for="mcs_to"><?php _e('Send notifications to:','my-calendar-submissions'); ?></label> <input type="text" name="mcs_to" id="mcs_to" size="60" value="<?php echo ( $mcs_to == '' ) ? get_bloginfo('admin_email') : esc_attr($mcs_to); ?>" />
+				</li>
+				<li>
+					<label for="mcs_from"><?php _e('Send notifications from:','my-calendar-submissions'); ?></label> <input type="text" name="mcs_from" id="mcs_from" size="60" value="<?php echo ( $mcs_from == '' ) ? get_bloginfo('admin_email') : esc_attr($mcs_from); ?>" />
+				</li>
+				<li>
+					<label for="mcs_subject"><?php _e('Notification Subject','my-calendar-submissions'); ?></label> <input type="text" name="mcs_subject" id="mcs_subject" size="60" value="<?php echo stripslashes(esc_attr($mcs_subject)); ?>" />
+				</li>
+				<li>
+					<label for="mcs_edit_subject"><?php _e('Notification Subject (Edits)','my-calendar-submissions'); ?></label> <input type="text" name="mcs_edit_subject" id="mcs_edit_subject" size="60" value="<?php echo stripslashes(esc_attr($mcs_edit_subject)); ?>" />
+				</li>		
+				<li>
+					<label for="mcs_response"><?php _e('Notification message','my-calendar-submissions'); ?></label><br /><textarea name="mcs_response" id="mcs_response" rows="4" cols="60"><?php echo stripslashes(esc_attr($mcs_response)); ?></textarea>
+					<?php $edit_link = ( mcs_submit_url() ) ? ', <code>edit_link</code>' : ''; ?>
+					<em><?php echo __( 'Available template tags: <code>first_name</code>, <code>last_name</code>, <code>email</code>, <code>title</code>, <code>date</code>, <code>time</code>, <code>description</code>, <code>short</code>, <code>image</code>, <code>url</code>, <code>location</code>, <code>street</code>, <code>city</code>, <code>phone</code>, <code>blogname</code>','my-calendar-submissions') . $edit_link; ?></em>
+				</li>
+				</ul>
 			</fieldset>
 			<fieldset>
-			<legend><?php _e('Sent to event submitter','my-calendar-submissions'); ?></legend>
-			<ul>
-			<li>
-			<label for="mcs_confirmation_subject"><?php _e('Confirmation Subject','my-calendar-submissions'); ?></label> <input type="text" name="mcs_confirmation_subject" id="mcs_confirmation_subject" size="60" value="<?php echo stripslashes(esc_attr($mcs_confirmation_subject)); ?>" />
-			</li>
-			<li>
-			<label for="mcs_edit_confirmation_subject"><?php _e('Confirmation Subject','my-calendar-submissions'); ?></label> <input type="text" name="mcs_edit_confirmation_subject" id="mcs_edit_confirmation_subject" size="60" value="<?php echo stripslashes(esc_attr($mcs_edit_confirmation_subject)); ?>" />
-			</li>			
-			<li>
-			<label for="mcs_confirmation"><?php _e('Submitter confirmation message','my-calendar-submissions'); ?></label><br /><textarea name="mcs_confirmation" id="mcs_confirmation" rows="4" cols="60"><?php echo stripslashes(esc_attr($mcs_confirmation)); ?></textarea>
-			<em><?php _e('Available template tags: <code>first_name</code>, <code>last_name</code>, <code>email</code>, <code>title</code>, <code>date</code>, <code>time</code>, <code>description</code>, <code>short</code>, <code>image</code>, <code>url</code>, <code>location</code>, <code>street</code>, <code>city</code>, <code>phone</code> <code>blogname</code>, <code>edit_link</code>','my-calendar-submissions'); ?></em>
-			</li>	
-			</ul>
+				<legend><?php _e('Sent to event submitter','my-calendar-submissions'); ?></legend>
+				<ul>
+				<li>
+					<label for="mcs_confirmation_subject"><?php _e('Confirmation Subject','my-calendar-submissions'); ?></label> <input type="text" name="mcs_confirmation_subject" id="mcs_confirmation_subject" size="60" value="<?php echo stripslashes(esc_attr($mcs_confirmation_subject)); ?>" />
+				</li>
+				<li>
+					<label for="mcs_edit_confirmation_subject"><?php _e('Confirmation Subject','my-calendar-submissions'); ?></label> <input type="text" name="mcs_edit_confirmation_subject" id="mcs_edit_confirmation_subject" size="60" value="<?php echo stripslashes(esc_attr($mcs_edit_confirmation_subject)); ?>" />
+				</li>			
+				<li>
+					<label for="mcs_confirmation"><?php _e('Submitter confirmation message','my-calendar-submissions'); ?></label><br /><textarea name="mcs_confirmation" id="mcs_confirmation" rows="4" cols="60"><?php echo stripslashes(esc_attr($mcs_confirmation)); ?></textarea>
+				<em><?php _e('Available template tags: <code>first_name</code>, <code>last_name</code>, <code>email</code>, <code>title</code>, <code>date</code>, <code>time</code>, <code>description</code>, <code>short</code>, <code>image</code>, <code>url</code>, <code>location</code>, <code>street</code>, <code>city</code>, <code>phone</code> <code>blogname</code>, <code>edit_link</code>','my-calendar-submissions'); ?></em>
+				</li>	
+				</ul>
 			</fieldset>
 			<h4><?php _e('Event Submission Criteria','my-calendar-submissions'); ?></h4>
 			<fieldset>
-			<legend><?php _e('Who may use the front-end event submission widget?','my-calendar-submissions'); ?></legend>
-			<ul>
-			<li>
-			<input type="radio" id="mcs_public" name="mcs_criteria" value="1" <?php mc_is_checked('mcs_criteria','1'); ?> /> <label for="mcs_public"><?php _e('General public.','my-calendar-submissions'); ?></label>
-			</li>			
-			<li>
-			<input type="radio" id="mcs_members_only" name="mcs_criteria" value="2" <?php mc_is_checked('mcs_criteria','2'); ?> /> <label for="mcs_members_only"><?php _e('Members.','my-calendar-submissions'); ?></label>
-			</li>
-			<li>
-			<input type="radio" id="mcs_member_status" name="mcs_criteria" value="3" <?php mc_is_checked('mcs_criteria','3'); ?> /> <label for="mcs_member_status"><?php _e('Members with the "mc_add_events" capability.','my-calendar-submissions'); ?></label>
-			</li>
-			</ul>
+				<legend><?php _e('Who may use the front-end event submission widget?','my-calendar-submissions'); ?></legend>
+				<ul>
+				<li>
+					<input type="radio" id="mcs_public" name="mcs_criteria" value="1" <?php mc_is_checked('mcs_criteria','1'); ?> /> <label for="mcs_public"><?php _e('General public.','my-calendar-submissions'); ?></label>
+				</li>			
+				<li>
+					<input type="radio" id="mcs_members_only" name="mcs_criteria" value="2" <?php mc_is_checked('mcs_criteria','2'); ?> /> <label for="mcs_members_only"><?php _e('Members.','my-calendar-submissions'); ?></label>
+				</li>
+				<li>
+					<input type="radio" id="mcs_member_status" name="mcs_criteria" value="3" <?php mc_is_checked('mcs_criteria','3'); ?> /> <label for="mcs_member_status"><?php _e('Members with the "mc_add_events" capability.','my-calendar-submissions'); ?></label>
+				</li>
+				</ul>
 			</fieldset>
 			<p><input type="submit" name="mc-submit-settings" class="button-primary" value="<?php _e('Save Submissions Settings','my-calendar-submissions'); ?>" /></p>			
 			</form>			
