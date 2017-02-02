@@ -183,11 +183,36 @@ function mcs_convert_ics( $file ) {
 			$event['DTSTART'] = str_replace( 'VALUE=DATE:', '', $event['DTSTART'] );
 			$start            = 'date';
 		}
+		//DTSTART;TZID=America/Detroit:20160426T153000
+		if ( stripos( $event['DTSTART'], 'TZID' ) !== false ) {
+			$items = explode( ':', $event['DTSTART'] );
+			$tz    = explode( '=', $items[0] );
+			$tzid  = str_replace( '"', '', $tz[1] );
+			$date  = $items[1];
+			/**
+			 * Take date & timezone ID string and return timezone-adapted date
+			 */
+			$date  = apply_filters( 'mcs_apply_timezone', $date, $tz );
+
+			$event['DTSTART'] = $date;			
+		}		
 		$event_begin   = date( 'Y-m-d', strtotime( $event['DTSTART'] ) );
 		$event_time    = ( $start == 'datetime' ) ? date( "H:i:00", strtotime( $event['DTSTART'] ) ) : '00:00:00';
 		if ( stripos( $event['DTEND'], 'VALUE=DATE' ) !== false ) {
 			$event['DTEND'] = str_replace( 'VALUE=DATE:', '', $event['DTEND'] );
 			$end            = 'date';
+		}
+		if ( stripos( $event['DTEND'], 'TZID' ) !== false ) {
+			$items = explode( ':', $event['DTEND'] );
+			$tz    = explode( '=', $items[0] );
+			$tzid  = str_replace( '"', '', $tz[1] );
+			$date  = $items[1];
+			/**
+			 * Take date & timezone ID string and return timezone-adapted date
+			 */			
+			$date  = apply_filters( 'mcs_apply_timezone', $date, $tz );
+			
+			$event['DTEND'] = $date;			
 		}		
 		$event_end     = date( 'Y-m-d', strtotime( $event['DTEND'] ) );
 		$event_endtime = ( $end == 'datetime' ) ? date( 'H:i:00', strtotime( $event['DTEND'] ) ) : '23:59:59';

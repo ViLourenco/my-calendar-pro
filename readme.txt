@@ -42,6 +42,8 @@ TODO: allow logged-in users to delete events from the front-end without visiting
 * Bug fix: better support for My Calendar exported CSVs
 * Bug fix: Support multiline descriptions in ics import
 * Bug fix: Support DATE format in ics datetime fields
+* Bug fix: strip timezone from dates before processing
+* Filter: provide filter to process dates & timezones 'mcs_apply_timezone'
 * Bug fix: don't remove 'Import Completed' message after import completes.
 * Update translations
 * Accessibility: broken explicit label relationship
