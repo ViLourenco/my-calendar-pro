@@ -174,6 +174,9 @@ function mcs_convert_ics( $file ) {
 	$uids = array();
 	// map each element to existing My Calendar fields
 	$rows = 'event_begin|||event_time|||event_end|||event_endtime|||content|||event_label|||event_title|||event_group_id'.PHP_EOL;
+	if ( !is_array( $events ) ) {
+		return;
+	}
 	foreach ( $events as $event ) {
 		if ( !isset( $event['DTSTART'] ) ) {
 			continue;
